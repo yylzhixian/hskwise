@@ -1,3 +1,6 @@
+import { api } from '@/lib/eden'
+
 export default async function Page() {
-  return <div></div>
+  const { data } = await api.db.get()
+  return <div>{data?.map(d => d.bar)}</div>
 }
