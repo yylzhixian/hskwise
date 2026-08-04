@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
       shippedProposals: true,
       forceAllTransforms: true,
     },
+    useLightningcss: true,
     lightningCssFeatures: {
       include: [
         'selectors',
