@@ -40,9 +40,10 @@ src/
   app/
     page.tsx
     dashboard/
+    learn/
+    routes/
     courses/
     vocabulary/
-    grammar/
     practice/
     review/
     mock-exams/
@@ -57,9 +58,9 @@ src/
     ui/
   features/
     onboarding/
+    learning-routes/
     courses/
     vocabulary/
-    grammar/
     practice/
     review/
     exams/
@@ -79,71 +80,59 @@ Elysia API 建议按模块拆分后组合到 `app`：
 | 模块 | 路径 | 职责 |
 |---|---|---|
 | Health | `/api/health` | 健康检查 |
-| Levels | `/api/levels` | 等级、能力描述、统计 |
-| Content | `/api/content/*` | 词汇、语法、汉字、话题、任务查询 |
+| Standards | `/api/standards/levels` | 标准版本、等级、能力描述、统计 |
+| Content | `/api/content/*` | 字词条目查询、等级筛选、搜索 |
 | Onboarding | `/api/onboarding/*` | 目标设置、测级 |
+| Learning Routes | `/api/learning-routes/*` | 用户学习路线、路线阶段、今日继续学习 |
 | Progress | `/api/progress/*` | 用户进度 |
 | Review | `/api/review/*` | SRS 队列 |
 | Practice | `/api/practice/*` | 练习题和答题 |
 | Exams | `/api/exams/*` | 模考、交卷、评分 |
 | Mistakes | `/api/mistakes/*` | 错题本 |
 
-## 5. 数据库建议
+## 5. 数据库方案
 
-MVP 推荐 PostgreSQL + Prisma 或 Drizzle。当前仓库还没有数据库依赖，可以在第一阶段确定。
+数据库采用 Turso Cloud，ORM 采用 Drizzle。Schema 位于 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts)，可读版说明见 [数据库 Schema](05-db-schema.md)。
 
-### 5.1 基础表
+### 5.1 第一阶段表
 
 - `users`
 - `user_profiles`
 - `learning_goals`
-- `levels`
-- `vocabulary_items`
-- `character_items`
-- `grammar_points`
-- `topics`
-- `tasks`
-- `questions`
-- `question_knowledge_refs`
+- `standard_levels`
+- `lexical_items`
+- `lexical_forms`
 
-### 5.2 学习数据表
+### 5.2 后续阶段再加
 
-- `vocabulary_progress`
-- `knowledge_progress`
-- `review_cards`
-- `practice_attempts`
-- `exam_attempts`
-- `exam_answers`
-- `mistake_items`
-- `daily_activity`
-
-### 5.3 内容导入表
-
-- `content_sources`
-- `import_batches`
-- `content_mappings`
-- `content_review_notes`
+- 内容导入与审核：`content_sources`、`import_batches`、`content_review_notes`
+- 学习路线：`learning_routes`、`learning_route_steps`、`user_route_progress`
+- 课程编排与教学内容：`courses`、`course_units`、`lessons`、`lesson_blocks`
+- 题库与练习：`questions`、`question_knowledge_refs`、`practice_sets`
+- 模考：`exam_papers`、`exam_attempts`、`exam_answers`
+- 学习进度、SRS、错题：`vocabulary_progress`、`knowledge_progress`、`review_cards`、`mistake_items`、`daily_activity`
 
 ## 6. MVP 页面开发顺序
 
 ### 6.1 第一步：可用产品骨架
 
 - App shell：顶部导航、侧边栏、移动端导航。
-- 首页目标分流。
+- 首页路线分流。
+- Onboarding 路线选择：当前考试备考、HSK 3.0 长期学习、不确定先测级。
 - Dashboard 空状态和示例状态。
-- Courses 列表。
-- HSK 1 课程详情。
+- `/learn` 当前路线页：一个主 `Continue` 动作、今日步骤、路线进度。
+- HSK 3.0 Level 1 路线样例。
 
 ### 6.2 第二步：内容可浏览
 
 - 词汇列表、搜索、等级筛选。
-- 语法列表、类别筛选。
 - 汉字认读/书写列表。
-- 任务和话题浏览。
+- 课程地图和等级资料作为辅助入口。
+- 课程内语法、话题、任务内容等课程模块设计后再加入。
 
 ### 6.3 第三步：学习闭环
 
-- 用户目标设置。
+- 路线目标设置。
 - 词汇学习状态。
 - SRS 复习队列。
 - 基础练习题。
@@ -173,10 +162,11 @@ MVP 可先使用简化 SM-2：
 推荐优先级：
 
 1. 到期复习。
-2. 目标等级必学但未学内容。
-3. 最近错题关联知识点。
-4. 低正确率技能项。
-5. 下一课新内容。
+2. 当前学习路线的下一步必学内容。
+3. 目标等级必学但未学内容。
+4. 最近错题关联知识点。
+5. 低正确率技能项。
+6. 下一课新内容。
 
 ### 7.3 模考评分
 
@@ -195,7 +185,8 @@ HSK 备考产品应偏工具型和专业型：
 
 - 信息密度适中，适合长期学习和反复扫描。
 - 色彩不做单一大面积红色或中国风堆叠。
-- 重点突出学习状态、目标进度、错题和下一步行动。
+- 重点突出当前路线、学习状态、目标进度、错题和下一步行动。
+- Dashboard 主按钮是 `Continue`，弱化扁平等级入口。
 - 图标使用 lucide-react。
 - 组件优先使用现有 shadcn/ui 风格。
 - 移动端优先保证每日学习、复习和练习流畅。
@@ -222,21 +213,21 @@ HSK 备考产品应偏工具型和专业型：
 
 | 风险 | 对策 |
 |---|---|
-| HSK 2.0 / 3.0 让用户困惑 | 前台按目标分流，后台用双标签 |
+| HSK 2.0 / 3.0 让用户困惑 | 前台按学习路线分流，后台用双标签 |
 | 官方 Markdown 表格结构不稳定 | 建立导入脚本和内容校验报告 |
 | 题库质量不足 | 先做小题库闭环，再扩充题量 |
 | AI 功能成本高 | MVP 只做规则评分和客观题，AI 放到付费层 |
-| 学习路径过大 | 先做 HSK 1-4，5-9 做资料浏览 |
+| 学习路径过大 | 先做 HSK 3.0 Level 1-4，HSK 3.0 Level 5-6 与 HSK 3.0 Level 7-9 做资料浏览 |
 | Next 16 API 变化 | 写代码前阅读本地 Next 文档，避免按旧经验实现 |
 
 ## 11. 近期开发清单
 
 - 建立内容数据目录或数据库 schema。
 - 编写官方大纲导入脚本。
-- 完成 HSK 1-4 词汇数据导入。
-- 搭建 App shell 和首页目标分流。
+- 完成 HSK 3.0 Level 1-4 词汇数据导入。
+- 搭建 App shell 和首页路线分流。
+- 搭建 onboarding 路线选择和 `/learn` 当前路线页。
 - 搭建 Dashboard。
-- 搭建词汇库和等级课程页。
+- 搭建词汇库和课程地图辅助页。
 - 实现基础学习状态。
 - 实现 SRS 复习队列。
-

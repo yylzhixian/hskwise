@@ -1,13 +1,12 @@
-import { db } from '@/db'
-import { fooTable } from '@/db/schema'
 import { Elysia } from 'elysia'
 
 export const app = new Elysia({ prefix: '/api' })
   .get('/health', () => 'ok')
-  .get('/db', async () => {
-    const result = await db.select().from(fooTable).all()
-    return result
-  })
+  .get('/db', () => ({
+    status: 'configured',
+    dialect: 'turso',
+    orm: 'drizzle',
+  }))
 
 export type App = typeof app
 
