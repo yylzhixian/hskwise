@@ -7,6 +7,7 @@
 - [考试能力描述](../hsk3-syllabus/capability-description.md)
 - [hsk3-syllabus/](../hsk3-syllabus/README.md)：已经拆分后的可查阅版本
 - `/Users/yanglong/Documents/GitHub/complete-hsk-vocabulary`：词汇、繁体、拼音、多转写、释义、量词、词频、词性、HSK 2.0/3.0 等级标签。
+- `docs/textbooks`：HSK 2.0 / HSK 3.0 textbook 内部参考资料，用于后续 Admin 重新制作课程，不直接作为可发布内容源。
 
 HSK 3.0 大纲按五类内容组织：
 
@@ -24,6 +25,9 @@ HSK 3.0 大纲按五类内容组织：
 - 笔画和笔顺不入库，需要展示时按需调用工具库生成。
 - 同一内容可多标签：显式支持 `hsk3Level`、`hsk2Level`、考试路径、能力路径、技能项；HSK 标准版本和等级保留字符串，低基数内部枚举再使用数字码。
 - 字词与课程分离：词汇、汉字适合结构化罗列；语法、话题、任务进入课程/课时内容，不在第一阶段单独建表。
+- 课程与呈现分离：课程存为 course/unit/section/block 和引用关系，前端后续再决定渲染成闪卡、递进模块、精读或练习流。
+- 课程规则跨标准复用：HSK 2.0 和 HSK 3.0 共用同一套课程存储规范，通过 `standardVersion`、`standardLevel` 和 `course_level_mappings` 区分内容归属。
+- 课程内容重新制作：textbook 只能指导章节顺序、教学重点和练习类型，发布内容必须是自制或已授权内容。
 - 先 Markdown 校验，后结构化入库：官方资料先在 `docs/hsk3-syllabus` 保持可读，再逐步导入数据库。
 
 ## 3. 核心内容模型
@@ -96,14 +100,34 @@ HSK 3.0 大纲按五类内容组织：
 | `sortOrder` | form 排序 |
 | `metadata` | 原始 form 或人工校正备注等扩展 JSON |
 
-### 3.4 Course/Lesson（后续阶段）
+### 3.4 Course/Unit/Section/Block（后续阶段）
 
-语法、话题、任务不作为第一阶段的独立内容表。后续做课程编排时，再用 `courses`、`course_units`、`lessons` 或类似模型承载：
+课程存储规范见 [课程存储与 Admin 制课方案](06-course-storage-design.md)。推荐模型是：
 
-- lesson 的教学目标和 can-do 描述。
-- 语法讲解、例句、互动练习。
-- 话题和任务场景。
-- 与字词条目的引用关系。
+```text
+Course
+  Unit
+    Section
+      Block
+        References
+```
+
+其中：
+
+- `course_sources` 记录 textbook、官网大纲或教师教案等内部参考来源。
+- `courses` 保存课程资产本身，不保存用户进度。
+- `course_units` 对应重新制作后的课程单元；参考教材中的一课通常可映射为一个 unit。
+- `course_sections` 对应课文、生词、语法、语音、汉字、练习、活动、小结等教学段落。
+- `course_blocks` 保存最小可渲染内容块，例如对话、生词表、语法讲解、练习题。
+- `course_block_refs` 把 block 关联到 `lexical_items`、`lexical_forms`、`standard_levels` 或来源片段。
+
+语法、话题、任务不作为第一阶段的独立内容表。它们进入 `course_blocks`：
+
+- 语法讲解用 `blockKind = grammarNote`。
+- 话题场景用 `dialogue`、`readingText`、`activity` 或 `callout` 表达。
+- 任务训练用 `exercise` 或 `activity` 表达。
+
+textbook 内容受版权限制时，`course_blocks` 只保存 HSKWise 自制或已授权内容；来源文件、章节和行号只作为内部 `source_locator`，用于教研追溯和审核。
 
 ### 3.5 Question（后续阶段）
 
@@ -189,8 +213,9 @@ HSK 3.0 大纲按五类内容组织：
 ```mermaid
 flowchart LR
   A["官方 Markdown"] --> B["拆分文档"]
-  B --> C["结构化解析"]
-  C --> D["人工校对"]
+  T["Textbook Markdown"] --> C["Admin 制课"]
+  B --> C
+  C --> D["结构化解析/人工编辑"]
   D --> E["内容数据库"]
   E --> F["课程/练习/模考"]
   F --> G["用户学习数据"]

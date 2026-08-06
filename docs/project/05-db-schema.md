@@ -40,6 +40,8 @@ bun run db:mig
 
 以下能力先不进入 schema，等对应功能开发时再补：导入批次、内容审核、课程编排、课时中的语法/话题/任务内容、题库、练习、模考、学习进度、SRS、错题。
 
+课程阶段的推荐扩展已单独整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)。核心思路是 `course_sources -> courses -> course_units -> course_sections -> course_blocks`，再用 `course_block_refs` 引用现有 `lexical_items` / `lexical_forms`，不新增 `grammar_points`、`topics`、`tasks` 罗列表。textbook 来源只作为内部参考，发布内容需要通过 block 的内容来源和版权状态确认。
+
 ## 当前字段快照
 
 字段含义以 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 中的代码注释为准。这里仅保留字段清单，方便快速检查 docs 是否与代码同名。

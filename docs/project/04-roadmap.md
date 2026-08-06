@@ -8,6 +8,7 @@
 - Google credential 前端解析：`src/hooks/use-google-credential-callback.ts`。
 - API 骨架：`/api/health`、`/api/db`。
 - 第一阶段 Drizzle schema 草案：`src/db/schema.ts`，字段和 enum 说明维护在代码注释中。
+- 课程存储设计文档：[课程存储与 Admin 制课方案](06-course-storage-design.md)。
 
 当前尚未完成：
 
@@ -16,6 +17,7 @@
 - 退出当前设备、退出全部设备。
 - 内容导入脚本和真实内容入库。
 - App shell、onboarding、Dashboard、学习路线页。
+- 课程 schema 和 Admin 制课后台。
 
 ## Phase 0：资料整理与产品定型
 
@@ -27,12 +29,14 @@
 - 产品方案。
 - 内容与数据方案。
 - 开发方案。
+- 课程存储与 Admin 制课方案。
 - MVP 范围定义。
 
 验收标准：
 
 - 能从索引快速查到 HSK 3.0 各等级的官方资料，并明确第一阶段只结构化字词。
 - 团队对“统一内容库 + 路线驱动主体验 + 双标准标签”达成一致。
+- 团队对“内部参考来源 + 原创 course/unit/section/block + 字词引用”的课程存储规范达成一致。
 - 明确第一版只做 HSK 3.0 Level 1-4 的完整学习闭环。
 
 ## Phase 1：内容基础设施
@@ -82,7 +86,30 @@
 - 用户可以标记词汇和汉字掌握状态。
 - 页面在桌面和移动端都可用。
 
-## Phase 3：复习与练习闭环
+## Phase 3：课程生产后台
+
+目标：让 admin 能参考 textbook 等内部资料制作原创或已授权的可发布课程。
+
+核心任务：
+
+- 课程 schema 扩展：`course_sources`、`courses`、`course_level_mappings`、`course_units`、`course_sections`、`course_blocks`、`course_block_refs`。
+- Admin source 管理。
+- Course outline 编辑。
+- Block 编辑器。
+- 字词搜索和引用绑定。
+- 缺音频、未匹配词、版权状态、内容来源、OCR 异常检查。
+- 草稿预览和发布状态管理。
+
+验收标准：
+
+- Admin 能录入一套 textbook 内部参考来源并创建课程草稿。
+- Admin 能参考教材结构，把自制课程拆成 unit、section、block。
+- 生词类 block 能引用 `lexical_items` / `lexical_forms`。
+- 课程 block 能保留 `audio_url` 字段，音频缺失时可明确标记。
+- 发布前能发现未匹配词、非稳定素材 URL、`referenceOnly` / `referenceRewrite` 内容和未确认版权状态。
+- 学习者端可以读取已发布课程结构。
+
+## Phase 4：复习与练习闭环
 
 目标：产品从“资料库”变成“学习工具”。
 
@@ -99,9 +126,10 @@
 - 用户每天有自动生成的复习任务。
 - 答错内容进入错题本。
 - 错题能关联到词汇或汉字；语法错题等课程模块设计后再加入。
+- 课程接入后，错题可以进一步关联到具体 course block。
 - Dashboard 能显示今日完成度和弱项。
 
-## Phase 4：模考与备考报告
+## Phase 5：模考与备考报告
 
 目标：形成专业备考闭环。
 
@@ -120,7 +148,7 @@
 - 报告能显示词汇、语法、阅读、听力等维度。
 - 模考错题自动进入复习。
 
-## Phase 5：商业化增强
+## Phase 6：商业化增强
 
 目标：建立可付费的高级学习体验。
 
@@ -148,8 +176,9 @@
 3. 首页路线分流与 onboarding。
 4. `/learn` 当前路线页和 Dashboard `Continue`。
 5. HSK 3.0 Level 1-4 词汇库。
-6. SRS 复习。
-7. 基础练习和错题本。
+6. 课程存储 schema 与 Admin 制课 MVP。
+7. SRS 复习。
+8. 基础练习和错题本。
 
 暂不优先做：
 

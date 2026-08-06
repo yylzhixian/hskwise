@@ -11,6 +11,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 - 前台按学习路线分流：当前考试备考、新标准长期学习、不确定先测级。主体验不做扁平等级入口。
 - 等级是路线规划和资料筛选参数，不是用户每天面对的主导航。
 - 底层内容优先以 complete-hsk-vocabulary 建立 HSK 字词主数据；官网资料补标准等级和汉字认读/书写等级。语法、话题、任务进入后续课程模块。
+- 课程内容采用“内部参考来源 + 原创 course/unit/section/block + 字词引用”的存储规范；HSK 2.0 和 HSK 3.0 共用同一套课程规则，只在学习内容和等级映射上区分。
 - MVP 先完成“诊断 -> 学习 -> 复习 -> 练习 -> 模考 -> 错题再训练”的闭环。
 
 ## 当前代码快照
@@ -19,6 +20,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 - Google 登录当前采用 `popup` 模式，只在前端 callback 中解析并打印 credential payload；服务端 token 校验、用户写入和 session 创建尚未实现。
 - 当前 API 只有 `/api/health` 和 `/api/db`，`/api/auth/*` 仍是下一步工作。
 - Drizzle schema 位于 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts)，字段和 enum 说明以代码内注释为准。
+- 课程存储设计见 [课程存储与 Admin 制课方案](06-course-storage-design.md)，当前尚未写入 schema。
 - 当前没有生成 migration；等 schema 稳定后再手动运行 `bun run db:gen` 和 `bun run db:mig`。
 
 ## 文档列表
@@ -28,6 +30,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 - [开发方案](03-development-plan.md)
 - [阶段路线图](04-roadmap.md)
 - [数据库 Schema](05-db-schema.md)
+- [课程存储与 Admin 制课方案](06-course-storage-design.md)
 
 ## 官方资料入口
 

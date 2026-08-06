@@ -12,6 +12,7 @@ HSKWise 是一个面向非汉语母语者的专业 HSK 备考网站，围绕 HSK
 - 路线驱动：主体验像 Brilliant 一样围绕一条学习路线推进，而不是让用户每天从扁平等级列表里选择。
 - 底层融合：词汇和汉字用统一字词库管理；语法、话题、任务通过课程和课时承载。
 - 双标准标签：同一内容可同时标记 HSK 2.0 等级、HSK 3.0 等级、考试高频、能力扩展。
+- 课程规则统一：HSK 2.0 和 HSK 3.0 使用同一套 course/unit/section/block 存储规范，只是学习内容和等级映射不同。
 - 备考闭环：诊断、学习、复习、练习、模考、错题再训练必须连起来。
 - 专业可信：HSK 词汇主数据和官方大纲都要能追溯到具体来源。
 
@@ -81,7 +82,7 @@ flowchart LR
 - 学习路线：按目标组织字词学习、课程、练习和模考；等级结构在路线内逐步展开。
 - 词汇学习：汉字、拼音、释义、词性、等级、掌握状态。
 - SRS 复习：新词、复习词、困难词自动排队。
-- 课程内语法学习：在 lesson 中讲解、练习和回顾。
+- 课程内语法学习：语法、话题、任务存为课程内容块，在 lesson 中讲解、练习和回顾。
 - 练习系统：选择题、填空、判断、匹配、听力题。
 - 模考系统：按等级计时、分 section、自动评分。
 - 错题本：按词汇、语法、听力、阅读归因并回流复习。
@@ -117,7 +118,11 @@ flowchart LR
 
 ### 7.2 后台与运营端
 
-- `/admin/content`：内容导入和审核。
+- `/admin/course-sources`：管理 textbook、官网大纲、教师教案等内部参考来源。
+- `/admin/courses`：课程列表、目标标准、等级映射、发布状态。
+- `/admin/courses/:courseId/outline`：课程 unit 和 section 结构编辑。
+- `/admin/courses/:courseId/editor`：参考来源资料重新制作结构化课程 block。
+- `/admin/course-review`：未匹配词、缺音频、版权状态、OCR 异常和待审核 block。
 - `/admin/questions`：题库管理。
 - `/admin/exams`：模考试卷管理。
 - `/admin/reports`：用户学习数据和内容质量报告。
@@ -126,7 +131,7 @@ flowchart LR
 
 - HSK 2.0 / 3.0 融合视图：用户不用在两个体系之间来回切换。
 - 路线驱动体验：用户每天只需要继续当前路线，不需要反复在等级菜单里做选择。
-- 大纲可追溯：字词可追溯到数据源和官网字表；课程内容可追溯到官方任务、话题和语法模块。
+- 大纲可追溯：字词可追溯到数据源和官网字表；课程内容可追溯到内部参考来源、官方任务、话题和语法模块。
 - 弱项驱动学习：不是线性刷课，而是根据错误和遗忘自动安排训练。
 - 备考感强：目标日期、通过率预测、模考趋势、错题回炉。
 - 面向非汉语者：界面语言、解释、例句和提示优先服务外国学习者。
@@ -157,7 +162,7 @@ flowchart LR
 
 ## 10. 内容依据
 
-官方 HSK 3.0 大纲已经拆分在 [HSK 3.0 大纲拆分索引](../hsk3-syllabus/README.md)。第一阶段词汇主数据优先来自 `/Users/yanglong/Documents/GitHub/complete-hsk-vocabulary`。其中：
+官方 HSK 3.0 大纲已经拆分在 [HSK 3.0 大纲拆分索引](../hsk3-syllabus/README.md)。第一阶段词汇主数据优先来自 `/Users/yanglong/Documents/GitHub/complete-hsk-vocabulary`。课程制作参考资料位于 `docs/textbooks`，但受版权限制只能内部参考，发布课程内容需要重新创作或取得授权；课程存储规范见 [课程存储与 Admin 制课方案](06-course-storage-design.md)。其中：
 
 - [考试能力描述](../hsk3-syllabus/capability-description.md) 用于等级定位和营销解释。
 - [任务大纲](../hsk3-syllabus/tasks/hsk-1.md) 用于课程任务设计。

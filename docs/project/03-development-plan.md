@@ -28,6 +28,8 @@
 
 尚未实现：服务端 Google ID token 校验、用户 upsert、session 创建、退出登录、设备管理、内容导入脚本和真实学习路线页面。
 
+课程存储与 Admin 制课方案已整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)，当前尚未写入 Drizzle schema。
+
 重要约束：本仓库的 `AGENTS.md` 提醒 Next.js 版本存在破坏性变化，正式写 Next.js 代码前需要先阅读 `node_modules/next/dist/docs/` 中相关指南。
 
 ## 2. 推荐技术架构
@@ -121,6 +123,8 @@ src/
 | Auth | `/api/auth/*` | Google ID token 服务端校验、当前用户、退出登录、设备会话管理 |
 | Standards | `/api/standards/levels` | 标准版本、等级、能力描述、统计 |
 | Content | `/api/content/*` | 字词条目查询、等级筛选、搜索 |
+| Course Admin | `/api/admin/course-*` | 内部参考来源、课程结构、原创 block 编辑、引用绑定、发布审核 |
+| Courses | `/api/courses/*` | 学习者端课程读取、课程地图、unit/block 查询 |
 | Onboarding | `/api/onboarding/*` | 目标设置、测级 |
 | Learning Routes | `/api/learning-routes/*` | 用户学习路线、路线阶段、今日继续学习 |
 | Progress | `/api/progress/*` | 用户进度 |
@@ -148,7 +152,8 @@ src/
 
 - 内容导入与审核：`content_sources`、`import_batches`、`content_review_notes`
 - 学习路线：`learning_routes`、`learning_route_steps`、`user_route_progress`
-- 课程编排与教学内容：`courses`、`course_units`、`lessons`、`lesson_blocks`
+- 课程编排与教学内容：`course_sources`、`courses`、`course_level_mappings`、`course_units`、`course_sections`、`course_blocks`、`course_block_refs`
+- 课程素材：`course_assets`，等音频和图片素材开始系统整理后再加
 - 题库与练习：`questions`、`question_knowledge_refs`、`practice_sets`
 - 模考：`exam_papers`、`exam_attempts`、`exam_answers`
 - 学习进度、SRS、错题：`vocabulary_progress`、`knowledge_progress`、`review_cards`、`mistake_items`、`daily_activity`
@@ -171,9 +176,19 @@ src/
 - 词汇列表、搜索、等级筛选。
 - 汉字认读/书写列表。
 - 课程地图和等级资料作为辅助入口。
-- 课程内语法、话题、任务内容等课程模块设计后再加入。
+- 课程内语法、话题、任务内容按 [课程存储与 Admin 制课方案](06-course-storage-design.md) 中的 block 模型加入。
 
-### 6.3 第三步：学习闭环
+### 6.3 第三步：课程生产后台
+
+- `/admin/course-sources`：登记 textbook、官网大纲和教师教案等内部参考来源。
+- `/admin/courses`：课程列表、目标标准、等级映射、发布状态。
+- `/admin/courses/:courseId/outline`：unit 和 section 结构编辑。
+- `/admin/courses/:courseId/editor`：参考来源资料重新制作结构化 block。
+- 字词搜索和引用绑定。
+- 缺音频、未匹配词、版权状态、内容来源和 OCR 异常检查。
+- 草稿预览和发布。
+
+### 6.4 第四步：学习闭环
 
 - 路线目标设置。
 - 词汇学习状态。
@@ -181,7 +196,7 @@ src/
 - 基础练习题。
 - 错题记录。
 
-### 6.4 第四步：备考闭环
+### 6.5 第五步：备考闭环
 
 - 迷你模考。
 - 模考评分。
