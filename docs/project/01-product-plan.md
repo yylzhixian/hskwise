@@ -73,6 +73,8 @@ flowchart LR
 
 ### 6.1 必做功能
 
+- Google 登录：第一阶段只支持 Google，降低注册和找回密码成本。
+- 多设备登录：同一账号允许在桌面、手机、平板同时学习，并支持退出当前设备或全部设备。
 - 用户 onboarding：选择学习路线、目标等级、考试日期或学习节奏。
 - 水平测试：用短测判断推荐起点。
 - Dashboard：突出 `Continue`、今日任务、进度、streak、弱项、目标倒计时。
@@ -102,6 +104,8 @@ flowchart LR
 - `/dashboard`：学习总览。
 - `/learn`：当前学习路线和今日继续学习入口。
 - `/routes/:routeId`：某条学习路线的计划、阶段和进度。
+- `/settings/profile`：个人资料、界面语言、学习偏好。
+- `/settings/security`：登录设备、退出当前设备、退出全部设备。
 - `/courses`：课程地图和等级资料辅助入口，不作为主学习入口。
 - `/courses/:standardVersion/:standardLevel`：某标准版本下的等级课程资料，例如 `/courses/hsk3/1`。
 - `/vocabulary`：词汇库。
@@ -132,6 +136,8 @@ flowchart LR
 ### 9.1 MVP 指标
 
 - 新用户完成 onboarding 比例。
+- Google 登录成功率。
+- 多设备 session 异常退出率。
 - 新用户创建学习路线比例。
 - Dashboard `Continue` 点击率。
 - 首次水平测试完成率。

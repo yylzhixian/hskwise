@@ -1,5 +1,22 @@
 # 阶段路线图
 
+## 当前实现进度
+
+当前代码已经完成：
+
+- Google 登录前端入口：`src/components/google-login-button.tsx`。
+- Google credential 前端解析：`src/hooks/use-google-credential-callback.ts`。
+- API 骨架：`/api/health`、`/api/db`。
+- 第一阶段 Drizzle schema 草案：`src/db/schema.ts`，字段和 enum 说明维护在代码注释中。
+
+当前尚未完成：
+
+- 服务端 Google ID token 校验。
+- `users`、`auth_accounts`、`user_sessions` 的真实登录写入流程。
+- 退出当前设备、退出全部设备。
+- 内容导入脚本和真实内容入库。
+- App shell、onboarding、Dashboard、学习路线页。
+
 ## Phase 0：资料整理与产品定型
 
 目标：把官方资料、产品策略和技术方案定下来。
@@ -45,6 +62,8 @@
 核心任务：
 
 - 首页路线分流。
+- Google 登录。
+- 多设备 session 管理。
 - Onboarding 路线选择与目标设置。
 - Dashboard。
 - `/learn` 当前路线页。
@@ -56,6 +75,8 @@
 验收标准：
 
 - 新用户可以选择学习路线并进入 Dashboard。
+- 用户可以使用 Google 登录，并在多台设备保持独立 session。
+- 用户可以退出当前设备，后续可扩展退出全部设备。
 - Dashboard 有清晰的 `Continue` 主行动，用户不需要先面对完整等级列表。
 - 用户可以浏览 HSK 3.0 Level 1-4 字词内容。
 - 用户可以标记词汇和汉字掌握状态。
@@ -123,11 +144,12 @@
 短期优先做：
 
 1. 内容导入。
-2. 首页路线分流与 onboarding。
-3. `/learn` 当前路线页和 Dashboard `Continue`。
-4. HSK 3.0 Level 1-4 词汇库。
-5. SRS 复习。
-6. 基础练习和错题本。
+2. Google 登录和多设备 session。
+3. 首页路线分流与 onboarding。
+4. `/learn` 当前路线页和 Dashboard `Continue`。
+5. HSK 3.0 Level 1-4 词汇库。
+6. SRS 复习。
+7. 基础练习和错题本。
 
 暂不优先做：
 

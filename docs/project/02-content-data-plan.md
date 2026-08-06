@@ -28,6 +28,8 @@ HSK 3.0 大纲按五类内容组织：
 
 ## 3. 核心内容模型
 
+当前代码中的字段定义和字段注释以 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 为准。本节只描述内容模型的产品含义，并使用 Drizzle schema 中的属性名。
+
 ### 3.1 StandardLevel
 
 | 字段 | 说明 |
@@ -37,7 +39,11 @@ HSK 3.0 大纲按五类内容组织：
 | `standardLevel` | 该标准版本内的等级代码，例如 `1`、`6`、`7-9` |
 | `title` | 展示名 |
 | `abilityDescription` | 能力描述 |
-| `order` | 排序 |
+| `sortOrder` | 排序，越小越靠前 |
+| `vocabularyCount` | 当前等级新增词数 |
+| `cumulativeVocabularyCount` | 到当前等级为止的累计词数 |
+| `sourceDataset` | 主要数据来源数字码 |
+| `metadata` | 来源文件、官方说明、修订备注等扩展 JSON |
 
 命名上不要用泛称的 HSK 等级字段指代 HSK 3.0。目标、课程、题库等上下文用 `standardVersion + standardLevel`；官方内容字段用 `hsk2Level`、`hsk3Level` 明确区分。
 
@@ -66,6 +72,8 @@ HSK 3.0 大纲按五类内容组织：
 | `classifierWords` | 量词数组 |
 | `components` | 构件数组，第一阶段可为空 |
 | `sampleWords` | 例词数组，可由词汇记录反查生成 |
+| `formsCount` | forms 数量，便于列表判断是否有多读音/多写法 |
+| `sourceDataset` | 主要数据来源数字码 |
 | `metadata` | 原始对象、来源文件、license 备注等 |
 
 `itemKind` 是合并词汇和汉字的关键字段。同一个简体字串可以因为用途不同存在两条记录，例如 `爱` 可以既是词汇条目，也可以是汉字条目；入库时前者为 `1`，后者为 `2`。
@@ -85,6 +93,8 @@ HSK 3.0 大纲按五类内容组织：
 | `meanings` | 释义数组 |
 | `classifiers` | 量词数组 |
 | `audioUrl` | 当前 form 对应读音的音频 URL |
+| `sortOrder` | form 排序 |
+| `metadata` | 原始 form 或人工校正备注等扩展 JSON |
 
 ### 3.4 Course/Lesson（后续阶段）
 
