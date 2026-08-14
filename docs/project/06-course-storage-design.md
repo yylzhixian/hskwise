@@ -11,8 +11,8 @@
 - HSK 2.0 和 HSK 3.0 使用同一套课程规则和存储规范，只是学习内容、标准版本和等级映射不同。
 - 课程结构不依赖某一本教材的标题命名，避免 HSK 2.0、HSK 3.0、未来 HSK 4.0 之间再次割裂。
 - 词汇和汉字仍引用现有 `lexical_items` / `lexical_forms` 主数据，不在课程里重复维护词条事实。
-- 语法、话题、任务不做独立罗列表，作为课程 block 的教学内容保存。
-- 在内容资产之外预留“学习体验配方”，让同一批 block 可以被组合成精读、闪卡、跟读、听写、角色扮演、课堂活动、AI 助学或考前补弱。
+- 语法、话题、任务不做独立罗列表，作为 `course_scenes.scene_data` 中的教学内容、元素、互动或事件逻辑保存。
+- 在内容资产之外预留“学习体验配方”，让同一批 scene 可以被组合成精读、闪卡、跟读、听写、角色扮演、课堂活动、AI 助学或考前补弱。
 - Admin 后台能支持“参考资料 -> 原创制课 -> 引用字词 -> 审核 -> 发布”的生产流程。
 - 版权和来源可追溯：textbook 是制课参考源，不是可直接发布的内容源。
 
@@ -33,7 +33,7 @@
 - HSK 3.0 教材明确面向课堂教学、自主学习和 AI 助学，主干课本之外还有学练手册、数字教材、音频、视频、互动内容和补充练习。
 - HSK 3.0 每课通常有三篇情景对话，语言点随文讲练，综合练习可以课上完成也可以课后完成，课堂活动承担双人/多人/角色扮演任务，每三课有学习小结。
 
-这些信息说明：课程 schema 不能只保存“教材目录顺序”，还要让前端知道每个内容块适合什么技能、模式、场景和交互方式。否则后面做精读、听力、跟读、闪卡、课堂任务、AI 助教时会不断把临时规则写进前端。
+这些信息说明：课程 schema 不能只保存“教材目录顺序”，还要让前端知道每个 scene 适合什么技能、模式、场景和交互方式。否则后面做精读、听力、跟读、闪卡、课堂任务、AI 助教时会不断把临时规则写进前端。
 
 虽然 HSK 2.0 和 HSK 3.0 的教材包装不同，但课程规则可以完全一致，并抽象为同一棵课程树：
 
@@ -41,10 +41,10 @@
 Course
   Unit / Lesson
     Section
-      Block
+      Scene
         References
   Experience
-    ExperienceStep -> Block / Section / Asset / Reference
+    ExperienceStep -> Scene / Section / Asset / Reference
 ```
 
 例如：
@@ -52,10 +52,10 @@ Course
 - `Course`：HSK 3.0 一级入门课程。
 - `Unit`：第 1 课 “基础问候与拼音入门”。
 - `Section`：学习目标、原创对话、生词、拼音讲解、综合练习。
-- `Block`：一段对话、一个生词列表、一个语法讲解、一组练习题。
-- `References`：这个 block 讲了哪些 `lexical_items`，练了哪些 `lexical_forms`，对应哪个来源片段。
+- `Scene`：最小可编辑、可播放、可交互、可记录的学习场景；可以是一页图文、一段对话、一组练习、一个自动播放讲解片段或一个小游戏式互动。
+- `References`：这个 scene 讲了哪些 `lexical_items`，练了哪些 `lexical_forms`，对应哪个来源片段。
 - `Experience`：同一课的学习体验配方，例如“引导式学习”“课前预习”“听力跟读”“角色扮演”“课后练习”。
-- `ExperienceStep`：体验中的一个学习动作，引用某个 block、block 内某一行/题、某个素材或某组引用。
+- `ExperienceStep`：体验中的一个学习动作，引用某个 scene、scene 内某一行/题、某个素材或某组引用。
 
 ## 3. 课程与路线的关系
 
@@ -68,13 +68,13 @@ Course
 
 - 当前 HSK 考试备考路线可以优先使用 HSK 2.0 相关课程和题型训练。
 - HSK 3.0 长期能力路线可以使用 HSK 3.0 大纲和新版教材结构。
-- 测级后补弱路线可以只抽取某些 unit 或 block 给用户补课。
+- 测级后补弱路线可以只抽取某些 unit 或 scene 给用户补课。
 
-HSK 2.0 和 HSK 3.0 不需要两套课程表，也不需要两套 block 规则。它们的差异应体现在：
+HSK 2.0 和 HSK 3.0 不需要两套课程表，也不需要两套 scene 规则。它们的差异应体现在：
 
 - `primary_standard_version` 和 `primary_standard_level`。
 - `course_level_mappings` 中的跨标准覆盖关系。
-- unit / section / block 中实际选择的词汇、语法、任务和题型。
+- unit / section / scene 中实际选择的词汇、语法、任务和题型。
 - 学习路线对课程内容的编排顺序。
 
 ### 3.1 内容、体验、路线三层分离
@@ -83,16 +83,16 @@ HSK 2.0 和 HSK 3.0 不需要两套课程表，也不需要两套 block 规则�
 
 | 层级 | 回答的问题 | 推荐表 |
 |---|---|---|
-| 课程内容资产 | 这门课有哪些稳定内容、知识点、素材和来源？ | `courses`、`course_units`、`course_sections`、`course_blocks`、`course_block_refs` |
+| 课程内容资产 | 这门课有哪些稳定内容、知识点、素材和来源？ | `courses`、`course_units`、`course_sections`、`course_scenes`、`course_scene_refs` |
 | 学习体验配方 | 同一批内容如何被组织成一次可播放/可练习的体验？ | `course_experiences`、`course_experience_steps` |
 | 用户学习路线 | 某个用户今天为什么学这个、什么时候复习、错题回到哪里？ | 后续 `learning_routes`、`learning_route_steps`、`user_route_progress` |
 
 这样做可以避免两个常见问题：
 
-- 不把 `course_blocks` 做成前端组件配置表。block 保存教学内容本身，experience step 保存学习动作和交互意图。
+- 不把 `course_scenes` 做成前端组件配置表。scene 保存教学内容本身，experience step 保存学习动作和交互意图。
 - 不让用户路线直接背负所有展示规则。路线只决定“选哪套体验、按什么节奏推给谁”，体验配方决定“这一课在精读/闪卡/听力/角色扮演里怎样使用内容”。
 
-例如同一个 `dialogue` block 可以被多个 experience step 复用：
+例如同一个 `dialogue` scene 可以被多个 experience step 复用：
 
 - 在 `guidedLesson` 中先完整展示汉字、拼音、翻译和场景说明。
 - 在 `listeningDrill` 中只播放音频并隐藏部分文本。
@@ -109,62 +109,72 @@ HSK 2.0 和 HSK 3.0 不需要两套课程表，也不需要两套 block 规则�
 - 下一步学习是什么。
 - 这一课包含哪些词、字、语法和练习。
 - 哪些内容缺音频。
-- 用户错题应该回流到哪一个 block。
-- 一个 block 是否能被渲染成闪卡、练习题或精读片段。
+- 用户错题应该回流到哪一个 scene。
+- 一个 scene 是否能被渲染成闪卡、练习题或精读片段。
 
-所以课程应使用关系表保存层级、顺序、状态和引用关系，再用 JSON text 保存不同 block 类型的细节内容。
+所以课程应使用关系表保存层级、顺序、状态、标签、素材和引用关系，再用 `scene_data` JSON text 保存元素、时间轴、互动、事件、动作和状态。
 
-### 4.2 不把呈现方式写死
+### 4.2 Scene 是受约束的垂直 Scratch
 
-`blockKind` 只描述教学内容类型，例如 `dialogue`、`vocabularyList`、`grammarNote`、`exercise`。前端可以根据同一个 block 选择不同 renderer：
+Course Studio 可以理解为面向中文学习的垂直 Scratch，但 schema 里不保存任意 JavaScript。scene 内部使用白名单化的事件、条件、动作、状态和互动：
 
-- `vocabularyList` 可渲染为生词表、闪卡队列或课前预习。
-- `dialogue` 可渲染为精读、跟读、听力填空或角色扮演。
-- `grammarNote` 可渲染为讲解卡片、例句练习或错题回顾。
-- `exercise` 可渲染为普通练习、课后测验或弱项训练。
+```text
+Event -> Condition -> Action -> State Update -> Learning Event
+```
 
-真正和学习体验相关的信息应放在 `course_experiences` / `course_experience_steps`，或作为 block 的教学标签维护，而不是把 React 组件名、页面布局或具体 UI 状态写进 `course_blocks.content`。
+例如：
+
+- 用户点击按钮 -> 播放音频。
+- 用户拖拽词卡 -> 判断是否匹配。
+- 时间轴到达某点 -> 吉祥物讲解并高亮拼音图。
+- 用户答错 -> 显示提示、记录错题、允许重试。
+- 用户完成跟读 -> 提交录音、记录完成状态。
+
+这些逻辑写在 `course_scenes.scene_data` 中，由 `ScenePlayer` 执行。数据库关系表只保存可查询、可审核、可统计的外层信息，例如标准等级、知识点引用、素材引用、标签、发布状态和内容来源。
 
 建议区分三类信息：
 
 | 信息 | 放在哪里 | 示例 |
 |---|---|---|
-| 内容事实 | `course_blocks.content` | 对话行、例句、题干、选项、答案。 |
-| 可查询教学标签 | `course_block_tags` | `skill=listening`、`learningMode=shadowing`、`scenario=classroom`、`topic=greetings`。 |
-| 补充教学说明 | `course_blocks.pedagogy` | 教研备注、推荐讲法、低频配置、标签生成来源。 |
+| 内容与互动事实 | `course_scenes.scene_data` | canvas、elements、timeline、events、actions、state、interactions、对话行、题干、选项、答案。 |
+| 可查询教学标签 | `course_scene_tags` | `skill=listening`、`learningMode=shadowing`、`scenario=classroom`、`topic=greetings`。 |
+| 补充教学说明 | `course_scenes.pedagogy` | 教研备注、推荐讲法、低频配置、标签生成来源。 |
 | 体验编排 | `course_experience_steps.config` | 是否隐藏拼音、是否逐句播放、角色扮演时隐藏哪个 speaker、听写时挖空哪些词。 |
 
-`pedagogy` JSON 可以保留，但不建议把它作为前端高频筛选、推荐和统计的主要依据。Turso/libSQL 中 JSON text 不适合稳定索引，后续如果经常按技能、学习模式、场景、话题、难度筛选 block，应以 `course_block_tags` 为准；`pedagogy` 只保存不常查询的教研补充信息。
+`pedagogy` JSON 可以保留，但不建议把它作为前端高频筛选、推荐和统计的主要依据。Turso/libSQL 中 JSON text 不适合稳定索引，后续如果经常按技能、学习模式、场景、话题、难度筛选 scene，应以 `course_scene_tags` 为准；`pedagogy` 只保存不常查询的教研补充信息。
 
 ### 4.3 字词引用主数据
 
 课程里的生词列表应引用 `lexical_items` / `lexical_forms`，而不是复制完整词汇对象。课程可以保存少量教学覆盖信息，例如本课展示释义、教材序号、是否专有名词，但词条事实仍以字词库为准。
 
-如果教材里出现主库未匹配的词，应先存为 block 内的 `unmatchedTerms` 或进入 Admin 审核队列，确认后再补入主库或标记为课程专属表达。
+如果教材里出现主库未匹配的词，应先存为 scene 内的 `unmatchedTerms` 或进入 Admin 审核队列，确认后再补入主库或标记为课程专属表达。
 
 ### 4.4 版权与来源可追溯
 
 textbook Markdown 应被视为内部制课参考。课程表需要保存来源指针，例如来源文件、章节、行号、页码、音频编号，但发布内容必须重新制作或确认授权。
 
-例如制作拼音学习章节时，可以参考 textbook 如何安排声母、韵母、声调、跟读和练习顺序；但 `course_blocks.content` 中保存的讲解文案、例句、练习题、图片和音频，应是 HSKWise 自制内容或已授权内容。
+例如制作拼音学习章节时，可以参考 textbook 如何安排声母、韵母、声调、跟读和练习顺序；但 `course_scenes.scene_data` 中保存的讲解文案、例句、练习题、图片、音频和事件逻辑，应是 HSKWise 自制内容或已授权内容。
 
-特别注意：当前 Markdown 中的远程图片 URL 带临时授权参数，不适合作为生产素材 URL。正式课程如需图片、音频，应上传到稳定对象存储，再写入课程 asset 或 block 的 `audio_url` / `image_url`。
+特别注意：当前 Markdown 中的远程图片 URL 带临时授权参数，不适合作为生产素材 URL。正式课程如需图片、音频，应上传到稳定对象存储，再写入课程 asset 或 scene 的 `audio_url` / `image_url`。
 
-Admin 发布检查应把 `course_sources.copyright_status = referenceOnly` 视为硬约束：这种来源只能用于 `source_locator` 和教研备注，不能证明 block 原文、图片或音频可直接展示给学习者。
+Admin 发布检查应把 `course_sources.copyright_status = referenceOnly` 视为硬约束：这种来源只能用于 `source_locator` 和教研备注，不能证明 scene 原文、图片或音频可直接展示给学习者。
 
 ### 4.5 内容内部保留粗粒度定位点
 
-为了支持逐句音频、跟读评分、题目重做、错题回流和局部复习，`content` JSON 中的关键数组成员不能只靠下标定位。建议所有可被前端单独引用的教学子元素都有稳定 `id`：
+为了支持逐句音频、跟读评分、题目重做、错题回流和局部复习，`scene_data` JSON 中的关键数组成员不能只靠下标定位。建议所有可被前端单独引用的教学子元素都有稳定 `id`：
 
+- `elements[].id`：用于点击、显示、隐藏、动画、高亮、素材挂载和知识点绑定。
+- `timeline[].id` / `events[].id` / `actions[].id`：用于调试、审核、学习事件回放和问题定位。
+- `interactions[].id`：用于答题记录、错题、解析、重做和完成规则。
 - `dialogue.lines[].id`：用于逐句播放、角色扮演、听力填空、口语评分。
-- `readingText.paragraphs[].id` / `sentences[].id`：用于精读高亮、句子讲解、阅读题定位。
+- `reading.paragraphs[].id` / `sentences[].id`：用于精读高亮、句子讲解、阅读题定位。
 - `exercise.questions[].id` / `options[].id`：用于答题记录、错题、解析和重做。
-- `grammarNote.patterns[].id` / `examples[].id`：用于例句练习和错题回顾。
-- `vocabularyList.items[].id`：用于课内词汇顺序、闪卡队列和未匹配词审核。
+- `grammar.patterns[].id` / `examples[].id`：用于例句练习和错题回顾。
+- `vocabulary.items[].id`：用于课内词汇顺序、闪卡队列和未匹配词审核。
 
-定位粒度到“行、句、段、题、选项、例句、词汇项”即可，不做 token / 字符级定位。中文分词、文本改写和例句调整都会让 token 级定位很脆，维护成本高于收益。需要点词释义时，前端可以基于当前文本临时分词，再通过 `course_block_refs` 中的词条引用做候选匹配。
+定位粒度到“行、句、段、题、选项、例句、词汇项”即可，不做 token / 字符级定位。中文分词、文本改写和例句调整都会让 token 级定位很脆，维护成本高于收益。需要点词释义时，前端可以基于当前文本临时分词，再通过 `course_scene_refs` 中的词条引用做候选匹配。
 
-`course_block_refs.content_locator` 应能指向这些稳定 ID，例如 `{"lineId":"line_1"}`、`{"sentenceId":"sent_1"}` 或 `{"questionId":"q1","optionId":"b"}`。当文本微调但语义位置不变时，尽量保留旧 ID；如果对应子元素被删除或大幅改写，用户进度、错题和 SRS 可以降级关联到当前 block 或 section，而不是依赖复杂版本快照恢复旧内容。
+`course_scene_refs.target_locator` 应能指向这些稳定 ID，例如 `{"elementId":"text_1"}`、`{"interactionId":"quiz_1"}`、`{"lineId":"line_1"}`、`{"sentenceId":"sent_1"}` 或 `{"questionId":"q1","optionId":"b"}`。当文本微调但语义位置不变时，尽量保留旧 ID；如果对应子元素被删除或大幅改写，用户进度、错题和 SRS 可以降级关联到当前 scene 或 section，而不是依赖复杂版本快照恢复旧内容。
 
 课程内容在早期会频繁调整，不建议为了每次小改动引入正式版本机制。MVP 阶段只保留当前发布内容和必要审计字段；历史版本、发布快照或内容 diff 等机制等课程稳定、付费学习记录或合规审计真正需要时再考虑。
 
@@ -174,13 +184,13 @@ Admin 发布检查应把 `course_sources.copyright_status = referenceOnly` 视�
 
 - 同一段对话可能有整段音频、逐句音频、慢速音频、角色音频和跟读示范音频。
 - 同一练习可能需要题干图、选项图、解析图或课堂投屏图。
-- 同一拼音/汉字 block 可能需要动画、示范视频、笔画图和练习纸。
+- 同一拼音/汉字 scene 可能需要动画、示范视频、笔画图和练习纸。
 
-因此正式进入听力、口语、角色扮演或数字教材体验前，建议使用 `course_assets` + `course_asset_refs` 表达素材与 course / unit / section / block / experience step 的关系。`course_blocks.audio_url` 和 `image_url` 只作为过渡字段，不作为长期唯一素材模型。
+因此正式进入听力、口语、角色扮演或数字教材体验前，建议使用 `course_assets` + `course_asset_refs` 表达素材与 course / unit / section / scene / experience step 的关系。`course_scenes.audio_url` 和 `image_url` 只作为过渡字段，不作为长期唯一素材模型。
 
 ## 5. 推荐表结构
 
-这一组表建议作为“课程阶段”的 schema 扩展，不进入当前第一阶段 user + 字词 schema。字段注释未来应写进 `src/db/schema.ts`，本文件先作为设计规范。
+这一组表建议作为“课程阶段”的 schema 扩展，不进入当前第一阶段 user + 字词 schema。字段注释未来应写进 `src/db/schema/` 下按表拆分的文件，本文件先作为设计规范。统一编辑器的开发节奏见 [Course Studio 开发计划](07-course-studio-development-plan.md)。
 
 ### 5.1 course_sources
 
@@ -266,7 +276,7 @@ Admin 发布检查应把 `course_sources.copyright_status = referenceOnly` 视�
 
 ### 5.5 course_sections
 
-单元内的教学段落。它比 block 粗，比 unit 细，负责让 admin 和前端都能理解教学结构。
+单元内的教学段落。它比 scene 粗，比 unit 细，负责让 admin 和前端都能理解教学结构。
 
 | 字段 | 类型建议 | 说明 | 示例 |
 |---|---|---|---|
@@ -281,35 +291,36 @@ Admin 发布检查应把 `course_sources.copyright_status = referenceOnly` 视�
 | `created_at` | integer | Unix seconds。 | `1785836534` |
 | `updated_at` | integer | Unix seconds。 | `1785836534` |
 
-### 5.6 course_blocks
+### 5.6 course_scenes
 
-课程内容的最小可渲染单元。不同 block 的细节放在 `content` JSON 中。
+课程内容的最小可编辑、可播放、可交互、可记录单元。不同 scene 的细节放在 `scene_data` JSON 中；`scene_kind` 只是主用途和默认模板，不限制 scene 内部组合图文、音视频、动画、测验、拖拽、对话或自动播放逻辑。
 
 | 字段 | 类型建议 | 说明 | 示例 |
 |---|---|---|---|
-| `id` | text PK | block ID。 | `blk_hsk3_1_001_text1_dialogue` |
+| `id` | text PK | scene ID。 | `scene_hsk3_1_001_dialogue` |
 | `section_id` | text FK | 所属 section。 | `sec_hsk3_1_001_text1` |
-| `block_kind` | integer enum | 内容块类型，见 `courseBlockKindEnum`。 | `2` |
-| `status` | integer enum | 内容块发布状态，见 `courseStatusEnum`。 | `1` |
+| `scene_kind` | integer enum | scene 的主用途/模板粗分类，见 `courseSceneKindEnum`；不等于前端组件类型。 | `2` |
+| `status` | integer enum | scene 发布状态，见 `courseStatusEnum`。 | `1` |
 | `title` | text nullable | 后台可读标题。 | `Office greeting dialogue` |
-| `content` | json text | block 主内容。 | `{"version":1,"lines":[...]}` |
+| `playback_mode` | integer enum | 默认播放方式，见 `courseScenePlaybackModeEnum`。 | `3` |
+| `scene_data` | json text | scene 主协议：画布、元素、时间线、事件、动作、状态、互动和内容数据。 | `{"version":1,"elements":[...],"events":[...]}` |
+| `scene_manifest` | json text nullable | 由 `scene_data` 派生的轻量摘要，便于列表、校验和排查；不作为事实源。 | `{"elementCount":6,"interactionCount":1,"assetIds":["asset_1"]}` |
 | `pedagogy` | json text nullable | 低频教学补充信息，不作为技能、模式、场景等高频查询的主要依据。 | `{"notes":"Good for first shadowing practice.","tagSource":"manual"}` |
-| `content_origin` | integer enum | 当前 block 内容来源，见 `courseContentOriginEnum`；发布内容通常应为 `original`、`licensed`、`openLicensed`。 | `1` |
-| `instruction` | json text nullable | 给学习者的操作说明。 | `{"en":"Read the dialogue aloud."}` |
-| `answer` | json text nullable | 练习答案；非练习 block 为空。 | `{"correctOptionId":"b"}` |
-| `explanation` | json text nullable | 解析或教研说明。 | `{"en":"Use 您 for respectful address."}` |
-| `audio_url` | text nullable | MVP 过渡字段，block 级音频 URL；长期建议使用 `course_asset_refs`。 | `https://cdn.hskwise.com/audio/1-1.mp3` |
-| `image_url` | text nullable | MVP 过渡字段，block 级图片 URL；必须是稳定可分发资源。 | `https://cdn.hskwise.com/images/unit-1-office.png` |
-| `source_locator` | json text nullable | 内部参考来源定位，不代表当前 block 复制自来源。 | `{"path":"docs/textbooks/hsk3/hsk-course-1.md","lineStart":430,"lineEnd":470}` |
-| `estimated_seconds` | integer nullable | 当前 block 作为普通学习内容时的预计耗时。 | `180` |
+| `content_origin` | integer enum | 当前 scene 内容来源，见 `courseContentOriginEnum`；发布内容通常应为 `original`、`licensed`、`openLicensed`。 | `1` |
+| `instruction` | json text nullable | scene 入口层面的学习者指令；具体题目、提示和解析放在 `scene_data.interactions`。 | `{"en":"Listen and repeat each line."}` |
+| `completion_rule` | json text nullable | scene 完成规则，例如必须完成哪些互动、播放到哪里或答对几题。 | `{"kind":"allRequiredInteractions","interactionIds":["quiz_1"]}` |
+| `audio_url` | text nullable | MVP 过渡字段，scene 级音频 URL；长期建议使用 `course_asset_refs`。 | `https://cdn.hskwise.com/audio/1-1.mp3` |
+| `image_url` | text nullable | MVP 过渡字段，scene 级图片 URL；必须是稳定可分发资源。 | `https://cdn.hskwise.com/images/unit-1-office.png` |
+| `source_locator` | json text nullable | 内部参考来源定位，不代表当前 scene 复制自来源。 | `{"path":"docs/textbooks/hsk3/hsk-course-1.md","lineStart":430,"lineEnd":470}` |
+| `estimated_seconds` | integer nullable | 当前 scene 作为普通学习内容时的预计耗时。 | `180` |
 | `sort_order` | integer | section 内排序。 | `10` |
 | `metadata` | json text nullable | 扩展信息。 | `{"referenceTopic":"greetings","ocrNeedsReview":false}` |
 | `created_at` | integer | Unix seconds。 | `1785836534` |
 | `updated_at` | integer | Unix seconds。 | `1785836534` |
 
-### 5.7 course_block_tags
+### 5.7 course_scene_tags
 
-block 的轻量教学标签表。它是前端筛选、学习体验生成、推荐和统计的可查询索引层；`course_blocks.pedagogy` 只保存补充说明。
+scene 的轻量教学标签表。它是前端筛选、学习体验生成、推荐和统计的可查询索引层；`course_scenes.pedagogy` 只保存补充说明。
 
 建议至少为常用筛选维度建标签：
 
@@ -321,45 +332,45 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 
 | 字段 | 类型建议 | 说明 | 示例 |
 |---|---|---|---|
-| `id` | text PK | 标签 ID。 | `cbt_01J...` |
-| `block_id` | text FK | 所属 block。 | `blk_hsk3_1_001_text1_dialogue` |
-| `tag_kind` | integer enum | 标签类型，见 `courseBlockTagKindEnum`。 | `1` |
+| `id` | text PK | 标签 ID。 | `cst_01J...` |
+| `scene_id` | text FK | 所属 scene。 | `scene_hsk3_1_001_dialogue` |
+| `tag_kind` | integer enum | 标签类型，见 `courseSceneTagKindEnum`。 | `1` |
 | `tag_value` | text | 标签值，建议使用稳定英文 slug。 | `listening` |
 | `tag_label` | json text nullable | 标签的多语言显示名；可为空，优先由应用层字典提供。 | `{"zhHans":"听力","en":"Listening"}` |
 | `weight` | integer nullable | 权重或强度；用于推荐和掌握度计算。 | `3` |
 | `source` | integer enum nullable | 标签来源，见 `courseTagSourceEnum`。 | `1` |
-| `display_order` | integer nullable | 同一 block 同类标签展示顺序。 | `1` |
+| `display_order` | integer nullable | 同一 scene 同类标签展示顺序。 | `1` |
 | `metadata` | json text nullable | 扩展信息。 | `{"confidence":0.92}` |
 | `created_at` | integer | Unix seconds。 | `1785836534` |
 | `updated_at` | integer | Unix seconds。 | `1785836534` |
 
 推荐索引：
 
-- `idx_course_block_tags_kind_value`：`tag_kind` + `tag_value` + `block_id`，用于按技能、模式、场景快速找 block。
-- `idx_course_block_tags_block_kind`：`block_id` + `tag_kind` + `display_order`，用于读取 block 时附带标签。
-- 唯一约束 `block_id` + `tag_kind` + `tag_value`，避免重复标签。
+- `idx_course_scene_tags_kind_value`：`tag_kind` + `tag_value` + `scene_id`，用于按技能、模式、场景快速找 scene。
+- `idx_course_scene_tags_scene_kind`：`scene_id` + `tag_kind` + `display_order`，用于读取 scene 时附带标签。
+- 唯一约束 `scene_id` + `tag_kind` + `tag_value`，避免重复标签。
 
-### 5.8 course_block_refs
+### 5.8 course_scene_refs
 
-把 block 关联到词条、读音 form、标准等级或来源片段。学习进度、错题归因和复习推荐都可以依赖这张表。
+把 scene 关联到词条、读音 form、标准等级或来源片段。学习进度、错题归因和复习推荐都可以依赖这张表。
 
 | 字段 | 类型建议 | 说明 | 示例 |
 |---|---|---|---|
-| `id` | text PK | 引用 ID。 | `cbr_01J...` |
-| `block_id` | text FK | 所属 block。 | `blk_hsk3_1_001_text1_dialogue` |
+| `id` | text PK | 引用 ID。 | `csr_01J...` |
+| `scene_id` | text FK | 所属 scene。 | `scene_hsk3_1_001_dialogue` |
 | `ref_type` | integer enum | 引用对象类型，见 `courseRefTypeEnum`。 | `1` |
 | `ref_id` | text | 被引用对象 ID。 | `lex_nihao` |
 | `ref_role` | integer enum | 引用角色，见 `courseRefRoleEnum`。 | `1` |
-| `content_locator` | json text nullable | 引用在 block 内的粗粒度位置，用稳定 ID 定位行、句、段、题、选项或例句。 | `{"lineId":"line_1"}` |
+| `target_locator` | json text nullable | 引用在 scene 内的粗粒度位置，用稳定 ID 定位元素、互动、行、句、段、题、选项或例句。 | `{"interactionId":"quiz_1","questionId":"q1"}` |
 | `mastery_weight` | integer nullable | 对掌握度计算的粗略权重；核心新知高于普通提及。 | `3` |
-| `display_order` | integer nullable | 在当前 block 中的展示顺序。 | `1` |
+| `display_order` | integer nullable | 在当前 scene 中的展示顺序。 | `1` |
 | `metadata` | json text nullable | 教学补充信息。 | `{"isNewWord":true,"sourceOrder":1}` |
 | `created_at` | integer | Unix seconds。 | `1785836534` |
 | `updated_at` | integer | Unix seconds。 | `1785836534` |
 
 ### 5.9 course_assets
 
-课程素材表。MVP 可以先不建，直接在 block 中放稳定 URL；但只要开始系统整理音频、图片、视频、互动资源，就建议建表。素材表保存“素材本身”，素材被哪个 block、哪一行、哪一道题使用，应通过 `course_asset_refs` 表达。
+课程素材表。MVP 可以先不建，直接在 scene 中放稳定 URL；但只要开始系统整理音频、图片、视频、互动资源，就建议建表。素材表保存“素材本身”，素材被哪个 scene、哪一行、哪一道题使用，应通过 `course_asset_refs` 表达。
 
 | 字段 | 类型建议 | 说明 | 示例 |
 |---|---|---|---|
@@ -378,16 +389,16 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 
 ### 5.10 course_asset_refs
 
-素材挂载表。解决一个 block 只有一个 `audio_url` / `image_url` 不够用的问题，也方便同一素材被多个学习体验复用。
+素材挂载表。解决一个 scene 只有一个 `audio_url` / `image_url` 不够用的问题，也方便同一素材被多个学习体验复用。
 
 | 字段 | 类型建议 | 说明 | 示例 |
 |---|---|---|---|
 | `id` | text PK | 素材挂载 ID。 | `car_01J...` |
 | `asset_id` | text FK | 素材 ID。 | `asset_hsk3_1_001_audio_line_1` |
 | `owner_kind` | integer enum | 挂载对象类型，见 `courseAssetOwnerKindEnum`。 | `4` |
-| `owner_id` | text | 挂载对象 ID，可为 course / unit / section / block / experience step。 | `blk_hsk3_1_001_text1_dialogue` |
+| `owner_id` | text | 挂载对象 ID，可为 course / unit / section / scene / experience step。 | `scene_hsk3_1_001_dialogue` |
 | `usage_role` | integer enum | 使用角色，见 `courseAssetUsageRoleEnum`。 | `2` |
-| `content_locator` | json text nullable | 素材对应的 block 内部位置。 | `{"lineId":"line_1"}` |
+| `target_locator` | json text nullable | 素材对应的 scene 内部位置，例如元素、时间线动作、对话行或题目。 | `{"elementId":"dialogue_1","lineId":"line_1"}` |
 | `display_order` | integer nullable | 同一挂载对象内的素材排序。 | `1` |
 | `metadata` | json text nullable | 扩展信息。 | `{"speed":"slow","speakerKey":"anna"}` |
 | `created_at` | integer | Unix seconds。 | `1785836534` |
@@ -424,7 +435,7 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 
 ### 5.12 course_experience_steps
 
-学习体验中的步骤。一个 step 可以引用整个 block，也可以通过 `target_locator` 引用 block 内的某一行、某一题或某个选项。
+学习体验中的步骤。一个 step 可以引用整个 scene，也可以通过 `target_locator` 引用 scene 内的某一行、某一题或某个选项。
 
 | 字段 | 类型建议 | 说明 | 示例 |
 |---|---|---|---|
@@ -432,8 +443,8 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 | `experience_id` | text FK | 所属学习体验。 | `exp_hsk3_1_001_guided` |
 | `step_no` | integer | 体验内序号，面向 admin。 | `1` |
 | `target_kind` | integer enum | 目标对象类型，见 `courseExperienceTargetKindEnum`。 | `4` |
-| `target_id` | text | 目标对象 ID。 | `blk_hsk3_1_001_text1_dialogue` |
-| `target_locator` | json text nullable | 目标对象内部定位。 | `{"lineId":"line_1"}` |
+| `target_id` | text | 目标对象 ID。 | `scene_hsk3_1_001_dialogue` |
+| `target_locator` | json text nullable | 目标对象内部定位，可指向 scene 内元素、互动、行、题或选项。 | `{"interactionId":"quiz_1","questionId":"q1"}` |
 | `step_kind` | integer enum | 学习动作，见 `courseExperienceStepKindEnum`。 | `4` |
 | `interaction_kind` | integer enum | 交互方式，见 `courseInteractionKindEnum`。 | `7` |
 | `instruction` | json text nullable | 当前步骤给学习者的指令。 | `{"en":"Listen and repeat the line."}` |
@@ -490,26 +501,31 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 |  | `activity = 8` | 角色扮演、小组活动、任务表达。 |
 |  | `summary = 9` | 学习小结。 |
 |  | `culture = 10` | 文化说明或交际礼仪。 |
-| `courseBlockKindEnum` | `richText = 1` | 普通讲解文本。 |
-|  | `dialogue = 2` | 对话或分角色课文。 |
-|  | `readingText = 3` | 成段阅读文本。 |
-|  | `vocabularyList = 4` | 生词表或专有名词表。 |
-|  | `grammarNote = 5` | 语法讲解、句型和例句。 |
-|  | `pronunciationDrill = 6` | 跟读、声调、绕口令。 |
-|  | `characterPractice = 7` | 汉字认读/书写练习。 |
-|  | `exercise = 8` | 可判题或可记录完成状态的练习。 |
-|  | `activity = 9` | 开放式课堂活动或口语任务。 |
-|  | `media = 10` | 图片、音频、视频等素材块。 |
-|  | `callout = 11` | 提示、文化说明、易错提醒。 |
+| `courseSceneKindEnum` | `explain = 1` | 讲解型 scene，常用于图文、语法、文化说明或教师旁白。 |
+|  | `dialogue = 2` | 对话或分角色课文 scene，可被精读、跟读、角色扮演复用。 |
+|  | `reading = 3` | 成段阅读 scene。 |
+|  | `vocabulary = 4` | 生词、专有名词或短语教学 scene。 |
+|  | `grammar = 5` | 语法讲解、句型归纳和例句练习 scene。 |
+|  | `pronunciation = 6` | 拼音、声调、绕口令、听辨和跟读 scene。 |
+|  | `character = 7` | 汉字认读、结构观察或书写练习 scene。 |
+|  | `exercise = 8` | 可判题或可记录完成状态的练习 scene。 |
+|  | `activity = 9` | 开放式课堂活动、口语任务或小组任务 scene。 |
+|  | `media = 10` | 以音频、图片、视频或动画为主体的 scene。 |
+|  | `scripted = 11` | 按时间线程序化播放的 scene，例如自动播放讲解课件。 |
+|  | `interactive = 12` | 以点击、拖拽、滑动、热点探索或小游戏为主体的 scene。 |
+|  | `assessment = 13` | 阶段检查、测验或考试题型训练 scene。 |
+| `courseScenePlaybackModeEnum` | `manual = 1` | 用户手动推进，适合阅读、闪卡和普通练习。 |
+|  | `auto = 2` | 时间线自动播放，适合视频式程序化课件；仍需支持暂停、重放。 |
+|  | `guided = 3` | 系统按步骤引导，遇到互动或测验暂停等待用户操作；推荐默认值。 |
 | `courseRefTypeEnum` | `lexicalItem = 1` | 引用 `lexical_items.id`。 |
 |  | `lexicalForm = 2` | 引用 `lexical_forms.id`，适合具体读音或释义。 |
 |  | `standardLevel = 3` | 引用 `standard_levels.id`。 |
 |  | `sourceSpan = 4` | 引用来源片段，通常通过 `metadata` 保存定位。 |
-| `courseRefRoleEnum` | `teaches = 1` | 当前 block 正式教学该知识。 |
-|  | `practices = 2` | 当前 block 练习该知识。 |
-|  | `mentions = 3` | 当前 block 只是出现或提到。 |
-|  | `prerequisite = 4` | 当前 block 依赖但不展开教学。 |
-| `courseBlockTagKindEnum` | `skill = 1` | 技能标签，例如 listening、speaking、reading、writing。 |
+| `courseRefRoleEnum` | `teaches = 1` | 当前 scene 正式教学该知识。 |
+|  | `practices = 2` | 当前 scene 练习该知识。 |
+|  | `mentions = 3` | 当前 scene 只是出现或提到。 |
+|  | `prerequisite = 4` | 当前 scene 依赖但不展开教学。 |
+| `courseSceneTagKindEnum` | `skill = 1` | 技能标签，例如 listening、speaking、reading、writing。 |
 |  | `learningMode = 2` | 学习模式标签，例如 flashcards、shadowing、rolePlay。 |
 |  | `scenario = 3` | 情景标签，例如 classroom、restaurant、travel。 |
 |  | `topic = 4` | 话题标签，例如 greetings、family、numbers。 |
@@ -517,7 +533,7 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 |  | `difficulty = 6` | 粗略难度标签，例如 1、2、3。 |
 |  | `audience = 7` | 适用人群或场景，例如 selfStudy、classroom。 |
 | `courseTagSourceEnum` | `manual = 1` | Admin 或教研手工维护。 |
-|  | `derived = 2` | 由 block 类型、section 类型或引用关系自动推导。 |
+|  | `derived = 2` | 由 scene 类型、section 类型或引用关系自动推导。 |
 |  | `imported = 3` | 从来源结构或导入脚本带入。 |
 |  | `aiSuggested = 4` | AI 辅助建议，发布前需人工确认。 |
 | `courseAssetKindEnum` | `audio = 1` | 音频。 |
@@ -527,7 +543,7 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 | `courseAssetOwnerKindEnum` | `course = 1` | 素材挂到整门课程。 |
 |  | `unit = 2` | 素材挂到单元。 |
 |  | `section = 3` | 素材挂到 section。 |
-|  | `block = 4` | 素材挂到 block。 |
+|  | `scene = 4` | 素材挂到 scene。 |
 |  | `experienceStep = 5` | 素材只服务某个学习体验步骤。 |
 | `courseAssetUsageRoleEnum` | `primaryAudio = 1` | 主要音频。 |
 |  | `lineAudio = 2` | 对话/文本逐句音频。 |
@@ -558,8 +574,8 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 | `courseExperienceTargetKindEnum` | `course = 1` | 引用整门课程。 |
 |  | `unit = 2` | 引用单元。 |
 |  | `section = 3` | 引用 section。 |
-|  | `block = 4` | 引用 block。 |
-|  | `blockRef = 5` | 引用 block 内的知识引用。 |
+|  | `scene = 4` | 引用 scene。 |
+|  | `sceneRef = 5` | 引用 scene 内的知识引用。 |
 |  | `asset = 6` | 引用素材。 |
 | `courseExperienceStepKindEnum` | `introduce = 1` | 导入或说明。 |
 |  | `observe = 2` | 看图、看视频或观察语境。 |
@@ -583,16 +599,132 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 |  | `dictation = 9` | 听写。 |
 |  | `rolePlay = 10` | 分角色对话。 |
 |  | `reflection = 11` | 自评或学习反思。 |
+|  | `hotspot = 12` | 点击或点按画面热点。 |
+|  | `dragDrop = 13` | 拖拽、归类或拖放排序。 |
+|  | `swipe = 14` | 滑动卡片、切换或方向选择。 |
+|  | `canvasGame = 15` | 小游戏式互动，仍由 `scene_data` 白名单事件和动作驱动。 |
+|  | `boundedChat = 16` | 受控 AI 对话入口，必须限制主题、任务和安全边界。 |
 
-## 7. Block 内容规范
+## 7. Scene 内容规范
 
-`course_blocks.content` 使用 JSON text。所有 block 建议带 `version`，便于以后迁移内容结构。所有可被单独播放、练习、引用、评分或回流错题的子元素都应带稳定 `id`。以下 JSON 只展示 HSKWise 自制内容的结构示例，不表示 textbook 原文可以直接入库发布。
+`course_scenes.scene_data` 使用 JSON text。所有 scene 必须带 `version`，便于以后迁移内容结构。所有可被单独播放、练习、引用、评分或回流错题的子元素都应带稳定 `id`。
 
-### 7.1 dialogue
+Scene 的运行协议建议用 Zod 定义，并由 Admin Editor、ScenePlayer、API 保存接口和发布校验共用。数据库不保存任意 JavaScript，也不把点击、滑动、拖拽做成独立表；这些交互统一进入 `scene_data.events/actions/interactions`，用白名单 registry 执行。
+
+### 7.1 scene_data 基础结构
 
 ```json
 {
   "version": 1,
+  "canvas": {
+    "aspectRatio": "16:9",
+    "background": { "kind": "color", "value": "#ffffff" }
+  },
+  "playback": {
+    "mode": "guided",
+    "autoStart": false
+  },
+  "state": {
+    "attempts": 0,
+    "quizPassed": false
+  },
+  "elements": [
+    {
+      "id": "mascot_1",
+      "kind": "mascot",
+      "role": "teacher",
+      "position": { "preset": "right-bottom" }
+    },
+    {
+      "id": "dialogue_1",
+      "kind": "dialogue",
+      "position": { "preset": "center" },
+      "data": {
+        "scene": { "zhHans": "在教室门口", "en": "At the classroom door" },
+        "lines": [
+          {
+            "id": "line_1",
+            "speakerKey": "anna",
+            "hanzi": "你好，我叫安娜。",
+            "pinyin": "Nǐ hǎo, wǒ jiào Ānnà.",
+            "translation": "Hello, my name is Anna."
+          }
+        ]
+      }
+    },
+    {
+      "id": "hint_1",
+      "kind": "callout",
+      "hidden": true,
+      "content": { "en": "你好 is the standard first greeting." },
+      "position": { "preset": "bottom" }
+    }
+  ],
+  "timeline": [
+    { "id": "tl_1", "at": 0, "actionId": "act_show_mascot" },
+    { "id": "tl_2", "at": 800, "actionId": "act_speak_intro" },
+    { "id": "tl_3", "at": 3200, "actionId": "act_pause_for_quiz" }
+  ],
+  "events": [
+    {
+      "id": "evt_quiz_wrong",
+      "on": "interaction.submit",
+      "targetId": "quiz_1",
+      "when": { "path": "$.isCorrect", "equals": false },
+      "actions": ["act_show_hint", "act_record_mistake"]
+    }
+  ],
+  "actions": [
+    { "id": "act_show_mascot", "kind": "show", "targetId": "mascot_1" },
+    {
+      "id": "act_speak_intro",
+      "kind": "speak",
+      "targetId": "mascot_1",
+      "text": { "en": "Listen to this greeting." }
+    },
+    {
+      "id": "act_pause_for_quiz",
+      "kind": "pauseUntilInteraction",
+      "interactionId": "quiz_1"
+    },
+    { "id": "act_show_hint", "kind": "show", "targetId": "hint_1" },
+    {
+      "id": "act_record_mistake",
+      "kind": "emitLearningEvent",
+      "eventName": "mistake.recorded",
+      "payload": { "interactionId": "quiz_1" }
+    }
+  ],
+  "interactions": [
+    {
+      "id": "quiz_1",
+      "kind": "multipleChoice",
+      "required": true,
+      "prompt": { "en": "What does 你好 mean?" },
+      "options": [
+        { "id": "a", "text": { "en": "Hello" }, "isCorrect": true },
+        { "id": "b", "text": { "en": "Goodbye" }, "isCorrect": false }
+      ],
+      "feedback": {
+        "correct": { "en": "Right." },
+        "incorrect": { "en": "Try greeting someone first." }
+      }
+    }
+  ],
+  "completionRule": {
+    "kind": "allRequiredInteractions"
+  }
+}
+```
+
+`scene_data` 中的 `events/actions` 不是开放脚本，而是产品自己定义的垂直指令集。首批可以只支持 `show`、`hide`、`highlight`、`playAudio`、`speak`、`pauseUntilInteraction`、`setState`、`emitLearningEvent`；点击、拖拽、滑动、答题提交都作为事件源触发这些动作。
+
+以下 JSON 只展示 HSKWise 自制内容的元素或互动数据片段，不表示 textbook 原文可以直接入库发布。
+
+### 7.2 dialogue element data
+
+```json
+{
   "scene": {
     "zhHans": "在教室门口",
     "en": "At the classroom door"
@@ -620,11 +752,10 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 }
 ```
 
-### 7.2 vocabularyList
+### 7.3 vocabulary element data
 
 ```json
 {
-  "version": 1,
   "items": [
     {
       "id": "vocab_1",
@@ -647,11 +778,10 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 }
 ```
 
-### 7.3 grammarNote
+### 7.4 grammar element data
 
 ```json
 {
-  "version": 1,
   "title": {
     "zhHans": "用“吗”的疑问句",
     "en": "Interrogative Sentences with 吗"
@@ -677,13 +807,13 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 }
 ```
 
-### 7.4 exercise
+### 7.5 interaction data
 
 ```json
 {
-  "version": 1,
-  "exerciseKind": "shortAnswer",
-  "skill": "speaking",
+  "id": "q_speaking_1",
+  "kind": "shortAnswer",
+  "required": true,
   "prompt": {
     "zhHans": "根据实际情况回答问题。",
     "en": "Answer the questions according to your actual situation."
@@ -702,11 +832,10 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 }
 ```
 
-### 7.5 activity
+### 7.6 activity element data
 
 ```json
 {
-  "version": 1,
   "activityKind": "rolePlay",
   "grouping": "pair",
   "targetSkills": ["speaking", "interaction"],
@@ -721,9 +850,9 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 }
 ```
 
-### 7.6 experience step config
+### 7.7 experience step config
 
-`course_experience_steps.config` 用来描述某个学习动作怎样使用 block，不直接写前端组件名。例如同一段对话可被配置为听力挖空或角色扮演：
+`course_experience_steps.config` 用来描述某个学习动作怎样使用 scene，不直接写前端组件名。例如同一段对话可被配置为听力挖空或角色扮演：
 
 ```json
 {
@@ -759,7 +888,7 @@ block 的轻量教学标签表。它是前端筛选、学习体验生成、推�
 flowchart TB
   A["登记 reference source"] --> B["生成课程草稿"]
   B --> C["参考结构拆出 unit/section"]
-  C --> D["重新制作原创 block"]
+  C --> D["重新制作原创 scene"]
   D --> E["匹配 lexical_items / lexical_forms"]
   E --> F["补充音频、图片、说明"]
   F --> G["配置 learning experience"]
@@ -774,11 +903,11 @@ flowchart TB
 | `/admin/course-sources` | 管理 textbook、官网大纲、教师教案等内部参考来源。 |
 | `/admin/courses` | 管理课程列表、状态、目标标准和等级映射。 |
 | `/admin/courses/:courseId/outline` | 管理 unit 和 section 结构。 |
-| `/admin/courses/:courseId/editor` | 左侧查看内部参考 Markdown，右侧重新制作结构化 block。 |
+| `/admin/courses/:courseId/studio` | 左侧查看内部参考 Markdown，右侧在统一 Course Studio 中重新制作结构化 scene。 |
 | `/admin/courses/:courseId/refs` | 查看本课程引用了哪些词汇、汉字、标准等级和来源片段。 |
-| `/admin/courses/:courseId/experiences` | 为同一批 block 配置引导式学习、闪卡预习、听力跟读、角色扮演、练习流和复习体验。 |
+| `/admin/courses/:courseId/experiences` | 为同一批 scene 配置引导式学习、闪卡预习、听力跟读、角色扮演、练习流和复习体验。 |
 | `/admin/course-assets` | 管理课程音频、图片、视频等稳定素材 URL。 |
-| `/admin/course-review` | 处理未匹配词、缺音频、版权状态、OCR 异常、未审核 block。 |
+| `/admin/course-review` | 处理未匹配词、缺音频、版权状态、OCR 异常、未审核 scene。 |
 
 ### 8.2 Admin MVP 能力
 
@@ -788,12 +917,12 @@ flowchart TB
 - 新建 course。
 - 新建、排序、编辑 unit。
 - 新建、排序、编辑 section。
-- 新建、排序、编辑 block。
-- 在 block 中搜索并绑定 `lexical_items` / `lexical_forms`。
-- 给 block 维护 `course_block_tags`，例如技能、适用学习模式、场景、话题和难度。
+- 新建、排序、编辑 scene。
+- 在 scene 中搜索并绑定 `lexical_items` / `lexical_forms`。
+- 给 scene 维护 `course_scene_tags`，例如技能、适用学习模式、场景、话题和难度。
 - 用 `pedagogy` 保存低频教研备注和标签生成说明，不把它作为主要筛选来源。
 - 至少自动生成一套 `guidedLesson` experience，保证学习者端有默认播放顺序。
-- 标记 block 缺音频、缺图片、需版权确认、需教研审核。
+- 标记 scene 缺音频、缺图片、需版权确认、需教研审核。
 - 标记 `content_origin`，确保发布内容只能是 `original`、`licensed` 或 `openLicensed`。
 - 草稿预览。
 - 发布课程。
@@ -802,17 +931,17 @@ flowchart TB
 
 发布前至少检查：
 
-- course / unit / section / block 排序是否连续。
-- `published` course 下是否存在 `draft` block。
-- `vocabularyList` 里的词是否都匹配到 `lexical_items` 或明确标记为 `unmatchedTerms`。
-- `dialogue` / `readingText` 是否有汉字、拼音、目标解释语言。
-- `course_blocks.content_origin` 是否允许发布，不能把 `referenceOnly` 或 `referenceRewrite` block 发布给学习者。
+- course / unit / section / scene 排序是否连续。
+- `published` course 下是否存在 `draft` scene。
+- `vocabulary` 元素里的词是否都匹配到 `lexical_items` 或明确标记为 `unmatchedTerms`。
+- `dialogue` / `reading` 元素是否有汉字、拼音、目标解释语言。
+- `course_scenes.content_origin` 是否允许发布，不能把 `referenceOnly` 或 `referenceRewrite` scene 发布给学习者。
 - `source_locator` 只能作为内部参考定位，不能替代内容授权。
-- 有 `audio_url` 的 block 是否是稳定 URL。
-- `course_blocks.content` 中可单独练习/评分/引用的行、题、例句是否有稳定 `id`。
-- `course_block_tags` 是否覆盖关键筛选维度，且 `tag_kind + tag_value` 是否使用稳定 slug。
-- `course_block_tags` 是否存在重复标签；`aiSuggested` 标签发布前是否已人工确认或转为 `manual` / `derived`。
-- `course_block_refs.content_locator` 是否能定位到真实存在的 line / sentence / paragraph / question / option / example。
+- 有 `audio_url` 的 scene 是否是稳定 URL。
+- `course_scenes.scene_data` 中可单独练习/评分/引用的元素、互动、行、题、例句、事件和动作是否有稳定 `id`。
+- `course_scene_tags` 是否覆盖关键筛选维度，且 `tag_kind + tag_value` 是否使用稳定 slug。
+- `course_scene_tags` 是否存在重复标签；`aiSuggested` 标签发布前是否已人工确认或转为 `manual` / `derived`。
+- `course_scene_refs.target_locator` 是否能定位到真实存在的 element / interaction / line / sentence / paragraph / question / option / example。
 - `course_experience_steps` 是否只引用已存在且可发布的 target。
 - `course_experience_steps.config` 是否只描述学习行为，不含前端组件名或页面布局细节。
 - `course_asset_refs` 中被发布体验使用的素材是否都有允许对外使用的版权状态。
@@ -834,23 +963,35 @@ flowchart TB
 
 课程阶段再加入本文件的课程表。课程表依赖现有字词主数据，但不会改变字词主表的定位：
 
-- 生词、例句中出现的词通过 `course_block_refs` 指向 `lexical_items` 或 `lexical_forms`。
-- 技能、学习模式、情景、话题等高频筛选维度通过 `course_block_tags` 查询；`course_blocks.pedagogy` 只做补充说明。
-- 语法、话题、任务存为 `course_blocks`，不新增 `grammar_points`、`topics`、`tasks` 罗列表。
-- HSK 2.0 / HSK 3.0 共用课程表和 block 规则，课程映射通过 `course_level_mappings` 表表达；未来出现 HSK 4.0 时只扩展 `standardVersionEnum` 和映射数据。
+- 生词、例句中出现的词通过 `course_scene_refs` 指向 `lexical_items` 或 `lexical_forms`。
+- 技能、学习模式、情景、话题等高频筛选维度通过 `course_scene_tags` 查询；`course_scenes.pedagogy` 只做补充说明。
+- 语法、话题、任务存为 `course_scenes`，不新增 `grammar_points`、`topics`、`tasks` 罗列表。
+- HSK 2.0 / HSK 3.0 共用课程表和 scene 规则，课程映射通过 `course_level_mappings` 表表达；未来出现 HSK 4.0 时只扩展 `standardVersionEnum` 和映射数据。
 - 课程音频可以先保留 `audio_url` 字段；进入听力、跟读、角色扮演或多素材展示后，应迁移到 `course_assets` + `course_asset_refs`。
-- 前端课程体验通过 `course_experiences` / `course_experience_steps` 读取同一批 block，不把闪卡、精读、跟读、练习流、AI 助学等模式硬编码到 block 内容本体里。
-- 后续学习路线可以引用 course / unit / experience / experience step；用户进度和错题仍可通过 target 和 `content_locator` 回流到具体 block 子元素。
+- 前端课程体验通过 `course_experiences` / `course_experience_steps` 读取同一批 scene，不把闪卡、精读、跟读、练习流、AI 助学等模式硬编码到 scene 内容本体里。
+- 后续学习路线可以引用 course / unit / experience / experience step；用户进度和错题仍可通过 target 和 `target_locator` 回流到具体 scene 子元素。
 
 ## 10. 分阶段落地建议
 
-### Course Phase 0：设计冻结
+本文件描述的是课程后端目标 schema，不代表 Course Studio 必须先建表。当前更推荐先做 Studio 前端和 ScenePlayer，用本地 sample scenes、mock outline、mock assets 和 JSON 导入/导出验证体验；等编辑器、播放器、模板和事件模型稳定后，再把 `scene_data` 持久化到数据库。
 
-- 确认本文件的课程层级和 enum。
+### Course Phase 0：前端协议与样例冻结
+
+- 确认 `scene_data` 前端协议、元素 registry、动作 registry 和互动 registry。
 - 选定第一套试做课程，例如 HSK 3.0 Level 1 第一课。
 - 明确 textbook 仅可内部参考，发布内容必须自制或授权。
+- 准备 3-5 个可播放 sample scenes，并支持 JSON 导入/导出。
 
-### Course Phase 1：最小课程存储
+### Course Phase 1：Studio 前端 MVP
+
+- ScenePlayer。
+- 模板式 Scene Editor。
+- Mock course outline：course / unit / section / scene。
+- Mock asset library：内置素材、临时 URL、缺失状态。
+- Mock 知识点绑定。
+- 本地保存、复制、预览和 schema 校验。
+
+### Course Phase 2：最小课程存储
 
 先建：
 
@@ -859,37 +1000,37 @@ flowchart TB
 - `course_level_mappings`
 - `course_units`
 - `course_sections`
-- `course_blocks`
-- `course_block_tags`
-- `course_block_refs`
+- `course_scenes`
+- `course_scene_tags`
+- `course_scene_refs`
 
 暂缓：
 
 - `course_assets` / `course_asset_refs`，直到正式整理音频、图片、视频或互动素材；如果第一版就做听力、跟读或角色扮演，则应提前加入。
-- `course_experiences` / `course_experience_steps`，直到学习者端课程前端开始接入；但 block 的 `course_block_tags`、`pedagogy` 和 content 内部稳定 ID 应从一开始保留。
+- `course_experiences` / `course_experience_steps`，直到学习者端课程前端开始接入；但 scene 的 `course_scene_tags`、`pedagogy` 和 `scene_data` 内部稳定 ID 应从一开始保留。
 - `course_publications`、版本快照或内容 diff。课程早期会频繁微调，先避免增加维护负担；等课程内容稳定、学习记录需要强审计，或出现付费发布版本时再加。
 
-### Course Phase 2：Admin 制课 MVP
+### Course Phase 3：Admin 制课后端接入
 
 - Admin source 管理。
 - Course outline 编辑。
-- Block 编辑器。
+- Scene 编辑器。
 - 字词搜索与绑定。
-- Block `course_block_tags` 标签维护。
-- Block `pedagogy` 补充说明维护。
+- Scene `course_scene_tags` 标签维护。
+- Scene `pedagogy` 补充说明维护。
 - 草稿预览。
 - 发布状态管理。
 
-### Course Phase 3：学习体验接入
+### Course Phase 4：学习体验接入
 
 - 建立 `course_experiences` / `course_experience_steps`。
 - 至少为每个可发布 unit 生成一套 `guidedLesson` experience。
 - 按需增加 `preview`、`flashcards`、`listeningDrill`、`shadowing`、`rolePlay`、`exerciseFlow`、`review`、`examPrep`、`aiTutor` 等体验。
 - 前端根据 experience step 的 `step_kind`、`interaction_kind`、`target_locator` 和 `config` 选择 renderer。
 
-### Course Phase 4：学习路线接入
+### Course Phase 5：学习路线接入
 
 - 学习路线 step 引用 `course_units`、`course_experiences` 或 `course_experience_steps`。
-- 用户学习进度关联到 unit / experience / experience step / block 子元素。
-- 错题和 SRS 可通过 `target_locator` 回流到具体 line / sentence / question / lexical ref；如果定位目标已被改写或删除，则降级回流到 block / section。
+- 用户学习进度关联到 unit / experience / experience step / scene 子元素。
+- 错题和 SRS 可通过 `target_locator` 回流到具体 line / sentence / question / lexical ref；如果定位目标已被改写或删除，则降级回流到 scene / section。
 - 补弱路线可以从多个 course 中抽取同类 experience step，而不必复制课程内容。

@@ -25,14 +25,14 @@ HSK 3.0 大纲按五类内容组织：
 - 笔画和笔顺不入库，需要展示时按需调用工具库生成。
 - 同一内容可多标签：显式支持 `hsk3Level`、`hsk2Level`、考试路径、能力路径、技能项；HSK 标准版本和等级保留字符串，低基数内部枚举再使用数字码。
 - 字词与课程分离：词汇、汉字适合结构化罗列；语法、话题、任务进入课程/课时内容，不在第一阶段单独建表。
-- 课程与呈现分离：课程存为 course/unit/section/block 和引用关系，前端后续再决定渲染成闪卡、递进模块、精读或练习流。
+- 课程与呈现分离：课程存为 course/unit/section/scene、`scene_data` 和引用关系，前端通过 ScenePlayer 再渲染成闪卡、递进模块、精读、自动播放课件或互动练习。
 - 课程规则跨标准复用：HSK 2.0 和 HSK 3.0 共用同一套课程存储规范，通过 `standardVersion`、`standardLevel` 和 `course_level_mappings` 区分内容归属。
 - 课程内容重新制作：textbook 只能指导章节顺序、教学重点和练习类型，发布内容必须是自制或已授权内容。
 - 先 Markdown 校验，后结构化入库：官方资料先在 `docs/hsk3-syllabus` 保持可读，再逐步导入数据库。
 
 ## 3. 核心内容模型
 
-当前代码中的字段定义和字段注释以 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 为准。本节只描述内容模型的产品含义，并使用 Drizzle schema 中的属性名。
+当前代码中的字段定义和字段注释以 [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) 中按表拆分的 schema 文件为准；[src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 只负责统一导出。本节只描述内容模型的产品含义，并使用 Drizzle schema 中的属性名。
 
 ### 3.1 StandardLevel
 
@@ -100,7 +100,7 @@ HSK 3.0 大纲按五类内容组织：
 | `sortOrder` | form 排序 |
 | `metadata` | 原始 form 或人工校正备注等扩展 JSON |
 
-### 3.4 Course/Unit/Section/Block（后续阶段）
+### 3.4 Course/Unit/Section/Scene（后续阶段）
 
 课程存储规范见 [课程存储与 Admin 制课方案](06-course-storage-design.md)。推荐模型是：
 
@@ -108,7 +108,7 @@ HSK 3.0 大纲按五类内容组织：
 Course
   Unit
     Section
-      Block
+      Scene
         References
 ```
 
@@ -118,16 +118,16 @@ Course
 - `courses` 保存课程资产本身，不保存用户进度。
 - `course_units` 对应重新制作后的课程单元；参考教材中的一课通常可映射为一个 unit。
 - `course_sections` 对应课文、生词、语法、语音、汉字、练习、活动、小结等教学段落。
-- `course_blocks` 保存最小可渲染内容块，例如对话、生词表、语法讲解、练习题。
-- `course_block_refs` 把 block 关联到 `lexical_items`、`lexical_forms`、`standard_levels` 或来源片段。
+- `course_scenes` 保存最小可编辑、可播放、可交互、可记录的学习场景；`scene_data` 保存画布、元素、时间线、事件、动作、状态和互动。
+- `course_scene_refs` 把 scene 内的元素、互动、行、题关联到 `lexical_items`、`lexical_forms`、`standard_levels` 或来源片段，内部定位统一使用 `target_locator`。
 
-语法、话题、任务不作为第一阶段的独立内容表。它们进入 `course_blocks`：
+语法、话题、任务不作为第一阶段的独立内容表。它们进入 `course_scenes`：
 
-- 语法讲解用 `blockKind = grammarNote`。
-- 话题场景用 `dialogue`、`readingText`、`activity` 或 `callout` 表达。
-- 任务训练用 `exercise` 或 `activity` 表达。
+- 语法讲解用 `sceneKind = grammar`，具体讲解、例句和互动放入 `scene_data.elements/interactions`。
+- 话题场景用 `dialogue`、`reading`、`activity`、`interactive` 或 `scripted` scene 表达。
+- 任务训练用 `exercise`、`activity` 或 `interactive` scene 表达。
 
-textbook 内容受版权限制时，`course_blocks` 只保存 HSKWise 自制或已授权内容；来源文件、章节和行号只作为内部 `source_locator`，用于教研追溯和审核。
+textbook 内容受版权限制时，`course_scenes` 只保存 HSKWise 自制或已授权内容；来源文件、章节和行号只作为内部 `source_locator`，用于教研追溯和审核。
 
 ### 3.5 Question（后续阶段）
 

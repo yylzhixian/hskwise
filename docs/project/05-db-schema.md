@@ -1,6 +1,6 @@
 # 数据库 Schema
 
-数据库采用 Turso Cloud，ORM 采用 Drizzle。当前 schema 的唯一事实来源是 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts)，字段和 enum 的维护说明也写在 schema 代码注释里。
+数据库采用 Turso Cloud，ORM 采用 Drizzle。当前 schema 的唯一事实来源是 [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) 下按表拆分的文件，字段和 enum 的维护说明也写在 schema 代码注释里。[src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 只作为兼容旧导入的统一出口。
 
 当前仍是第一阶段 schema 草案。暂不生成迁移文件，等 schema 稳定后再手动运行：
 
@@ -12,7 +12,7 @@ bun run db:mig
 ## 当前代码边界
 
 - 已有 schema：用户、Google 账号绑定、多设备 session、用户 profile、学习目标、HSK 标准等级、词字主表、词字 form 表。
-- 已有代码注释：每个 enum 值、关键字段、表用途、示例值和维护边界都在 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 内维护。
+- 已有代码注释：每个 enum 值、关键字段、表用途、示例值和维护边界都在 [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) 内维护。
 - 未生成 migration：当前仓库没有基于最新 schema 生成迁移。
 - 未实现服务端登录闭环：Google 前端 SDK 已接入，但后端 ID token 校验、用户 upsert、session 创建还没实现。
 
@@ -40,11 +40,11 @@ bun run db:mig
 
 以下能力先不进入 schema，等对应功能开发时再补：导入批次、内容审核、课程编排、课时中的语法/话题/任务内容、题库、练习、模考、学习进度、SRS、错题。
 
-课程阶段的推荐扩展已单独整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)。核心思路是 `course_sources -> courses -> course_units -> course_sections -> course_blocks`，再用 `course_block_refs` 引用现有 `lexical_items` / `lexical_forms`，不新增 `grammar_points`、`topics`、`tasks` 罗列表。textbook 来源只作为内部参考，发布内容需要通过 block 的内容来源和版权状态确认。
+课程阶段的推荐扩展已单独整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)。核心思路是 `course_sources -> courses -> course_units -> course_sections -> course_scenes`，`course_scenes.scene_data` 保存可运行 scene 协议，`course_scene_refs.target_locator` 再把 scene 内元素、互动、行或题引用到现有 `lexical_items` / `lexical_forms`。不新增 `grammar_points`、`topics`、`tasks` 罗列表；textbook 来源只作为内部参考，发布内容需要通过 scene 的内容来源和版权状态确认。
 
 ## 当前字段快照
 
-字段含义以 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 中的代码注释为准。这里仅保留字段清单，方便快速检查 docs 是否与代码同名。
+字段含义以 [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) 中的代码注释为准。这里仅保留字段清单，方便快速检查 docs 是否与代码同名。
 
 | 表 | 字段 |
 |---|---|

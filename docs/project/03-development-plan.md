@@ -24,11 +24,11 @@
 | Google credential callback | 注册 `window.handleGoogleCredentialResponse`，解析并打印 ID token payload | [src/hooks/use-google-credential-callback.ts](/Users/yanglong/Documents/YL/hskwise/src/hooks/use-google-credential-callback.ts) |
 | Google 类型 | credential response、payload、按钮配置相关类型 | [src/types/google-identity.ts](/Users/yanglong/Documents/YL/hskwise/src/types/google-identity.ts) |
 | API | 只提供 `/api/health` 和 `/api/db` | [src/app/api/[[...slugs]]/route.ts](/Users/yanglong/Documents/YL/hskwise/src/app/api/[[...slugs]]/route.ts) |
-| 数据库 schema | 第一阶段用户/登录/目标/内容表，字段说明维护在代码注释中 | [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) |
+| 数据库 schema | 第一阶段用户/登录/目标/内容表，按表拆分，字段说明维护在代码注释中 | [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) |
 
 尚未实现：服务端 Google ID token 校验、用户 upsert、session 创建、退出登录、设备管理、内容导入脚本和真实学习路线页面。
 
-课程存储与 Admin 制课方案已整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)，当前尚未写入 Drizzle schema。
+课程存储与 Admin 制课方案已整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)，Course Studio 开发计划已整理在 [Course Studio 开发计划](07-course-studio-development-plan.md)，当前尚未写入 Drizzle schema。
 
 重要约束：本仓库的 `AGENTS.md` 提醒 Next.js 版本存在破坏性变化，正式写 Next.js 代码前需要先阅读 `node_modules/next/dist/docs/` 中相关指南。
 
@@ -123,8 +123,8 @@ src/
 | Auth | `/api/auth/*` | Google ID token 服务端校验、当前用户、退出登录、设备会话管理 |
 | Standards | `/api/standards/levels` | 标准版本、等级、能力描述、统计 |
 | Content | `/api/content/*` | 字词条目查询、等级筛选、搜索 |
-| Course Admin | `/api/admin/course-*` | 内部参考来源、课程结构、原创 block 编辑、引用绑定、发布审核 |
-| Courses | `/api/courses/*` | 学习者端课程读取、课程地图、unit/block 查询 |
+| Course Admin | `/api/admin/course-*` | 内部参考来源、课程结构、Course Studio scene 编辑、引用绑定、发布审核 |
+| Courses | `/api/courses/*` | 学习者端课程读取、课程地图、unit/scene 查询 |
 | Onboarding | `/api/onboarding/*` | 目标设置、测级 |
 | Learning Routes | `/api/learning-routes/*` | 用户学习路线、路线阶段、今日继续学习 |
 | Progress | `/api/progress/*` | 用户进度 |
@@ -135,7 +135,7 @@ src/
 
 ## 5. 数据库方案
 
-数据库采用 Turso Cloud，ORM 采用 Drizzle。Schema 位于 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts)，字段和 enum 的维护说明以 schema 代码注释为准；文档快照见 [数据库 Schema](05-db-schema.md)。
+数据库采用 Turso Cloud，ORM 采用 Drizzle。Schema 按表拆分在 [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/)，字段和 enum 的维护说明以 schema 代码注释为准；[src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 只作为统一导出；文档快照见 [数据库 Schema](05-db-schema.md)。
 
 ### 5.1 第一阶段表
 
@@ -150,9 +150,11 @@ src/
 
 ### 5.2 后续阶段再加
 
+这些表不需要为了 Course Studio 前端 MVP 立刻实现。Studio 可以先用本地 sample scenes、mock repository、browser storage 和 JSON 导入/导出验证体验；等编辑器和播放器稳定后再补 DB/API。
+
 - 内容导入与审核：`content_sources`、`import_batches`、`content_review_notes`
 - 学习路线：`learning_routes`、`learning_route_steps`、`user_route_progress`
-- 课程编排与教学内容：`course_sources`、`courses`、`course_level_mappings`、`course_units`、`course_sections`、`course_blocks`、`course_block_refs`
+- 课程编排与教学内容：`course_sources`、`courses`、`course_level_mappings`、`course_units`、`course_sections`、`course_scenes`、`course_scene_tags`、`course_scene_refs`
 - 课程素材：`course_assets`，等音频和图片素材开始系统整理后再加
 - 题库与练习：`questions`、`question_knowledge_refs`、`practice_sets`
 - 模考：`exam_papers`、`exam_attempts`、`exam_answers`
@@ -176,15 +178,27 @@ src/
 - 词汇列表、搜索、等级筛选。
 - 汉字认读/书写列表。
 - 课程地图和等级资料作为辅助入口。
-- 课程内语法、话题、任务内容按 [课程存储与 Admin 制课方案](06-course-storage-design.md) 中的 block 模型加入。
+- 课程内语法、话题、任务内容按 [课程存储与 Admin 制课方案](06-course-storage-design.md) 中的 scene 模型加入。
 
-### 6.3 第三步：课程生产后台
+### 6.3 第三步：Course Studio 前端体验
+
+- `SceneSchema`、element registry、timeline action registry、interaction registry。
+- `ScenePlayer` 和 admin 预览。
+- `/admin/studio` 或 `/admin/courses/:courseId/studio` 前端入口。
+- Mock course outline：course / unit / section / scene。
+- 模板式 scene editor：拼音、对话、生词、选择题、跟读、角色扮演。
+- Mock asset library：内置素材、临时 URL、缺失素材状态。
+- Mock 知识点搜索和引用绑定。
+- 本地保存、复制 scene、JSON 导入/导出。
+- 前端预发布校验：schema 错误、缺音频、缺知识点绑定、无效素材 URL。
+
+### 6.4 第四步：课程生产后台接入
 
 - `/admin/course-sources`：登记 textbook、官网大纲和教师教案等内部参考来源。
 - `/admin/courses`：课程列表、目标标准、等级映射、发布状态。
 - `/admin/courses/:courseId/outline`：unit 和 section 结构编辑。
-- `/admin/courses/:courseId/editor`：参考来源资料重新制作结构化 block。
-- 字词搜索和引用绑定。
+- `/admin/courses/:courseId/studio`：把前端 Studio 接入真实课程、scene 保存和读取。
+- 字词搜索和引用绑定落库。
 - 缺音频、未匹配词、版权状态、内容来源和 OCR 异常检查。
 - 草稿预览和发布。
 
@@ -310,7 +324,7 @@ HSK 备考产品应偏工具型和专业型：
 
 已完成或进行中：
 
-- 数据库 schema 草案已建立，且字段说明已移到 [src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts)。
+- 数据库 schema 草案已建立，且字段说明已移到 [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) 下的按表文件。
 - Google 登录前端 SDK 入口已建立，当前可解析 credential payload。
 - `.env.example` 已包含 `NEXT_PUBLIC_GOOGLE_CLIENT_ID`、Turso URL 和 token 配置项。
 
