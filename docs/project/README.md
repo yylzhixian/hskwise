@@ -22,6 +22,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 - Google 登录当前采用 `popup` 模式，只在前端 callback 中解析并打印 credential payload；服务端 token 校验、用户写入和 session 创建尚未实现。
 - 当前 API 只有 `/api/health` 和 `/api/db`，`/api/auth/*` 仍是下一步工作。
 - Drizzle schema 按表拆分在 [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/)，[src/db/schema.ts](/Users/yanglong/Documents/YL/hskwise/src/db/schema.ts) 只作为兼容旧导入的统一出口。
+- Course Studio 前端 JSON schema 已落地在 [src/features/course-studio/scene-schema/](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/)，包含 `SceneDataSchema`、`CourseStudioProjectSchema`、registry 和 sample project。
 - 课程存储设计见 [课程存储与 Admin 制课方案](06-course-storage-design.md)，Course Studio 开发计划见 [Course Studio 开发计划](07-course-studio-development-plan.md)。课程后端表当前尚未写入 schema，Studio 前端 MVP 也不依赖真实 DB/API。
 - 当前没有生成 migration；等 schema 稳定后再手动运行 `bun run db:gen` 和 `bun run db:mig`。
 

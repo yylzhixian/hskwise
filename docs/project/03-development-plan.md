@@ -25,10 +25,11 @@
 | Google 类型 | credential response、payload、按钮配置相关类型 | [src/types/google-identity.ts](/Users/yanglong/Documents/YL/hskwise/src/types/google-identity.ts) |
 | API | 只提供 `/api/health` 和 `/api/db` | [src/app/api/[[...slugs]]/route.ts](/Users/yanglong/Documents/YL/hskwise/src/app/api/[[...slugs]]/route.ts) |
 | 数据库 schema | 第一阶段用户/登录/目标/内容表，按表拆分，字段说明维护在代码注释中 | [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) |
+| Course Studio schema | 前端课程项目、scene、element、action、timeline、interaction、registry 和 sample project | [src/features/course-studio/scene-schema/](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/) |
 
 尚未实现：服务端 Google ID token 校验、用户 upsert、session 创建、退出登录、设备管理、内容导入脚本和真实学习路线页面。
 
-课程存储与 Admin 制课方案已整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)，Course Studio 开发计划已整理在 [Course Studio 开发计划](07-course-studio-development-plan.md)，当前尚未写入 Drizzle schema。
+课程存储与 Admin 制课方案已整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)，Course Studio 开发计划已整理在 [Course Studio 开发计划](07-course-studio-development-plan.md)。Course Studio 前端 JSON schema 已落地，课程后端表当前尚未写入 Drizzle schema。
 
 重要约束：本仓库的 `AGENTS.md` 提醒 Next.js 版本存在破坏性变化，正式写 Next.js 代码前需要先阅读 `node_modules/next/dist/docs/` 中相关指南。
 

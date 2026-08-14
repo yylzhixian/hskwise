@@ -518,3 +518,15 @@ src/
 - 视频导出。
 
 这个顺序的好处是：Course Studio 很早就能生产真实可预览的课程草稿，同时不会一开始陷入“做一个低配 Figma / PowerPoint”的坑里。
+
+## 11. 当前实现状态
+
+已落地 Phase 0 的前端协议基础：
+
+- `SceneDataSchema`：见 [scene-schema.ts](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/scene-schema.ts)，定义 canvas、playback、elements、timeline、events、actions、interactions、completionRule，并校验关键 ID 引用。
+- Element / action / timeline / interaction schema：见 [src/features/course-studio/scene-schema/](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/)。
+- `CourseStudioProjectSchema`：见 [project-schema.ts](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/project-schema.ts)，用于前端 mock course / unit / section / scene 草稿文件。
+- Registry：见 [registries.ts](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/registries.ts)，集中维护当前支持的元素、动作和互动类型。
+- Sample scenes 和 sample project：见 [samples.ts](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/samples.ts)，当前包含拼音声调讲解、对话精读/跟读、生词配对三类样例。
+
+仍未接入数据库、API、资源上传、权限、审核发布和真实学习进度。
