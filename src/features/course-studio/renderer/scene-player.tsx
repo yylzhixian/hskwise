@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Play, RotateCcw, StepForward } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import type { SceneAction } from '@/features/course-studio/scene-schema/action-schema'
 import type { MockAsset } from '@/features/course-studio/scene-schema/project-schema'
 import type { SceneData } from '@/features/course-studio/scene-schema/scene-schema'
@@ -15,6 +16,7 @@ type ScenePlayerProps = {
   title?: string
   locale?: string
   assets?: MockAsset[]
+  compact?: boolean
 }
 
 type PlayerLog = {
@@ -34,6 +36,7 @@ export function ScenePlayer({
   title,
   locale = 'en',
   assets = [],
+  compact = false,
 }: ScenePlayerProps) {
   const timersRef = useRef<number[]>([])
   const [visibleElementIds, setVisibleElementIds] = useState<string[]>(() =>
@@ -380,10 +383,18 @@ export function ScenePlayer({
         </div>
       </div>
 
-      <div className="grid min-h-0 gap-4 xl:grid-cols-[minmax(0,1fr)_320px]">
+      <div
+        className={cn(
+          'grid min-h-0 gap-4',
+          compact ? '' : 'xl:grid-cols-[minmax(0,1fr)_320px]',
+        )}
+      >
         <div className="flex min-w-0 flex-col gap-3">
           <div
-            className="relative overflow-hidden rounded-lg border border-border shadow-sm"
+            className={cn(
+              'relative overflow-hidden rounded-lg border border-border shadow-sm',
+              scene.canvas.safeArea === 'responsive' ? 'min-h-[420px] sm:min-h-0' : '',
+            )}
             style={{
               aspectRatio: getAspectRatio(scene.canvas.aspectRatio),
               background: getCanvasBackground(scene.canvas.background),
@@ -420,7 +431,7 @@ export function ScenePlayer({
           </div>
         </div>
 
-        <aside className="flex min-h-0 flex-col gap-3 rounded-lg border border-border bg-card p-4 text-card-foreground">
+        {compact ? null : <aside className="flex min-h-0 flex-col gap-3 rounded-lg border border-border bg-card p-4 text-card-foreground">
           <div className="flex flex-col gap-1">
             <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">
               Runtime
@@ -466,7 +477,7 @@ export function ScenePlayer({
               {JSON.stringify(runtimeState, null, 2)}
             </pre>
           </div>
-        </aside>
+        </aside>}
       </div>
     </section>
   )

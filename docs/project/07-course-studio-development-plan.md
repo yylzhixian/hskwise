@@ -536,4 +536,16 @@ src/
 - `InteractionRenderer`：见 [interaction-renderer.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/interaction-renderer.tsx)，当前能操作 multipleChoice、matching、speechRepeat、rolePlay，并对其他互动类型提供模拟提交。
 - `/admin/studio`：见 [page.tsx](/Users/yanglong/Documents/YL/hskwise/src/app/admin/studio/page.tsx)，提供本地 sample project 的 Course Studio 预览入口。
 
+已落地 Phase 2 的第一版前端编辑工作台：
+
+- `CourseStudioShell`：见 [course-studio-shell.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/editor/course-studio-shell.tsx)，统一管理当前项目、Scene 选择、浏览器草稿恢复和本地自动保存。
+- 课程大纲与 Scene CRUD：可以按 section 从模板新建 Scene、复制 Scene、删除 Scene，并保持当前 Scene 选择。
+- 模板入口：当前提供拼音声调、对话精读和生词练习三类单 Scene 模板，并提供可一次生成 6 个 Scene、知识点引用和素材占位的四声入门小课模板；生成后仍使用同一份 `SceneData` 编辑和播放。
+- Inspector：支持 Scene 标题、类型、播放模式、画布比例、版权来源、标签和时长编辑；支持元素选择、常用元素内容、布局预设和兼容素材绑定编辑。
+- Mock 素材库：支持查看素材类型和引用 ID，维护 `available`、`placeholder`、`missing` 状态及临时 HTTP(S) URL；状态变化会即时进入预发布检查。
+- Mock 知识点绑定：支持本地搜索、添加和移除词汇、拼音与技能引用。
+- 本地 JSON 工作流：支持当前 Scene JSON 导入、导出、直接编辑和 Zod 校验后应用。
+- 前端预发布检查：提示 schema、知识点、版权来源、素材状态和自动播放控制问题。
+- 响应式编辑器：桌面使用大纲、画布、Inspector 三栏布局；移动端改为纵向工作流，时间轴在自己的容器内横向滚动，不撑开页面。
+
 仍未接入数据库、API、资源上传、权限、审核发布和真实学习进度。
