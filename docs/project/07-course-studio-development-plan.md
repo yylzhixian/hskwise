@@ -529,4 +529,11 @@ src/
 - Registry：见 [registries.ts](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/registries.ts)，集中维护当前支持的元素、动作和互动类型。
 - Sample scenes 和 sample project：见 [samples.ts](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/samples.ts)，当前包含拼音声调讲解、对话精读/跟读、生词配对三类样例。
 
+已落地 Phase 1 的播放器预览基础：
+
+- `ScenePlayer`：见 [scene-player.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/scene-player.tsx)，支持 reset、step、play timeline、runtime event log 和 state 预览。
+- `ElementRenderer`：见 [element-renderer.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/element-renderer.tsx)，当前能渲染 text、callout、mascot、pinyinChart、dialogue、vocabulary、quiz mount、button、hotspot 和媒体占位。
+- `InteractionRenderer`：见 [interaction-renderer.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/interaction-renderer.tsx)，当前能操作 multipleChoice、matching、speechRepeat、rolePlay，并对其他互动类型提供模拟提交。
+- `/admin/studio`：见 [page.tsx](/Users/yanglong/Documents/YL/hskwise/src/app/admin/studio/page.tsx)，提供本地 sample project 的 Course Studio 预览入口。
+
 仍未接入数据库、API、资源上传、权限、审核发布和真实学习进度。

@@ -26,6 +26,7 @@
 | API | 只提供 `/api/health` 和 `/api/db` | [src/app/api/[[...slugs]]/route.ts](/Users/yanglong/Documents/YL/hskwise/src/app/api/[[...slugs]]/route.ts) |
 | 数据库 schema | 第一阶段用户/登录/目标/内容表，按表拆分，字段说明维护在代码注释中 | [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) |
 | Course Studio schema | 前端课程项目、scene、element、action、timeline、interaction、registry 和 sample project | [src/features/course-studio/scene-schema/](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/) |
+| Course Studio 预览 | 基于 sample project 的 admin 预览页、ScenePlayer、元素渲染和互动模拟 | [src/app/admin/studio/page.tsx](/Users/yanglong/Documents/YL/hskwise/src/app/admin/studio/page.tsx) |
 
 尚未实现：服务端 Google ID token 校验、用户 upsert、session 创建、退出登录、设备管理、内容导入脚本和真实学习路线页面。
 
