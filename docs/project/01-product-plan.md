@@ -13,7 +13,7 @@ HSKWise 是一个面向非汉语母语者的专业 HSK 备考网站，围绕 HSK
 - 底层融合：词汇和汉字用统一字词库管理；语法、话题、任务通过课程和课时承载。
 - 双标准标签：同一内容可同时标记 HSK 2.0 等级、HSK 3.0 等级、考试高频、能力扩展。
 - 课程规则统一：HSK 2.0 和 HSK 3.0 使用同一套 course/unit/section/scene 存储规范，只是学习内容和等级映射不同。
-- 统一课件编辑器：图文页、互动题页、自动播放课件、吉祥物讲解和实时测验都用同一套 Course Studio scene 编辑器制作。
+- 代码优先课程：先按拼音、对话、生词等课程类型实现可控的学习体验，再从真实重复结构中提取模板和 JSON 协议；暂不建设通用课件编辑器。
 - 备考闭环：诊断、学习、复习、练习、模考、错题再训练必须连起来。
 - 专业可信：HSK 词汇主数据和官方大纲都要能追溯到具体来源。
 
@@ -122,7 +122,7 @@ flowchart LR
 - `/admin/course-sources`：管理 textbook、官网大纲、教师教案等内部参考来源。
 - `/admin/courses`：课程列表、目标标准、等级映射、发布状态。
 - `/admin/courses/:courseId/outline`：课程 unit 和 section 结构编辑。
-- `/admin/courses/:courseId/studio`：统一 Course Studio，参考来源资料重新制作结构化 scene。
+- `/admin/courses/:courseId/content`：按课程模板维护结构化内容数据并预览；通用 Course Studio 暂停开发。
 - `/admin/course-review`：未匹配词、缺音频、版权状态、OCR 异常和待审核 scene。
 - `/admin/questions`：题库管理。
 - `/admin/exams`：模考试卷管理。
@@ -163,7 +163,7 @@ flowchart LR
 
 ## 10. 内容依据
 
-官方 HSK 3.0 大纲已经拆分在 [HSK 3.0 大纲拆分索引](../hsk3-syllabus/README.md)。第一阶段词汇主数据优先来自 `/Users/yanglong/Documents/GitHub/complete-hsk-vocabulary`。课程制作参考资料位于 `docs/textbooks`，但受版权限制只能内部参考，发布课程内容需要重新创作或取得授权；课程存储规范见 [课程存储与 Admin 制课方案](06-course-storage-design.md)，Course Studio 开发计划见 [Course Studio 开发计划](07-course-studio-development-plan.md)。其中：
+官方 HSK 3.0 大纲已经拆分在 [HSK 3.0 大纲拆分索引](../hsk3-syllabus/README.md)。第一阶段词汇主数据优先来自 `/Users/yanglong/Documents/GitHub/complete-hsk-vocabulary`。课程制作参考资料位于 `docs/textbooks`，但受版权限制只能内部参考，发布课程内容需要重新创作或取得授权；课程存储规范见 [课程存储与 Admin 制课方案](06-course-storage-design.md)，当前课程实现路线见[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。其中：
 
 - [考试能力描述](../hsk3-syllabus/capability-description.md) 用于等级定位和营销解释。
 - [任务大纲](../hsk3-syllabus/tasks/hsk-1.md) 用于课程任务设计。

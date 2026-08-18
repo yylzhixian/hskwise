@@ -50,21 +50,21 @@ export function OutlinePanel({
   const locale = project.defaultLocale
 
   return (
-    <aside className="flex min-h-0 flex-col border-b border-border bg-card lg:border-b-0 lg:border-r">
+    <aside className="flex min-h-0 min-w-0 max-w-full flex-col border-b border-border bg-card lg:border-b-0 lg:border-r">
       <div className="flex items-start justify-between gap-3 px-4 py-3">
         <div className="flex min-w-0 flex-col gap-1">
-          <p className="text-xs font-medium text-muted-foreground">Course outline</p>
+          <p className="text-xs font-medium text-muted-foreground">课程结构</p>
           <h2 className="truncate text-sm font-semibold">
             {readText(project.course.title, locale)}
           </h2>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
           <Badge variant="outline">
-            {learningSummary.completedScenes}/{project.scenes.length} complete
+            {learningSummary.completedScenes}/{project.scenes.length} 已完成
           </Badge>
           {learningSummary.reviewItems.length > 0 ? (
             <Badge variant="destructive">
-              {learningSummary.reviewItems.length} review
+              {learningSummary.reviewItems.length} 待复习
             </Badge>
           ) : null}
         </div>
@@ -84,7 +84,7 @@ export function OutlinePanel({
                   <div className="flex items-end justify-between gap-2">
                     <div className="min-w-0">
                       <p className="text-xs text-muted-foreground">
-                        Unit {unit.unitNo}
+                        单元 {unit.unitNo}
                       </p>
                       <h3 className="truncate text-sm font-medium">
                         {readText(unit.title, locale)}
@@ -97,7 +97,7 @@ export function OutlinePanel({
                   </div>
                   <Progress
                     value={unitProgress?.completionPercent ?? 0}
-                    aria-label={`Unit ${unit.unitNo} completion`}
+                    aria-label={`单元 ${unit.unitNo} 完成进度`}
                     className="gap-0"
                   />
                 </div>
@@ -117,7 +117,9 @@ export function OutlinePanel({
                           <p className="truncate text-xs font-medium">
                             {readText(section.title, locale)}
                           </p>
-                          <p className="text-xs text-muted-foreground">{section.sectionKind}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {getSectionKindLabel(section.sectionKind)}
+                          </p>
                         </div>
                         <Tooltip>
                           <TooltipTrigger
@@ -125,14 +127,14 @@ export function OutlinePanel({
                               <Button
                                 variant="ghost"
                                 size="icon-xs"
-                                aria-label={`Add scene to ${readText(section.title, locale)}`}
+                                aria-label={`在${readText(section.title, locale)}中新增场景`}
                                 onClick={() => onCreateScene(section.id)}
                               />
                             }
                           >
                             <Plus />
                           </TooltipTrigger>
-                          <TooltipContent>Add scene</TooltipContent>
+                          <TooltipContent>新增场景</TooltipContent>
                         </Tooltip>
                       </div>
 
@@ -166,14 +168,14 @@ export function OutlinePanel({
                                       <Button
                                         variant="ghost"
                                         size="icon-xs"
-                                        aria-label={`Duplicate ${readText(scene.title, locale)}`}
+                                        aria-label={`复制${readText(scene.title, locale)}`}
                                         onClick={() => onDuplicateScene(scene)}
                                       />
                                     }
                                   >
                                     <Copy />
                                   </TooltipTrigger>
-                                  <TooltipContent>Duplicate scene</TooltipContent>
+                                  <TooltipContent>复制场景</TooltipContent>
                                 </Tooltip>
                                 <Tooltip>
                                   <TooltipTrigger
@@ -181,7 +183,7 @@ export function OutlinePanel({
                                       <Button
                                         variant="ghost"
                                         size="icon-xs"
-                                        aria-label={`Delete ${readText(scene.title, locale)}`}
+                                        aria-label={`删除${readText(scene.title, locale)}`}
                                         disabled={project.scenes.length === 1}
                                         onClick={() => onDeleteScene(scene)}
                                       />
@@ -189,7 +191,7 @@ export function OutlinePanel({
                                   >
                                     <Trash2 />
                                   </TooltipTrigger>
-                                  <TooltipContent>Delete scene</TooltipContent>
+                                  <TooltipContent>删除场景</TooltipContent>
                                 </Tooltip>
                               </div>
                             </div>
@@ -208,9 +210,9 @@ export function OutlinePanel({
             <div className="flex items-center justify-between gap-2 px-1">
               <div>
                 <p className="text-xs font-medium text-muted-foreground">
-                  Review queue
+                  复习队列
                 </p>
-                <h3 className="text-sm font-medium">Latest mistakes</h3>
+                <h3 className="text-sm font-medium">最近错题</h3>
               </div>
               <Badge variant="destructive">
                 {learningSummary.reviewItems.length}
@@ -225,10 +227,7 @@ export function OutlinePanel({
                   className="h-auto min-h-11 justify-start px-2 py-2 text-left"
                   onClick={() => onSelectScene(item.sceneId)}
                 >
-                  <AlertTriangle
-                    className="size-4 shrink-0 text-destructive"
-                    aria-hidden
-                  />
+                    <AlertTriangle className="shrink-0 text-destructive" aria-hidden />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-xs font-medium">
                       {item.prompt
@@ -261,7 +260,7 @@ function SceneStatusIcon({
     return (
       <CheckCircle2
         data-icon="inline-start"
-        className="text-emerald-600 dark:text-emerald-400"
+        className="text-primary"
         aria-hidden
       />
     )
@@ -270,10 +269,26 @@ function SceneStatusIcon({
     return (
       <Clock3
         data-icon="inline-start"
-        className="text-amber-600 dark:text-amber-400"
+        className="text-muted-foreground"
         aria-hidden
       />
     )
   }
   return <Circle data-icon="inline-start" aria-hidden />
+}
+
+function getSectionKindLabel(kind: CourseStudioProject['sections'][number]['sectionKind']) {
+  const labels: Record<typeof kind, string> = {
+    objectives: '学习目标',
+    text: '课文',
+    vocabulary: '生词',
+    grammar: '语法',
+    pronunciation: '语音',
+    characters: '汉字',
+    exercise: '练习',
+    activity: '活动',
+    summary: '总结',
+    culture: '文化',
+  }
+  return labels[kind]
 }

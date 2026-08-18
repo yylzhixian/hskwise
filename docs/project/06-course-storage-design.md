@@ -1,5 +1,7 @@
 # 课程存储与 Admin 制课方案
 
+> 实施说明：本文描述课程后端目标模型，不要求通过通用 Course Studio 生产。2026-08-18 起课程前端采用[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)：先完成真实课程，再将稳定模板数据映射到 course / unit / section / scene 存储。
+
 ## 1. 设计目标
 
 当前阶段先解决“课程如何被稳定存储和生产”，暂不绑定最终前端呈现形式。后续课程可以被渲染成闪卡、递进式学习模块、精读课、练习流、复习任务或模考前补弱训练，但底层应共用一套结构化课程数据。
@@ -114,9 +116,9 @@ HSK 2.0 和 HSK 3.0 不需要两套课程表，也不需要两套 scene 规则�
 
 所以课程应使用关系表保存层级、顺序、状态、标签、素材和引用关系，再用 `scene_data` JSON text 保存元素、时间轴、互动、事件、动作和状态。
 
-### 4.2 Scene 是受约束的垂直 Scratch
+### 4.2 Scene 是受约束的学习运行时协议
 
-Course Studio 可以理解为面向中文学习的垂直 Scratch，但 schema 里不保存任意 JavaScript。scene 内部使用白名单化的事件、条件、动作、状态和互动：
+Scene 运行时可以理解为面向中文学习的受约束编排协议，但 schema 里不保存任意 JavaScript。scene 内部使用白名单化的事件、条件、动作、状态和互动：
 
 ```text
 Event -> Condition -> Action -> State Update -> Learning Event
@@ -190,7 +192,7 @@ Admin 发布检查应把 `course_sources.copyright_status = referenceOnly` 视�
 
 ## 5. 推荐表结构
 
-这一组表建议作为“课程阶段”的 schema 扩展，不进入当前第一阶段 user + 字词 schema。字段注释未来应写进 `src/db/schema/` 下按表拆分的文件，本文件先作为设计规范。统一编辑器的开发节奏见 [Course Studio 开发计划](07-course-studio-development-plan.md)。
+这一组表建议作为“课程阶段”的 schema 扩展，不进入当前第一阶段 user + 字词 schema。字段注释未来应写进 `src/db/schema/` 下按表拆分的文件，本文件先作为设计规范。当前课程实现和模板提取节奏见[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)；[Course Studio 开发计划](07-course-studio-development-plan.md)仅保留为历史技术记录。
 
 ### 5.1 course_sources
 
@@ -903,7 +905,7 @@ flowchart TB
 | `/admin/course-sources` | 管理 textbook、官网大纲、教师教案等内部参考来源。 |
 | `/admin/courses` | 管理课程列表、状态、目标标准和等级映射。 |
 | `/admin/courses/:courseId/outline` | 管理 unit 和 section 结构。 |
-| `/admin/courses/:courseId/studio` | 左侧查看内部参考 Markdown，右侧在统一 Course Studio 中重新制作结构化 scene。 |
+| `/admin/courses/:courseId/content` | 按已经验证的课程类型模板维护结构化内容、关联内部参考并预览学习效果。 |
 | `/admin/courses/:courseId/refs` | 查看本课程引用了哪些词汇、汉字、标准等级和来源片段。 |
 | `/admin/courses/:courseId/experiences` | 为同一批 scene 配置引导式学习、闪卡预习、听力跟读、角色扮演、练习流和复习体验。 |
 | `/admin/course-assets` | 管理课程音频、图片、视频等稳定素材 URL。 |
@@ -973,23 +975,23 @@ flowchart TB
 
 ## 10. 分阶段落地建议
 
-本文件描述的是课程后端目标 schema，不代表 Course Studio 必须先建表。当前更推荐先做 Studio 前端和 ScenePlayer，用本地 sample scenes、mock outline、mock assets 和 JSON 导入/导出验证体验；等编辑器、播放器、模板和事件模型稳定后，再把 `scene_data` 持久化到数据库。
+本文件描述的是课程后端目标 schema，不要求先完成 Course Studio 或先建表。当前按[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)先完成真实课程，用本地类型化数据验证学习体验；当多个课程证明模板和数据协议稳定后，再将数据映射到 `scene_data` 并接入数据库。
 
-### Course Phase 0：前端协议与样例冻结
+### Course Phase 0：真实课程范围与数据边界
 
-- 确认 `scene_data` 前端协议、元素 registry、动作 registry 和互动 registry。
-- 选定第一套试做课程，例如 HSK 3.0 Level 1 第一课。
+- 选定拼音与声调、对话精读与跟读、生词学习与练习三类代表性课程。
+- 每类课程使用独立的 TypeScript 类型或 Zod schema，正文、题目和素材不散落在 JSX 中。
+- 盘点可复用的 scene、interaction、音频、事件、进度和错题能力。
 - 明确 textbook 仅可内部参考，发布内容必须自制或授权。
-- 准备 3-5 个可播放 sample scenes，并支持 JSON 导入/导出。
+- 为 course、unit、section、lesson step 和知识点引用预留稳定 ID。
 
-### Course Phase 1：Studio 前端 MVP
+### Course Phase 1：真实课程与模板验证
 
-- ScenePlayer。
-- 模板式 Scene Editor。
-- Mock course outline：course / unit / section / scene。
-- Mock asset library：内置素材、临时 URL、缺失状态。
-- Mock 知识点绑定。
-- 本地保存、复制、预览和 schema 校验。
+- 直接实现三类代表性课程的完整学习路径。
+- 复用现有 ScenePlayer 和学习运行时，但不以通用编辑器为前置条件。
+- 验证桌面端、移动端、音频、互动、学习进度和错题回流。
+- 至少用两个同类课程实例证明稳定模板可以主要通过数据替换复用。
+- 只从真实重复结构中提取共享教学组件和 JSON 协议。
 
 ### Course Phase 2：最小课程存储
 
@@ -1010,15 +1012,15 @@ flowchart TB
 - `course_experiences` / `course_experience_steps`，直到学习者端课程前端开始接入；但 scene 的 `course_scene_tags`、`pedagogy` 和 `scene_data` 内部稳定 ID 应从一开始保留。
 - `course_publications`、版本快照或内容 diff。课程早期会频繁微调，先避免增加维护负担；等课程内容稳定、学习记录需要强审计，或出现付费发布版本时再加。
 
-### Course Phase 3：Admin 制课后端接入
+### Course Phase 3：模板化内容后台接入
 
 - Admin source 管理。
 - Course outline 编辑。
-- Scene 编辑器。
+- 按稳定课程类型维护结构化内容数据和素材。
 - 字词搜索与绑定。
 - Scene `course_scene_tags` 标签维护。
 - Scene `pedagogy` 补充说明维护。
-- 草稿预览。
+- 使用真实课程模板进行草稿预览。
 - 发布状态管理。
 
 ### Course Phase 4：学习体验接入

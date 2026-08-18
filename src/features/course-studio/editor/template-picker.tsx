@@ -26,6 +26,21 @@ const templateIcons = {
   'vocabulary-practice': Languages,
 } satisfies Record<SceneTemplateId, typeof Speech>
 
+const templateCopy: Record<SceneTemplateId, { title: string; description: string }> = {
+  'pinyin-tone': {
+    title: '拼音声调讲解',
+    description: '包含教师引导、声调图、音频提示和检查题。',
+  },
+  'dialogue-reading': {
+    title: '对话精读',
+    description: '包含短对话、逐句音频、教学提示和口语练习。',
+  },
+  'vocabulary-practice': {
+    title: '生词练习',
+    description: '先学习生词卡片，再完成轻量配对练习。',
+  },
+}
+
 export function TemplatePicker({
   open,
   onOpenChange,
@@ -36,22 +51,23 @@ export function TemplatePicker({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Choose a template</DialogTitle>
+          <DialogTitle>选择场景模板</DialogTitle>
           <DialogDescription>
-            Generate one scene or a complete draft sequence. Every result remains editable.
+            生成单个场景或完整课节草稿，生成后仍可继续编辑。
           </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="scene">
           <TabsList>
-            <TabsTrigger value="scene">Scene</TabsTrigger>
-            <TabsTrigger value="lesson">Lesson</TabsTrigger>
+            <TabsTrigger value="scene">单个场景</TabsTrigger>
+            <TabsTrigger value="lesson">完整课节</TabsTrigger>
           </TabsList>
 
           <TabsContent value="scene">
             <div className="grid gap-2 sm:grid-cols-3">
               {sceneTemplates.map((template) => {
                 const Icon = templateIcons[template.id]
+                const copy = templateCopy[template.id]
                 return (
                   <Button
                     key={template.id}
@@ -61,9 +77,9 @@ export function TemplatePicker({
                   >
                     <Icon />
                     <span className="flex flex-col gap-1">
-                      <span className="font-semibold">{template.title}</span>
+                      <span className="font-semibold">{copy.title}</span>
                       <span className="text-xs font-normal text-muted-foreground">
-                        {template.description}
+                        {copy.description}
                       </span>
                     </span>
                   </Button>
@@ -80,13 +96,13 @@ export function TemplatePicker({
                     <ListChecks className="size-4" aria-hidden />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm font-semibold">Four tones foundation</h3>
+                    <h3 className="text-sm font-semibold">四声入门课</h3>
                     <p className="text-sm text-muted-foreground">
-                      A guided sequence from tone overview through a final listening checkpoint.
+                      从四声总览到听辨检查，生成一套循序渐进的教学场景。
                     </p>
                   </div>
                 </div>
-                <Badge variant="secondary">6 scenes</Badge>
+                <Badge variant="secondary">6 个场景</Badge>
               </div>
 
               <ol className="grid gap-x-4 border-y border-border py-2 sm:grid-cols-2">
@@ -95,7 +111,7 @@ export function TemplatePicker({
                     <span className="w-5 shrink-0 text-xs tabular-nums text-muted-foreground">
                       {String(index + 1).padStart(2, '0')}
                     </span>
-                    <span className="truncate">{step.title.en}</span>
+                    <span className="truncate">{step.title.zhHans}</span>
                   </li>
                 ))}
               </ol>
@@ -103,7 +119,7 @@ export function TemplatePicker({
               <div className="flex justify-end">
                 <Button onClick={onGeneratePinyinLesson}>
                   <ListChecks data-icon="inline-start" />
-                  Generate lesson
+                  生成课节草稿
                 </Button>
               </div>
             </div>

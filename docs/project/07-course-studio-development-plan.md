@@ -1,5 +1,7 @@
 # Course Studio 开发计划
 
+> 文档状态：历史技术计划。2026-08-18 起暂停通用 Course Studio 产品化，当前课程开发主线改为[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。Phase 0-4 和 U1 第一批成果保留用于运行时复用，但不再继续 U2-U4。
+
 Course Studio 是 HSKWise 的课程生产平台。它面向 admin、老师和教研人员，让他们像制作 PPT 一样制作课程，但底层不是 PPT 文件、视频文件或题库文件，而是一套统一的可编排互动学习场景。
 
 ## 1. 核心定位
@@ -379,7 +381,9 @@ MVP 可以先绑定 `lexical_items` / `lexical_forms` 和标签；拼音概念�
 - 答错题能在前端事件流中关联到 scene、interaction、知识点。
 - 后端接入前已经能验证哪些事件值得持久化。
 
-### Phase U：Course Studio 可用性重构（当前优先）
+### Phase U：Course Studio 可用性重构（已暂停）
+
+> Phase U1 第一批已完成中文壳层、四工作模式和 Travels 历史实验。继续完成 U2-U4 的成本过高，本阶段不再是当前开发主线。
 
 目标：在继续扩展提效功能之前，把现有底层能力重组为老师和教研人员可以理解、操作和恢复的完整制课工作流。
 
@@ -400,7 +404,7 @@ MVP 可以先绑定 `lexical_items` / `lexical_forms` 和标签；拼音概念�
 
 ### Phase 5：模板和效率工具
 
-> 当前状态：冻结。Phase 3、Phase 4 的底层能力已经存在，但编辑器信息架构、内容画布和时间轴未通过产品可用性验收。必须先完成 [Course Studio 可用性重构实施计划](08-course-studio-usability-refactor-plan.md) 中的 Phase U0-U4，并满足 Phase 5 解冻条件。
+> 当前状态：旧方案停止排期。模板能力不再等待 U0-U4 解冻，而是在完成多个真实课程后，按[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md) 的 CF3 从重复实现中提取。
 
 目标：真正提高老师制课效率。
 
@@ -633,6 +637,6 @@ Phase 4 的互动体验主链路已落地：
 - 运行事件面板支持 All、Scene、Answers、Media、Custom 筛选，并把当前 Scene 的事件与 Review 结果分开展示。
 - 判题、运行时、事件筛选和 lesson 进度测试共 16 个，覆盖正确、错误、顺序、文本规范化、开放/精确简答、观看完成、重试、上下文隔离、错题关联和事件分类。
 
-Phase 4 计划中的题型、录音占位、角色扮演占位、事件检查、lesson 进度和错题关联已经形成前端运行时闭环，但当前 Course Studio 的信息架构、内容编辑画布和时间轴尚未达到产品可用标准。Phase 5 已冻结，下一阶段改为执行 [Course Studio 可用性重构实施计划](08-course-studio-usability-refactor-plan.md) 中的 Phase U0-U4。撤销 / 重做统一使用已安装的 `travels@2.2.0`，完成中文界面、模式化工作区、直接内容编辑、时间轴重做和真实用户验收后，再恢复模板与效率工具。
+Phase 4 计划中的题型、录音占位、角色扮演占位、事件检查、lesson 进度和错题关联已经形成前端运行时闭环。Phase U1 第一批也完成了中文壳层、四工作模式和基于 `travels@2.2.0` 的撤销 / 重做实验，但通用内容画布和时间轴产品化成本仍然过高。当前不再继续 U2-U4，下一阶段执行[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)：先直接完成真实课程，再从重复实现中提取 JSON 模板。
 
 仍未接入数据库、API、资源上传、权限、审核发布和真实学习进度。

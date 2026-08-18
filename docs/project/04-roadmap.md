@@ -1,5 +1,7 @@
 # 阶段路线图
 
+> 2026-08-18 路线调整：通用 Course Studio 暂停产品化，课程阶段改为“先实现真实课程，再提取模板”。详细执行见[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。
+
 ## 当前实现进度
 
 当前代码已经完成：
@@ -9,7 +11,7 @@
 - API 骨架：`/api/health`、`/api/db`。
 - 第一阶段 Drizzle schema 草案：`src/db/schema/` 按表拆分，字段和 enum 说明维护在代码注释中。
 - 课程存储设计文档：[课程存储与 Admin 制课方案](06-course-storage-design.md)。
-- Course Studio 开发计划：[Course Studio 开发计划](07-course-studio-development-plan.md)。
+- 代码优先课程计划：[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。
 
 当前尚未完成：
 
@@ -31,7 +33,7 @@
 - 内容与数据方案。
 - 开发方案。
 - 课程存储与 Admin 制课方案。
-- Course Studio 开发计划。
+- 代码优先课程开发与模板演进计划。
 - MVP 范围定义。
 
 验收标准：
@@ -39,7 +41,7 @@
 - 能从索引快速查到 HSK 3.0 各等级的官方资料，并明确第一阶段只结构化字词。
 - 团队对“统一内容库 + 路线驱动主体验 + 双标准标签”达成一致。
 - 团队对“内部参考来源 + 原创 course/unit/section/scene + 字词引用”的课程存储规范达成一致。
-- 团队对统一 Course Studio scene 编辑器的开发顺序达成一致。
+- 团队对“代码优先、模板后置、暂不建设通用编辑器”的课程开发顺序达成一致。
 - 明确第一版只做 HSK 3.0 Level 1-4 的完整学习闭环。
 
 ## Phase 1：内容基础设施
@@ -89,40 +91,39 @@
 - 用户可以标记词汇和汉字掌握状态。
 - 页面在桌面和移动端都可用。
 
-## Phase 3：Course Studio 前端体验
+## Phase 3：真实课程与模板验证
 
-目标：先不接数据库和资源上传，用本地 sample scenes、mock outline、mock assets 和 JSON 导入/导出打磨 Course Studio 的编辑与播放体验。
+目标：先不建设通用编辑器，直接完成多个真实课程，用实际重复结构验证共享组件、模板边界和 JSON 协议。
 
 核心任务：
 
-- Scene schema 与 sample scenes。
-- Scene Player MVP。
-- 模板式 Scene Editor。
-- Mock course outline。
-- Mock asset library。
-- Mock 知识点搜索和引用绑定。
-- Timeline 与自动播放。
-- 选择题、听音选择、拖拽/配对等互动。
-- 本地保存、复制、导入/导出和前端预发布校验。
+- 复用现有 scene、interaction、音频、事件和进度运行时。
+- 完成拼音与声调讲解课。
+- 完成对话精读与跟读课。
+- 完成生词学习与练习课。
+- 分离课程内容数据与 React 模板。
+- 从多个真实课程中提取共享教学组件。
+- 为稳定课程类型建立独立 Zod schema 和 JSON 数据协议。
+- 建立课程学习路径、移动端和视觉回归。
 
 验收标准：
 
-- Admin 能用同一个 Course Studio 制作图文、音视频、互动题和自动播放课件。
-- Admin 能从模板生成一节 5-8 个 scene 的拼音小课。
-- 同一份 scene JSON 在编辑器预览和学习者端播放器中表现一致。
-- 前端能提示缺音频、缺知识点绑定、scene schema 错误和无效素材 URL。
-- 不依赖真实 DB/API，也不要求真实发布。
+- 学习者可以完整学完三类代表性课程。
+- 每门课程的正文、题目和素材来自可校验数据，不散落在组件 JSX 中。
+- 课程效果在桌面和移动端稳定，不依赖 Course Studio。
+- 至少两个同类课程证明模板可以主要通过修改数据生产新实例。
+- 新模板来自真实重复结构，不演化为万能配置对象。
 
 ## Phase 4：课程生产后台
 
-目标：当前端 Studio 体验稳定后，再补全后端持久化、资源管理、审核发布和学习者端课程读取。
+目标：真实课程和模板协议稳定后，再补全后端持久化、资源管理、审核发布和学习者端课程读取。
 
 核心任务：
 
 - 课程 schema 扩展：`course_sources`、`courses`、`course_level_mappings`、`course_units`、`course_sections`、`course_scenes`、`course_scene_tags`、`course_scene_refs`。
 - Admin source 管理。
 - Course outline 后端保存。
-- 将已完成的 Course Studio 前端接入真实课程、scene、引用和发布数据。
+- 将稳定的课程模板和内容数据接入真实课程、scene、引用和发布数据。
 - 字词搜索和引用绑定落库。
 - 缺音频、未匹配词、版权状态、内容来源、OCR 异常检查。
 - 草稿预览和发布状态管理。
@@ -203,7 +204,7 @@
 3. 首页路线分流与 onboarding。
 4. `/learn` 当前路线页和 Dashboard `Continue`。
 5. HSK 3.0 Level 1-4 词汇库。
-6. Course Studio 前端体验：scene schema、ScenePlayer、模板式编辑器、本地导入/导出。
+6. 代码优先真实课程：拼音、对话、生词课程与模板提取。
 7. SRS 复习。
 8. 基础练习和错题本。
 

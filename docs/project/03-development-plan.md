@@ -25,12 +25,12 @@
 | Google 类型 | credential response、payload、按钮配置相关类型 | [src/types/google-identity.ts](/Users/yanglong/Documents/YL/hskwise/src/types/google-identity.ts) |
 | API | 只提供 `/api/health` 和 `/api/db` | [src/app/api/[[...slugs]]/route.ts](/Users/yanglong/Documents/YL/hskwise/src/app/api/[[...slugs]]/route.ts) |
 | 数据库 schema | 第一阶段用户/登录/目标/内容表，按表拆分，字段说明维护在代码注释中 | [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) |
-| Course Studio schema | 前端课程项目、scene、element、action、timeline、interaction、registry 和 sample project | [src/features/course-studio/scene-schema/](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/scene-schema/) |
-| Course Studio 预览 | 基于 sample project 的 admin 预览页、ScenePlayer、元素渲染和互动模拟 | [src/app/admin/studio/page.tsx](/Users/yanglong/Documents/YL/hskwise/src/app/admin/studio/page.tsx) |
+| 课程运行时实验 | 已完成 scene、interaction、音频、事件、进度和 sample project；后续供代码优先课程复用 | [src/features/course-studio/](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/) |
+| Course Studio 历史原型 | 已完成 admin 预览、时间轴和 U1 第一批，当前暂停产品化 | [src/app/admin/studio/page.tsx](/Users/yanglong/Documents/YL/hskwise/src/app/admin/studio/page.tsx) |
 
 尚未实现：服务端 Google ID token 校验、用户 upsert、session 创建、退出登录、设备管理、内容导入脚本和真实学习路线页面。
 
-课程存储与 Admin 制课方案已整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)，Course Studio 开发计划已整理在 [Course Studio 开发计划](07-course-studio-development-plan.md)。Course Studio 前端 JSON schema 已落地，课程后端表当前尚未写入 Drizzle schema。
+课程存储与 Admin 制课方案已整理在 [课程存储与 Admin 制课方案](06-course-storage-design.md)，Course Studio 历史计划见 [Course Studio 开发计划](07-course-studio-development-plan.md)。当前转为执行[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)，课程后端表尚未写入 Drizzle schema。
 
 重要约束：本仓库的 `AGENTS.md` 提醒 Next.js 版本存在破坏性变化，正式写 Next.js 代码前需要先阅读 `node_modules/next/dist/docs/` 中相关指南。
 
@@ -152,7 +152,7 @@ src/
 
 ### 5.2 后续阶段再加
 
-这些表不需要为了 Course Studio 前端 MVP 立刻实现。Studio 可以先用本地 sample scenes、mock repository、browser storage 和 JSON 导入/导出验证体验；等编辑器和播放器稳定后再补 DB/API。
+这些表不需要为了第一批真实课程立刻实现。课程可以先用本地类型化数据和现有运行时验证体验；等多个课程证明模板、数据协议和播放器稳定后，再补 DB/API。
 
 - 内容导入与审核：`content_sources`、`import_batches`、`content_review_notes`
 - 学习路线：`learning_routes`、`learning_route_steps`、`user_route_progress`
@@ -182,24 +182,23 @@ src/
 - 课程地图和等级资料作为辅助入口。
 - 课程内语法、话题、任务内容按 [课程存储与 Admin 制课方案](06-course-storage-design.md) 中的 scene 模型加入。
 
-### 6.3 第三步：Course Studio 前端体验
+### 6.3 第三步：代码优先真实课程
 
-- `SceneSchema`、element registry、timeline action registry、interaction registry。
-- `ScenePlayer` 和 admin 预览。
-- `/admin/studio` 或 `/admin/courses/:courseId/studio` 前端入口。
-- Mock course outline：course / unit / section / scene。
-- 模板式 scene editor：拼音、对话、生词、选择题、跟读、角色扮演。
-- Mock asset library：内置素材、临时 URL、缺失素材状态。
-- Mock 知识点搜索和引用绑定。
-- 本地保存、复制 scene、JSON 导入/导出。
-- 前端预发布校验：schema 错误、缺音频、缺知识点绑定、无效素材 URL。
+- 盘点并复用现有互动、音频、事件、进度和错题运行时。
+- 直接完成拼音与声调讲解课。
+- 完成对话精读与跟读课。
+- 完成生词学习与练习课。
+- 每种课程将内容数据与 React 模板分离。
+- 为真实学习路径建立桌面、移动端和浏览器回归。
+- 从多个课程中记录公共组件和课程类型差异。
+- 通用 Course Studio 暂停扩展。
 
 ### 6.4 第四步：课程生产后台接入
 
 - `/admin/course-sources`：登记 textbook、官网大纲和教师教案等内部参考来源。
 - `/admin/courses`：课程列表、目标标准、等级映射、发布状态。
 - `/admin/courses/:courseId/outline`：unit 和 section 结构编辑。
-- `/admin/courses/:courseId/studio`：把前端 Studio 接入真实课程、scene 保存和读取。
+- `/admin/courses/:courseId/content`：按稳定课程模板维护内容数据、保存和预览。
 - 字词搜索和引用绑定落库。
 - 缺音频、未匹配词、版权状态、内容来源和 OCR 异常检查。
 - 草稿预览和发布。
