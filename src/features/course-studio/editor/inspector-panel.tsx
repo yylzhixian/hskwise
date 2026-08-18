@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Field,
+  FieldContent,
   FieldDescription,
   FieldGroup,
   FieldLabel,
@@ -20,6 +21,7 @@ import {
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
 import type { SceneElement } from '../scene-schema/element-schema'
 import {
   courseSceneKindValues,
@@ -274,6 +276,42 @@ export function InspectorPanel({
               </Field>
             </div>
 
+            <FieldGroup className="gap-3">
+              <PlaybackSwitch
+                id="playback-auto-start"
+                label="Auto start"
+                checked={scene.sceneData.playback.autoStart}
+                onCheckedChange={(autoStart) =>
+                  updateSceneData({
+                    ...scene.sceneData,
+                    playback: { ...scene.sceneData.playback, autoStart },
+                  })
+                }
+              />
+              <PlaybackSwitch
+                id="playback-allow-pause"
+                label="Allow pause"
+                checked={scene.sceneData.playback.allowPause}
+                onCheckedChange={(allowPause) =>
+                  updateSceneData({
+                    ...scene.sceneData,
+                    playback: { ...scene.sceneData.playback, allowPause },
+                  })
+                }
+              />
+              <PlaybackSwitch
+                id="playback-allow-replay"
+                label="Allow replay"
+                checked={scene.sceneData.playback.allowReplay}
+                onCheckedChange={(allowReplay) =>
+                  updateSceneData({
+                    ...scene.sceneData,
+                    playback: { ...scene.sceneData.playback, allowReplay },
+                  })
+                }
+              />
+            </FieldGroup>
+
             <Field>
               <FieldLabel>Content origin</FieldLabel>
               <Select
@@ -489,6 +527,32 @@ export function InspectorPanel({
         </TabsContent>
       </Tabs>
     </aside>
+  )
+}
+
+function PlaybackSwitch({
+  id,
+  label,
+  checked,
+  onCheckedChange,
+}: {
+  id: string
+  label: string
+  checked: boolean
+  onCheckedChange: (checked: boolean) => void
+}) {
+  return (
+    <Field orientation="horizontal">
+      <FieldContent>
+        <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      </FieldContent>
+      <Switch
+        id={id}
+        size="sm"
+        checked={checked}
+        onCheckedChange={onCheckedChange}
+      />
+    </Field>
   )
 }
 

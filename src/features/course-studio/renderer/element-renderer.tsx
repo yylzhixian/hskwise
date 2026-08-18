@@ -3,31 +3,56 @@ import { MousePointerClick, PlayCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import type { SceneAction } from '@/features/course-studio/scene-schema/action-schema'
 import type { SceneElement } from '@/features/course-studio/scene-schema/element-schema'
 import type { SceneInteraction } from '@/features/course-studio/scene-schema/interaction-schema'
 import type { MockAsset } from '@/features/course-studio/scene-schema/project-schema'
-import type { LocalizedText } from '@/features/course-studio/scene-schema/shared'
+import type { InteractionAttempt } from '@/features/course-studio/scene-schema/runtime-schema'
+import type {
+  JsonValue,
+  LocalizedText,
+} from '@/features/course-studio/scene-schema/shared'
 import { InteractionRenderer } from './interaction-renderer'
 
 type ElementRendererProps = {
   element: SceneElement
   locale: string
-  isHighlighted: boolean
+  highlightEffect: Extract<SceneAction, { kind: 'highlight' }>['effect'] | null
+  runtimeVisual?: ElementRuntimeVisual
   interactionsById: Map<string, SceneInteraction>
-  completedInteractionIds: Set<string>
-  correctInteractionIds: Set<string>
+  interactionAttempts: Map<string, InteractionAttempt>
   assetsById: Map<string, MockAsset>
   onRunActions: (actionIds: string[]) => void
-  onSubmitInteraction: (interactionId: string, isCorrect?: boolean) => void
+  onSubmitInteraction: (
+    interactionId: string,
+    isCorrect?: boolean | null,
+    answer?: JsonValue,
+  ) => void
+}
+
+export type ElementRuntimeVisual = {
+  position?: Extract<SceneAction, { kind: 'move' }>['to']
+  move?: {
+    durationMs: number
+    easing: Extract<SceneAction, { kind: 'move' }>['easing']
+    token: number
+  }
+  animation?: {
+    kind: Extract<SceneAction, { kind: 'animate' }>['animation']
+    durationMs: number
+    elapsedMs?: number
+    paused?: boolean
+    token: number
+  }
 }
 
 export function ElementRenderer({
   element,
   locale,
-  isHighlighted,
+  highlightEffect,
+  runtimeVisual,
   interactionsById,
-  completedInteractionIds,
-  correctInteractionIds,
+  interactionAttempts,
   assetsById,
   onRunActions,
   onSubmitInteraction,
@@ -36,16 +61,15 @@ export function ElementRenderer({
     <div
       className={cn(
         'absolute flex min-h-0 min-w-0 transition-all',
-        isHighlighted ? 'ring-3 ring-ring/40' : '',
+        getHighlightClass(highlightEffect),
       )}
-      style={getPositionStyle(element)}
+      style={getPositionStyle(element, runtimeVisual)}
     >
       {renderElementContent({
         element,
         locale,
         interactionsById,
-        completedInteractionIds,
-        correctInteractionIds,
+        interactionAttempts,
         assetsById,
         onRunActions,
         onSubmitInteraction,
@@ -58,12 +82,11 @@ function renderElementContent({
   element,
   locale,
   interactionsById,
-  completedInteractionIds,
-  correctInteractionIds,
+  interactionAttempts,
   assetsById,
   onRunActions,
   onSubmitInteraction,
-}: Omit<ElementRendererProps, 'isHighlighted'>) {
+}: Omit<ElementRendererProps, 'highlightEffect' | 'runtimeVisual'>) {
   switch (element.kind) {
     case 'text':
       return (
@@ -173,8 +196,8 @@ function renderElementContent({
         <InteractionRenderer
           interaction={interaction}
           locale={locale}
-          isComplete={completedInteractionIds.has(interaction.id)}
-          isCorrect={correctInteractionIds.has(interaction.id)}
+          attempt={interactionAttempts.get(interaction.id)}
+          assetsById={assetsById}
           onSubmit={onSubmitInteraction}
         />
       )
@@ -232,10 +255,20 @@ function MissingReference({ label }: { label: string }) {
   )
 }
 
-function getPositionStyle(element: SceneElement): CSSProperties {
-  const position = element.position
+function getPositionStyle(
+  element: SceneElement,
+  runtimeVisual?: ElementRuntimeVisual,
+): CSSProperties {
+  const position = runtimeVisual?.position ?? element.position
   const style: CSSProperties = {
     zIndex: position?.zIndex,
+    transitionDuration: runtimeVisual?.move
+      ? `${runtimeVisual.move.durationMs}ms`
+      : undefined,
+    transitionTimingFunction: runtimeVisual?.move
+      ? getMoveEasing(runtimeVisual.move.easing)
+      : undefined,
+    ...getAnimationStyle(runtimeVisual?.animation),
   }
 
   if (position?.x !== undefined) {
@@ -264,6 +297,56 @@ function getPositionStyle(element: SceneElement): CSSProperties {
   return {
     ...style,
     ...getPresetStyle(position?.preset),
+  }
+}
+
+function getHighlightClass(
+  effect: Extract<SceneAction, { kind: 'highlight' }>['effect'] | null,
+) {
+  switch (effect) {
+    case 'pulse':
+      return 'animate-pulse ring-3 ring-ring/50'
+    case 'glow':
+      return 'ring-3 ring-ring/50 shadow-xl'
+    case 'underline':
+      return 'border-b-4 border-primary'
+    case 'outline':
+      return 'ring-3 ring-ring/60'
+    default:
+      return ''
+  }
+}
+
+function getMoveEasing(
+  easing: Extract<SceneAction, { kind: 'move' }>['easing'],
+) {
+  switch (easing) {
+    case 'linear':
+      return 'linear'
+    case 'easeIn':
+      return 'cubic-bezier(0.4, 0, 1, 1)'
+    case 'easeInOut':
+      return 'cubic-bezier(0.4, 0, 0.2, 1)'
+    case 'easeOut':
+    default:
+      return 'cubic-bezier(0, 0, 0.2, 1)'
+  }
+}
+
+function getAnimationStyle(
+  animation: ElementRuntimeVisual['animation'] | undefined,
+): CSSProperties {
+  if (!animation) return {}
+
+  return {
+    animationName: `course-studio-${animation.kind}`,
+    animationDuration: `${animation.durationMs}ms`,
+    animationTimingFunction: 'ease-in-out',
+    animationFillMode: 'both',
+    animationDelay: animation.elapsedMs
+      ? `${-animation.elapsedMs}ms`
+      : undefined,
+    animationPlayState: animation.paused ? 'paused' : 'running',
   }
 }
 

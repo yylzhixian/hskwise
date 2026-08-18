@@ -1,23 +1,50 @@
-import { CheckCircle2, Mic, MousePointerClick, Send, Users } from 'lucide-react'
+'use client'
 
+import { useState } from 'react'
+import {
+  CheckCircle2,
+  CircleX,
+  MousePointerClick,
+  Send,
+  Users,
+} from 'lucide-react'
+
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { SceneInteraction } from '@/features/course-studio/scene-schema/interaction-schema'
-import type { LocalizedText } from '@/features/course-studio/scene-schema/shared'
+import type { MockAsset } from '@/features/course-studio/scene-schema/project-schema'
+import type { InteractionAttempt } from '@/features/course-studio/scene-schema/runtime-schema'
+import type {
+  JsonValue,
+  LocalizedText,
+} from '@/features/course-studio/scene-schema/shared'
+import {
+  ClozeInteractionBody,
+  DictationInteractionBody,
+  MatchingInteractionBody,
+  OrderingInteractionBody,
+  ShortAnswerInteractionBody,
+  SpeechRepeatInteractionBody,
+} from './structured-interactions'
 
 type InteractionRendererProps = {
   interaction: SceneInteraction
   locale: string
-  isComplete: boolean
-  isCorrect: boolean
-  onSubmit: (interactionId: string, isCorrect?: boolean) => void
+  attempt?: InteractionAttempt
+  assetsById: Map<string, MockAsset>
+  onSubmit: (
+    interactionId: string,
+    isCorrect?: boolean | null,
+    answer?: JsonValue,
+  ) => void
 }
 
 export function InteractionRenderer({
   interaction,
   locale,
-  isComplete,
-  isCorrect,
+  attempt,
+  assetsById,
   onSubmit,
 }: InteractionRendererProps) {
   return (
@@ -33,10 +60,32 @@ export function InteractionRenderer({
             </h3>
           ) : null}
         </div>
-        <InteractionStatus isComplete={isComplete} isCorrect={isCorrect} />
+        <InteractionStatus interaction={interaction} attempt={attempt} />
       </div>
 
-      {renderInteractionBody(interaction, locale, onSubmit)}
+      {renderInteractionBody(
+        interaction,
+        locale,
+        attempt,
+        assetsById,
+        onSubmit,
+      )}
+
+      {attempt ? (
+        <p
+          className={cn(
+            'text-xs font-medium',
+            attempt.isCorrect === true
+              ? 'text-primary'
+              : attempt.isCorrect === false
+                ? 'text-destructive'
+                : 'text-muted-foreground',
+          )}
+          role="status"
+        >
+          {getFeedback(interaction, locale, attempt.isCorrect)}
+        </p>
+      ) : null}
     </section>
   )
 }
@@ -44,62 +93,86 @@ export function InteractionRenderer({
 function renderInteractionBody(
   interaction: SceneInteraction,
   locale: string,
-  onSubmit: (interactionId: string, isCorrect?: boolean) => void,
+  attempt: InteractionAttempt | undefined,
+  assetsById: Map<string, MockAsset>,
+  onSubmit: (
+    interactionId: string,
+    isCorrect?: boolean | null,
+    answer?: JsonValue,
+  ) => void,
 ) {
   switch (interaction.kind) {
     case 'multipleChoice':
       return (
-        <div className="grid gap-2 sm:grid-cols-2">
-          {interaction.options.map((option) => (
-            <Button
-              key={option.id}
-              variant="outline"
-              className="h-auto min-h-10 justify-start whitespace-normal py-2 text-left"
-              onClick={() => onSubmit(interaction.id, option.isCorrect)}
-            >
-              {option.isCorrect ? <CheckCircle2 data-icon="inline-start" /> : null}
-              {readText(option.text, locale)}
-            </Button>
-          ))}
-        </div>
+        <MultipleChoiceBody
+          key={`${interaction.id}:${attempt?.attemptNo ?? 0}`}
+          interaction={interaction}
+          locale={locale}
+          attempt={attempt}
+          onSubmit={onSubmit}
+        />
       )
 
     case 'matching':
       return (
-        <div className="flex flex-col gap-3">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {interaction.pairs.map((pair) => (
-              <div
-                key={pair.id}
-                className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm"
-              >
-                <span>{readText(pair.source, locale)}</span>
-                <span className="text-muted-foreground">=</span>
-                <span>{readText(pair.target, locale)}</span>
-              </div>
-            ))}
-          </div>
-          <Button variant="secondary" onClick={() => onSubmit(interaction.id, true)}>
-            <Send data-icon="inline-start" />
-            Submit match
-          </Button>
-        </div>
+        <MatchingInteractionBody
+          key={`${interaction.id}:${attempt?.attemptNo ?? 0}`}
+          interaction={interaction}
+          locale={locale}
+          attempt={attempt}
+          onSubmit={onSubmit}
+        />
+      )
+
+    case 'ordering':
+      return (
+        <OrderingInteractionBody
+          key={`${interaction.id}:${attempt?.attemptNo ?? 0}`}
+          interaction={interaction}
+          locale={locale}
+          attempt={attempt}
+          onSubmit={onSubmit}
+        />
+      )
+
+    case 'cloze':
+      return (
+        <ClozeInteractionBody
+          key={`${interaction.id}:${attempt?.attemptNo ?? 0}`}
+          interaction={interaction}
+          locale={locale}
+          attempt={attempt}
+          onSubmit={onSubmit}
+        />
+      )
+
+    case 'dictation':
+      return (
+        <DictationInteractionBody
+          key={`${interaction.id}:${attempt?.attemptNo ?? 0}`}
+          interaction={interaction}
+          attempt={attempt}
+          asset={
+            interaction.audioAssetId
+              ? assetsById.get(interaction.audioAssetId)
+              : undefined
+          }
+          onSubmit={onSubmit}
+        />
       )
 
     case 'speechRepeat':
       return (
-        <div className="flex flex-col gap-3">
-          <div className="rounded-md border border-border bg-background p-3">
-            <p className="text-lg font-semibold">{interaction.text}</p>
-            {interaction.pinyin ? (
-              <p className="text-sm text-muted-foreground">{interaction.pinyin}</p>
-            ) : null}
-          </div>
-          <Button variant="secondary" onClick={() => onSubmit(interaction.id, true)}>
-            <Mic data-icon="inline-start" />
-            Mark recording
-          </Button>
-        </div>
+        <SpeechRepeatInteractionBody
+          key={`${interaction.id}:${attempt?.attemptNo ?? 0}`}
+          interaction={interaction}
+          asset={
+            interaction.audioAssetId
+              ? assetsById.get(interaction.audioAssetId)
+              : undefined
+          }
+          onSubmit={onSubmit}
+        />
       )
 
     case 'rolePlay':
@@ -119,7 +192,7 @@ function renderInteractionBody(
               </div>
             ))}
           </div>
-          <Button variant="secondary" onClick={() => onSubmit(interaction.id, true)}>
+          <Button variant="secondary" onClick={() => onSubmit(interaction.id, null)}>
             <Users data-icon="inline-start" />
             Complete role play
           </Button>
@@ -129,10 +202,24 @@ function renderInteractionBody(
     case 'hotspot':
     case 'dragDrop':
     case 'swipe':
-    case 'ordering':
-    case 'cloze':
-    case 'dictation':
+      return (
+        <Button variant="secondary" onClick={() => onSubmit(interaction.id, true)}>
+          <MousePointerClick data-icon="inline-start" />
+          Simulate submit
+        </Button>
+      )
+
     case 'shortAnswer':
+      return (
+        <ShortAnswerInteractionBody
+          key={`${interaction.id}:${attempt?.attemptNo ?? 0}`}
+          interaction={interaction}
+          locale={locale}
+          attempt={attempt}
+          onSubmit={onSubmit}
+        />
+      )
+
     case 'boundedChat':
       return (
         <Button variant="secondary" onClick={() => onSubmit(interaction.id, true)}>
@@ -143,33 +230,173 @@ function renderInteractionBody(
   }
 }
 
-function InteractionStatus({
-  isComplete,
-  isCorrect,
+function MultipleChoiceBody({
+  interaction,
+  locale,
+  attempt,
+  onSubmit,
 }: {
-  isComplete: boolean
-  isCorrect: boolean
+  interaction: Extract<SceneInteraction, { kind: 'multipleChoice' }>
+  locale: string
+  attempt?: InteractionAttempt
+  onSubmit: (
+    interactionId: string,
+    isCorrect?: boolean | null,
+    answer?: JsonValue,
+  ) => void
 }) {
-  if (!isComplete) {
+  const attemptedOptionIds = readAttemptedOptionIds(attempt)
+  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(
+    attemptedOptionIds,
+  )
+
+  if (!interaction.allowMultiple) {
     return (
-      <span className="shrink-0 rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
-        Pending
-      </span>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {interaction.options.map((option) => {
+          const selected = attemptedOptionIds.includes(option.id)
+          return (
+            <Button
+              key={option.id}
+              variant={selected ? 'secondary' : 'outline'}
+              className="h-auto min-h-10 justify-start whitespace-normal py-2 text-left"
+              onClick={() =>
+                onSubmit(interaction.id, option.isCorrect, {
+                  optionIds: [option.id],
+                })
+              }
+            >
+              {selected && attempt ? (
+                attempt.isCorrect === true ? (
+                  <CheckCircle2 data-icon="inline-start" />
+                ) : (
+                  <CircleX data-icon="inline-start" />
+                )
+              ) : null}
+              {readText(option.text, locale)}
+            </Button>
+          )
+        })}
+      </div>
+    )
+  }
+
+  const submitSelection = () => {
+    const correctOptionIds = interaction.options
+      .filter((option) => option.isCorrect)
+      .map((option) => option.id)
+      .sort()
+    const submittedOptionIds = [...selectedOptionIds].sort()
+    const isCorrect =
+      correctOptionIds.length === submittedOptionIds.length &&
+      correctOptionIds.every((optionId, index) => optionId === submittedOptionIds[index])
+
+    onSubmit(interaction.id, isCorrect, { optionIds: submittedOptionIds })
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="grid gap-2 sm:grid-cols-2">
+        {interaction.options.map((option) => {
+          const selected = selectedOptionIds.includes(option.id)
+          return (
+            <label
+              key={option.id}
+              className={cn(
+                'flex min-h-10 cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-sm transition-colors hover:bg-muted',
+                selected ? 'bg-secondary' : 'bg-background',
+              )}
+            >
+              <input
+                type="checkbox"
+                checked={selected}
+                onChange={() =>
+                  setSelectedOptionIds((current) =>
+                    current.includes(option.id)
+                      ? current.filter((optionId) => optionId !== option.id)
+                      : [...current, option.id],
+                  )
+                }
+                className="size-4 accent-primary"
+              />
+              <span>{readText(option.text, locale)}</span>
+            </label>
+          )
+        })}
+      </div>
+      <Button
+        variant="secondary"
+        onClick={submitSelection}
+        disabled={selectedOptionIds.length === 0}
+      >
+        <Send data-icon="inline-start" />
+        Submit answer
+      </Button>
+    </div>
+  )
+}
+
+function InteractionStatus({
+  interaction,
+  attempt,
+}: {
+  interaction: SceneInteraction
+  attempt?: InteractionAttempt
+}) {
+  if (!attempt) {
+    return <Badge variant="secondary">Pending</Badge>
+  }
+
+  if (attempt.isCorrect === null) {
+    return (
+      <Badge variant="secondary">
+        {getUngradedStatusLabel(interaction)}
+      </Badge>
     )
   }
 
   return (
-    <span
-      className={cn(
-        'shrink-0 rounded-md px-2 py-1 text-xs font-medium',
-        isCorrect
-          ? 'bg-primary text-primary-foreground'
-          : 'bg-destructive/10 text-destructive',
-      )}
-    >
-      {isCorrect ? 'Done' : 'Needs review'}
-    </span>
+    <Badge variant={attempt.isCorrect ? 'default' : 'destructive'}>
+      {attempt.isCorrect ? 'Correct' : `Retry ${attempt.attemptNo}`}
+    </Badge>
   )
+}
+
+function readAttemptedOptionIds(attempt?: InteractionAttempt) {
+  if (!attempt || !attempt.answer || typeof attempt.answer !== 'object') return []
+  if (Array.isArray(attempt.answer)) return []
+  const optionIds = attempt.answer.optionIds
+  return Array.isArray(optionIds)
+    ? optionIds.filter((value): value is string => typeof value === 'string')
+    : []
+}
+
+function getFeedback(
+  interaction: SceneInteraction,
+  locale: string,
+  isCorrect: boolean | null,
+) {
+  if (isCorrect === null) {
+    if (interaction.kind === 'speechRepeat') {
+      return interaction.scoringMode === 'automatic'
+        ? 'Recording submitted for scoring.'
+        : 'Recording saved for review.'
+    }
+    return 'Response saved.'
+  }
+
+  const feedback = isCorrect
+    ? interaction.feedback?.correct
+    : interaction.feedback?.incorrect ?? interaction.feedback?.retry
+  if (feedback) return readText(feedback, locale)
+  return isCorrect ? 'Correct.' : 'Try another answer.'
+}
+
+function getUngradedStatusLabel(interaction: SceneInteraction) {
+  if (interaction.kind === 'speechRepeat') {
+    return interaction.scoringMode === 'automatic' ? 'Awaiting score' : 'Recorded'
+  }
+  return 'Submitted'
 }
 
 function readText(value: LocalizedText, locale: string) {

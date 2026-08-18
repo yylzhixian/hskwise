@@ -93,7 +93,14 @@ export function AssetLibrary({
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{readText(asset.label, locale)}</p>
                     <p className="truncate text-xs text-muted-foreground">{asset.id}</p>
-                    <Badge variant="outline" className="mt-1">{asset.kind}</Badge>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      <Badge variant="outline">{asset.kind}</Badge>
+                      {asset.durationMs ? (
+                        <Badge variant="secondary">
+                          {formatAssetDuration(asset.durationMs)}
+                        </Badge>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
 
@@ -146,4 +153,8 @@ export function AssetLibrary({
       </DialogContent>
     </Dialog>
   )
+}
+
+function formatAssetDuration(durationMs: number) {
+  return `${(durationMs / 1000).toFixed(1)}s`
 }

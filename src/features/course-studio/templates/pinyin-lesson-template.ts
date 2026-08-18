@@ -158,7 +158,10 @@ export function createPinyinLessonDraft(
       refId: step.conceptId,
       refRole: step.sceneKind === 'assessment' ? 'practices' : 'teaches',
       label: step.conceptLabel,
-      targetLocator: { elementId: 'chart_tones' },
+      targetLocator: {
+        elementId: 'chart_tones',
+        interactionId: 'quiz_tone_1',
+      },
     })
   })
 

@@ -142,6 +142,8 @@ export function CourseStudioDemo({
             <ScenePlayer
               key={selectedScene.id}
               scene={selectedScene.sceneData}
+              sceneId={selectedScene.id}
+              context="learner"
               title={readText(selectedScene.title, project.defaultLocale)}
               locale={project.defaultLocale}
               assets={project.mockAssets}

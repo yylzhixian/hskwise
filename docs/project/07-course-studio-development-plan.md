@@ -338,17 +338,39 @@ MVP 可以先绑定 `lexical_items` / `lexical_forms` 和标签；拼音概念�
 - 学习者可以暂停、继续、重做互动。
 - timeline 不影响移动端布局。
 
+在进入 Phase 4 前增加一个短周期的 Phase 3.5，先稳定播放器与学习数据之间的契约，避免每增加一种题型就重新设计完成状态和事件字段。
+
+### Phase 3.5：播放器运行时契约
+
+目标：把时间轴播放、互动提交和学习进度统一到一份版本化、可测试的前端运行时模型，再扩展题型。
+
+交付：
+
+- editor / learner 两种播放上下文，预览切换时使用独立播放器会话。
+- 版本化 learning event：场景开始/完成、播放/暂停/跳转、cue 进入、答题、错误、重试和媒体状态。
+- `InteractionAttempt`：保存作答内容、尝试序号、正确性、播放头时间和 `target_locator`。
+- `SceneProgress`：由最长实际播放时间、timeline 完成状态和最新一次作答统一计算。
+- guided / auto / manual 三种模式具备明确且可测试的执行语义。
+- 纯函数单元测试覆盖完成规则、重试和最新作答状态。
+
+验收：
+
+- 拖动播放头不能伪造观看进度；`viewed.minTimelineMs` 按实际播放的最长位置判断。
+- 错误作答后可重试，完成状态按最新一次作答计算，同时保留完整尝试历史。
+- 同一事件对象已包含未来 API 入库所需的 scene、版本、上下文、时间和定位信息。
+- admin 预览与 learner 预览使用同一 renderer，但上下文清晰可辨。
+
 ### Phase 4：互动体验闭环
 
-目标：先让 Course Studio 做出的课件在前端形成完整互动体验，再决定后端事件模型。
+目标：基于稳定的运行时契约扩展真实题型、反馈和学习记录，不再使用“模拟提交”作为验收标准。
 
 交付：
 
 - 多题型 interaction：multipleChoice、matching、ordering、cloze、dictation。
 - 跟读录音占位流程：录音、回放、提交，评分可后续接入。
 - 角色扮演占位流程。
-- 前端事件面板：显示开始、暂停、答题、错误、重试、完成等事件。
-- Mock scene progress。
+- 前端事件面板：筛选和检查 Phase 3.5 定义的版本化学习事件。
+- 基于 `SceneProgress` 的 lesson 级 Mock 进度聚合。
 - Mock 错题与 `course_scene_refs` / `target_locator` 关联。
 
 验收：
@@ -357,7 +379,28 @@ MVP 可以先绑定 `lexical_items` / `lexical_forms` 和标签；拼音概念�
 - 答错题能在前端事件流中关联到 scene、interaction、知识点。
 - 后端接入前已经能验证哪些事件值得持久化。
 
+### Phase U：Course Studio 可用性重构（当前优先）
+
+目标：在继续扩展提效功能之前，把现有底层能力重组为老师和教研人员可以理解、操作和恢复的完整制课工作流。
+
+交付：
+
+- U0：冻结 Phase 5，建立黄金任务、问题基线和回归入口。
+- U1：默认中文界面、任务模式、命令层和基于 `travels@2.2.0` 的撤销 / 重做。
+- U2：可直接选择、插入和编辑组件的内容画布。
+- U3：可拖动、缩放、吸附、精确编辑并与播放器同步的时间轴。
+- U4：聚焦学员体验的预览检查、质量门和真实用户验收。
+
+验收：
+
+- 三条黄金任务无需 JSON、内部 ID 或口头指导即可完成。
+- 文档修改具有明确历史边界，刷新后可恢复草稿和撤销 / 重做历史。
+- 内容画布、属性面板、课程结构和时间轴保持选择同步。
+- 详细任务、退出标准和 Phase 5 解冻条件以 [Course Studio 可用性重构实施计划](08-course-studio-usability-refactor-plan.md) 为准。
+
 ### Phase 5：模板和效率工具
+
+> 当前状态：冻结。Phase 3、Phase 4 的底层能力已经存在，但编辑器信息架构、内容画布和时间轴未通过产品可用性验收。必须先完成 [Course Studio 可用性重构实施计划](08-course-studio-usability-refactor-plan.md) 中的 Phase U0-U4，并满足 Phase 5 解冻条件。
 
 目标：真正提高老师制课效率。
 
@@ -436,9 +479,11 @@ src/
         element-schema.ts
         timeline-schema.ts
         interaction-schema.ts
+        runtime-schema.ts
       renderer/
         scene-player.tsx
         element-renderer.tsx
+        runtime-state.ts
         timeline-runtime.ts
         interaction-runtime.tsx
       editor/
@@ -531,9 +576,9 @@ src/
 
 已落地 Phase 1 的播放器预览基础：
 
-- `ScenePlayer`：见 [scene-player.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/scene-player.tsx)，支持 reset、step、play timeline、runtime event log 和 state 预览。
+- `ScenePlayer`：见 [scene-player.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/scene-player.tsx)，支持 reset、step、play / pause / continue、受控播放头、runtime event log 和 state 预览。
 - `ElementRenderer`：见 [element-renderer.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/element-renderer.tsx)，当前能渲染 text、callout、mascot、pinyinChart、dialogue、vocabulary、quiz mount、button、hotspot 和媒体占位。
-- `InteractionRenderer`：见 [interaction-renderer.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/interaction-renderer.tsx)，当前能操作 multipleChoice、matching、speechRepeat、rolePlay，并对其他互动类型提供模拟提交。
+- `InteractionRenderer`：见 [interaction-renderer.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/renderer/interaction-renderer.tsx)，当前能操作 multipleChoice、matching、ordering、cloze、dictation、shortAnswer、speechRepeat、rolePlay，并仅对尚未实现的互动类型保留模拟提交。
 - `/admin/studio`：见 [page.tsx](/Users/yanglong/Documents/YL/hskwise/src/app/admin/studio/page.tsx)，提供本地 sample project 的 Course Studio 预览入口。
 
 已落地 Phase 2 的第一版前端编辑工作台：
@@ -547,5 +592,47 @@ src/
 - 本地 JSON 工作流：支持当前 Scene JSON 导入、导出、直接编辑和 Zod 校验后应用。
 - 前端预发布检查：提示 schema、知识点、版权来源、素材状态和自动播放控制问题。
 - 响应式编辑器：桌面使用大纲、画布、Inspector 三栏布局；移动端改为纵向工作流，时间轴在自己的容器内横向滚动，不撑开页面。
+
+Phase 3 的时间轴编辑主链路已落地：
+
+- 轨道式时间轴：`TimelinePanel` 见 [timeline-panel.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/editor/timeline-panel.tsx)，轨道画布见 [timeline-canvas.tsx](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/editor/timeline-canvas.tsx)。基于 MIT 开源库 `dnd-timeline`，按 Visual、Audio、Control 三类轨道展示 cue，支持片段横向自由拖动、100ms 级吸附和可持续 action 的左右边缘缩放。
+- 视频编辑器式导航：时间标尺提供可点击和连续拖动的播放头，并支持放大、缩小、适配全部内容；拖动和缩放会直接写回 `TimelineStep.at`、`TimelineStep.durationMs`，需要持续时间的 action 同步更新 `durationMs`。
+- Action 属性编辑：时间轴可以切换并编辑 show、hide、highlight、playAudio、speak、pause、wait、pauseUntilInteraction 和 animate 等常用 action，目标元素、音频素材、互动暂停点和基础动画参数均使用当前 Scene 的稳定 ID。
+- 精确属性编辑：选中轨道片段后仍可用下方紧凑属性栏编辑 cue 名称、action、精确起点和持续时间，适合键盘微调和无障碍操作；新增、删除、Scene 自动保存和 schema 校验流程保持不变。
+- 时间轴响应式：轨道自动适应容器宽度，移动端保留完整三轨，精确属性栏在自身容器内横向滚动，不改变页面宽度或挤压 Inspector。
+- 播放头双向同步：播放器使用单一 `requestAnimationFrame` 时钟推进，实时回写编辑器播放头；在时间标尺点击或拖动会停止播放并重建目标时刻的元素可见性、runtime state、highlight、move 和 animation 快照。
+- 真实暂停语义：手动 Pause 会冻结播放时钟并可从原位置 Continue；timeline `pause` 只阻塞一次，Continue 后进入下一 cue；`pauseUntilInteraction` 会停在 cue 时间点，目标互动提交后自动继续，不再出现旧版后续 timer 穿透暂停的问题。
+- 播放设置：Inspector 已能编辑 `autoStart`、`allowPause` 和 `allowReplay`，播放器即时遵守三个设置；播放状态、当前时间和总时长在预览工具栏中持续可见。
+- 基础视觉动作：highlight 支持 pulse、outline、glow、underline，move 使用 action 的 duration / easing 更新运行时位置，animate 支持 fadeIn、fadeOut、slideIn、slideOut、scale 和 shake；拖动播放头时可预览对应时刻的视觉状态。
+- 真实音频 transport：`playAudio` 会解析 action URL 或素材 URL，按片段的 `startMs`、`endMs` 和时间轴持续时间播放；手动暂停、互动暂停、继续、重置、播放结束以及拖动播放头都会同步控制媒体位置，播放器会明确显示 loading、playing、paused、blocked、unavailable 和 error 状态。
+- 音频时长回填：音频 metadata 可用后会更新素材真实时长，并仅对尚未人工调整持续时间的 cue 写入片段时长；已经通过时间轴缩放设置的 `TimelineStep.durationMs` 不会被覆盖，素材库和时间轴总长度会立即反映新时长。
+
+Phase 3.5 的第一批运行时契约已落地：
+
+- 运行时 schema：`runtime-schema.ts` 定义版本化 learning event、`InteractionAttempt`、`SceneProgress` 和 editor / learner 上下文。
+- 进度纯模型：`runtime-state.ts` 统一处理观看阈值、timeline 结束、必做互动、指定互动和最少答对数；拖动播放头不会增加实际观看进度。
+- 事件面板：播放器直接展示结构化的场景、播放、cue、互动、重试和媒体事件，不再以调试字符串代替学习事件。
+- 作答与重试：multipleChoice 提交前不再泄露正确答案，提交后提供明确反馈；错误后再次作答会保留尝试历史，并按最新一次结果计算正确状态。
+- 播放上下文：Studio 顶部可切换 Editor / Learner，项目的 `previewMode` 已真正控制播放器上下文；manual 模式按 cue 推进，autoStart 不再覆盖 manual 语义。
+- 测试入口：根目录 `bun test` 已接入，当前覆盖观看完成规则、未开始状态和重试后的最新正确性。
+
+Phase 4 的互动体验主链路已落地：
+
+- `interaction-answer.ts` 集中维护 matching、ordering、cloze、dictation、shortAnswer 的纯判题逻辑，答案继续通过 `InteractionAttempt.answer` 保存为结构化 JSON。
+- matching 使用来源词条和打乱后的目标下拉框，支持错误反馈、交换答案和重试，不再直接展示正确配对。
+- ordering 使用稳定列表和上下移动控制完成排序，提交时按 `correctOrder` 判定。
+- cloze 为每个 blank 渲染独立输入和 hint，按各自 `acceptedAnswers` 判定并显示字段错误状态。
+- dictation 支持素材音频播放、文本输入、`expectedText` 与显式备选答案判定；素材缺失时提供明确状态。
+- shortAnswer 支持 open、sample、exact 三种语义和最小长度约束；开放回答提交后标记为未评分，sample 模式在提交后展示参考回答，exact 模式才进入自动对错判定。
+- speechRepeat 已接入浏览器麦克风权限、开始/停止录音、本地回放、重新录制和提交；attempt 只保存录音元数据，本地 Blob URL 不进入可持久化 Scene 数据。
+- `InteractionAttempt.isCorrect` 支持 `null`，明确区分“已提交但未评分”和“答对”；未评分互动可满足必做提交规则，但不会被 `minCorrect` 统计为正确，运行时也不会错误发送 correct / incorrect 事件。
+- 文本判题统一执行 Unicode NFKC、首尾空白、连续空白和大小写规范化，不自动忽略未配置的标点差异。
+- `SceneProgressStore` 按 project、editor / learner 上下文和 scene 隔离保存 Mock 进度；刷新后恢复完整尝试历史、最长实际播放时间和完成状态，Reset、Scene 删除和 JSON 替换会同步清理失效进度。
+- 课程大纲展示 lesson / unit 完成聚合、Scene 的未开始 / 进行中 / 已完成状态和完成比例；编辑者与学习者预览互不污染。
+- 错题队列按每个 interaction 的最新一次作答聚合；答对重试会自动移出 Review，并通过 `target_locator` 关联 Scene 知识点引用，可从课程大纲直接返回错题场景。
+- 运行事件面板支持 All、Scene、Answers、Media、Custom 筛选，并把当前 Scene 的事件与 Review 结果分开展示。
+- 判题、运行时、事件筛选和 lesson 进度测试共 16 个，覆盖正确、错误、顺序、文本规范化、开放/精确简答、观看完成、重试、上下文隔离、错题关联和事件分类。
+
+Phase 4 计划中的题型、录音占位、角色扮演占位、事件检查、lesson 进度和错题关联已经形成前端运行时闭环，但当前 Course Studio 的信息架构、内容编辑画布和时间轴尚未达到产品可用标准。Phase 5 已冻结，下一阶段改为执行 [Course Studio 可用性重构实施计划](08-course-studio-usability-refactor-plan.md) 中的 Phase U0-U4。撤销 / 重做统一使用已安装的 `travels@2.2.0`，完成中文界面、模式化工作区、直接内容编辑、时间轴重做和真实用户验收后，再恢复模板与效率工具。
 
 仍未接入数据库、API、资源上传、权限、审核发布和真实学习进度。

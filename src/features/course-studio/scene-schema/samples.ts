@@ -60,6 +60,7 @@ export const samplePinyinToneScene = SceneDataSchema.parse({
   timeline: [
     { id: 'tl_show_teacher', at: 0, actionId: 'act_show_teacher' },
     { id: 'tl_speak_intro', at: 400, actionId: 'act_speak_intro' },
+    { id: 'tl_animate_teacher', at: 1100, actionId: 'act_animate_teacher' },
     { id: 'tl_highlight_tone', at: 1800, actionId: 'act_highlight_tone' },
     { id: 'tl_play_audio', at: 2600, actionId: 'act_play_tone_audio' },
     { id: 'tl_pause_quiz', at: 3600, actionId: 'act_pause_quiz' },
@@ -89,6 +90,13 @@ export const samplePinyinToneScene = SceneDataSchema.parse({
       targetId: 'chart_tones',
       effect: 'glow',
       durationMs: 900,
+    },
+    {
+      id: 'act_animate_teacher',
+      kind: 'animate',
+      targetId: 'mascot_teacher',
+      animation: 'scale',
+      durationMs: 500,
     },
     {
       id: 'act_play_tone_audio',
@@ -169,7 +177,7 @@ export const sampleDialogueScene = SceneDataSchema.parse({
         en: 'At the classroom door',
         zhHans: '在教室门口',
       },
-      position: { preset: 'center', zIndex: 1 },
+      position: { x: 0.5, y: 0.27, width: 0.72, height: 0.42, zIndex: 1 },
       lines: [
         {
           id: 'line_anna_hello',
@@ -205,7 +213,17 @@ export const sampleDialogueScene = SceneDataSchema.parse({
         en: '你好 is the safest first greeting for beginners.',
         zhHans: '你好是初学者最稳妥的问候语。',
       },
-      position: { preset: 'bottom', zIndex: 2 },
+      position: { preset: 'right-top', zIndex: 2 },
+    },
+    {
+      id: 'quiz_repeat_card',
+      kind: 'quiz',
+      interactionId: 'repeat_line_anna',
+      title: {
+        en: 'Speaking practice',
+        zhHans: '跟读练习',
+      },
+      position: { x: 0.5, y: 0.45, width: 0.72, zIndex: 4 },
     },
   ],
   timeline: [
@@ -256,6 +274,7 @@ export const sampleDialogueScene = SceneDataSchema.parse({
       id: 'repeat_line_anna',
       kind: 'speechRepeat',
       required: true,
+      targetElementId: 'quiz_repeat_card',
       targetLocator: {
         elementId: 'dialogue_greeting',
         lineId: 'line_anna_hello',
@@ -396,6 +415,16 @@ export const sampleVocabularyScene = SceneDataSchema.parse({
       prompt: {
         en: 'Match each Chinese word with its meaning.',
         zhHans: '把汉语词和意思配对。',
+      },
+      feedback: {
+        correct: {
+          en: 'All pairs are correct.',
+          zhHans: '全部配对正确。',
+        },
+        incorrect: {
+          en: 'Review the meanings and try again.',
+          zhHans: '再看一遍词义，然后重试。',
+        },
       },
       pairs: [
         {
@@ -586,6 +615,7 @@ export const sampleCourseStudioProject = CourseStudioProjectSchema.parse({
       },
       targetLocator: {
         elementId: 'chart_tones',
+        interactionId: 'quiz_tone_1',
       },
     },
     {
@@ -600,6 +630,7 @@ export const sampleCourseStudioProject = CourseStudioProjectSchema.parse({
       },
       targetLocator: {
         elementId: 'dialogue_greeting',
+        interactionId: 'repeat_line_anna',
         lineId: 'line_anna_hello',
       },
     },
@@ -615,6 +646,7 @@ export const sampleCourseStudioProject = CourseStudioProjectSchema.parse({
       },
       targetLocator: {
         elementId: 'vocab_greetings',
+        interactionId: 'match_greeting_words',
       },
     },
   ],

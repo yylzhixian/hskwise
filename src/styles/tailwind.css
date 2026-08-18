@@ -4,6 +4,37 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes course-studio-fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes course-studio-fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes course-studio-slideIn {
+  from { opacity: 0; translate: -12% 0; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes course-studio-slideOut {
+  from { opacity: 1; translate: 0 0; }
+  to { opacity: 0; translate: 12% 0; }
+}
+
+@keyframes course-studio-scale {
+  0%, 100% { scale: 1; }
+  50% { scale: 1.08; }
+}
+
+@keyframes course-studio-shake {
+  0%, 100% { translate: 0 0; }
+  25% { translate: -3% 0; }
+  75% { translate: 3% 0; }
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);

@@ -1,14 +1,4 @@
-import { Elysia } from 'elysia'
-
-export const app = new Elysia({ prefix: '/api' })
-  .get('/health', () => 'ok')
-  .get('/db', () => ({
-    status: 'configured',
-    dialect: 'turso',
-    orm: 'drizzle',
-  }))
-
-export type App = typeof app
+import { app } from '@/lib/api-app'
 
 export const GET = app.handle
 export const POST = app.handle
