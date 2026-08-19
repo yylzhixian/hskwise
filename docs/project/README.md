@@ -33,6 +33,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 
 - [网站整体规划与正式开发主线](11-website-master-plan.md)（当前执行总纲）
 - [前端学习体验分阶段开发计划](12-frontend-learning-experience-development-plan.md)（当前执行子计划）
+- [前端开发阶段进度档案](progress/README.md)（每阶段完成后的实际记录）
 - [产品方案](01-product-plan.md)
 - [内容与数据方案](02-content-data-plan.md)
 - [开发方案](03-development-plan.md)
@@ -46,7 +47,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 
 文档状态：
 
-- 当前主线：`11-website-master-plan.md`；当前执行子计划：`12-frontend-learning-experience-development-plan.md`。
+- 当前主线：`11-website-master-plan.md`；当前执行子计划：`12-frontend-learning-experience-development-plan.md`；当前阶段：FE2，FE0-FE1 已归档。
 - 当前专题方案：`02-content-data-plan.md`、`05-db-schema.md`、`06-course-storage-design.md`、`10-code-first-course-development-plan.md`。
 - 设计背景：`01-product-plan.md`、`03-development-plan.md`、`04-roadmap.md`。
 - 历史实验：`07-course-studio-development-plan.md`、`08-course-studio-usability-refactor-plan.md`、`09-course-studio-usability-baseline.md`。

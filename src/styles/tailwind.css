@@ -36,8 +36,14 @@
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
+  --font-heading: var(--font-interface);
+  --font-sans: var(--font-interface);
+  --color-progress-foreground: var(--progress-foreground);
+  --color-progress: var(--progress);
+  --color-focus-foreground: var(--focus-foreground);
+  --color-focus: var(--focus);
+  --color-reward-foreground: var(--reward-foreground);
+  --color-reward: var(--reward);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -79,6 +85,7 @@
 }
 
 :root {
+  --font-interface: "Avenir Next", "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -97,6 +104,14 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  --progress: #1c7f58;
+  --progress-foreground: #ffffff;
+  --focus: #236fd2;
+  --focus-foreground: #ffffff;
+  --reward: #f2b544;
+  --reward-foreground: #18212f;
+  --primary-shadow: #145c42;
+  --focus-shadow: #174e99;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -111,6 +126,37 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+}
+
+.learning-theme {
+  color-scheme: light;
+  --background: #f7f9fc;
+  --foreground: #18212f;
+  --card: #ffffff;
+  --card-foreground: #18212f;
+  --popover: #ffffff;
+  --popover-foreground: #18212f;
+  --primary: #36b97a;
+  --primary-foreground: #10291d;
+  --secondary: #edf1f5;
+  --secondary-foreground: #263243;
+  --muted: #e9eef4;
+  --muted-foreground: #647084;
+  --accent: #e9f2fd;
+  --accent-foreground: #174e99;
+  --destructive: #b83f4c;
+  --border: #d9e0e8;
+  --input: #cad4df;
+  --ring: #236fd2;
+  --progress: #1c7f58;
+  --progress-foreground: #ffffff;
+  --focus: #236fd2;
+  --focus-foreground: #ffffff;
+  --reward: #f2b544;
+  --reward-foreground: #18212f;
+  --primary-shadow: #218456;
+  --focus-shadow: #174e99;
+  --radius: 0.5rem;
 }
 
 .dark {
@@ -153,6 +199,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    text-rendering: optimizeLegibility;
   }
   button:not(:disabled),
   [role='button']:not(:disabled) {

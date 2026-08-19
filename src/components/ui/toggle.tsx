@@ -12,12 +12,16 @@ const toggleVariants = cva(
       variant: {
         default: "bg-transparent",
         outline: "border border-input bg-transparent hover:bg-muted",
+        learning:
+          "rounded-lg border border-border bg-card text-card-foreground shadow-[0_2px_0_var(--border)] hover:border-focus/50 hover:bg-accent aria-pressed:border-focus aria-pressed:bg-accent aria-pressed:text-foreground aria-pressed:shadow-[0_2px_0_var(--focus-shadow)]",
       },
       size: {
         default:
           "h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
         sm: "h-7 min-w-7 px-2.5 has-data-[icon=inline-end]:pe-1.5 has-data-[icon=inline-start]:ps-1.5",
         lg: "h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pe-2 has-data-[icon=inline-start]:ps-2",
+        learning:
+          "min-h-18 w-full justify-start gap-3 px-4 py-3 text-start",
       },
     },
     defaultVariants: {

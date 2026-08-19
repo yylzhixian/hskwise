@@ -6,6 +6,7 @@
 |---|---|
 | 决策日期 | 2026-08-19 |
 | 文档状态 | 当前前端执行计划 |
+| 当前阶段 | FE2 路线模型、路线 UI 与情景模拟器；[FE0](progress/FE0-baseline-and-engineering-preparation.md)和[FE1](progress/FE1-design-system-and-application-shell.md)已完成并归档 |
 | 预计周期 | 5-7 周，约 25-33 个工程日 |
 | 目标版本 | Frontend Learning Alpha |
 | 数据方式 | 本地 TypeScript + Zod + 版本化 localStorage |
@@ -795,9 +796,9 @@ React 页面、课程类型组件、Lesson Session 状态机和共享学习原�
 
 ## 13. 当前立即执行顺序
 
-1. 完成 FE0 的稳定 ID、复用清单和截图基线。
-2. 实现 FE1 语义 token、学习布局和目标入口。
-3. 实现 FE2 Starter 路线、fixture 和版本化本地存储。
+1. FE0 已完成：稳定 ID、复用清单、工程约束和截图基线见[阶段归档](progress/FE0-baseline-and-engineering-preparation.md)。
+2. FE1 已完成：设计 token、学习布局、目标入口和课节壳见[阶段归档](progress/FE1-design-system-and-application-shell.md)。
+3. 当前执行 FE2：实现 Starter 路线、fixture 和版本化本地存储。
 4. 实现 FE3 Lesson Runtime，再开始任何具体课程。
 5. 按 FE4 -> FE5 -> FE6 顺序完成三类课程和闭环。
 6. FE7 通过后，将 Frontend Learning Alpha 交给真实用户试用。
