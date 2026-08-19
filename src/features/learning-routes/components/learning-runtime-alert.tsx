@@ -1,0 +1,29 @@
+'use client'
+
+import { HardDriveIcon } from 'lucide-react'
+
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '@/components/ui/alert'
+import { useLearningRuntimeStatus } from '@/features/learning-state/hooks/use-learning-runtime-status'
+
+export function LearningRuntimeAlert() {
+  const { hydration } = useLearningRuntimeStatus()
+
+  if (hydration.status !== 'degraded') return null
+
+  return (
+    <Alert className="border-2 border-route-review-border bg-route-review-surface px-5 py-4 text-route-review-foreground shadow-[0_3px_0_var(--route-review-shadow)]">
+      <HardDriveIcon className="size-5" />
+      <AlertTitle className="text-base font-semibold">
+        Progress will not be saved
+      </AlertTitle>
+      <AlertDescription className="font-medium text-route-review-foreground/80">
+        {hydration.diagnostic ??
+          'You can keep learning in this session, but progress will be lost when the page closes.'}
+      </AlertDescription>
+    </Alert>
+  )
+}

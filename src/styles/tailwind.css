@@ -44,6 +44,12 @@
   --color-focus: var(--focus);
   --color-reward-foreground: var(--reward-foreground);
   --color-reward: var(--reward);
+  --color-route-complete-foreground: var(--route-complete-foreground);
+  --color-route-complete-border: var(--route-complete-border);
+  --color-route-complete-surface: var(--route-complete-surface);
+  --color-route-review-foreground: var(--route-review-foreground);
+  --color-route-review-border: var(--route-review-border);
+  --color-route-review-surface: var(--route-review-surface);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -154,6 +160,13 @@
   --focus-foreground: #ffffff;
   --reward: #f2b544;
   --reward-foreground: #18212f;
+  --route-complete-surface: #dff6ea;
+  --route-complete-border: #55b983;
+  --route-complete-foreground: #176b49;
+  --route-review-surface: #fff1bf;
+  --route-review-border: #d99b17;
+  --route-review-foreground: #754b00;
+  --route-review-shadow: #b77b0c;
   --primary-shadow: #218456;
   --focus-shadow: #174e99;
   --radius: 0.5rem;

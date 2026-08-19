@@ -2,17 +2,12 @@
 
 import { useState } from 'react'
 
-export const learningGoalIds = [
-  'guided-hsk-path',
-  'exam-preparation',
-  'find-my-level',
-] as const
+import {
+  isLearningGoalId,
+  type LearningGoalId,
+} from '@/features/learning-state/model/learning-goal'
 
-export type LearningGoalId = (typeof learningGoalIds)[number]
-
-function isLearningGoalId(value: string | undefined): value is LearningGoalId {
-  return learningGoalIds.some((goalId) => goalId === value)
-}
+export type { LearningGoalId } from '@/features/learning-state/model/learning-goal'
 
 export function useLearningGoalSelection() {
   const [selectedGoal, setSelectedGoal] =
