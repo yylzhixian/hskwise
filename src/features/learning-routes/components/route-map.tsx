@@ -37,18 +37,18 @@ const statusLabels = {
 
 const nodeStatusClasses = {
   completed:
-    'border-route-complete-border bg-route-complete-surface text-route-complete-foreground shadow-[0_3px_0_var(--route-complete-border)]',
+    'border-route-complete-border bg-route-complete-surface text-route-complete-foreground',
   current:
-    'border-focus bg-focus text-focus-foreground shadow-[0_4px_0_var(--focus-shadow)] group-hover:-translate-y-0.5',
+    'border-focus bg-accent text-focus ring-4 ring-focus/10 group-hover:scale-[1.03]',
   review:
-    'border-route-review-border bg-route-review-surface text-route-review-foreground shadow-[0_3px_0_var(--route-review-shadow)] group-hover:-translate-y-0.5',
-  locked: 'border-border bg-muted text-muted-foreground shadow-sm',
+    'border-route-review-border bg-route-review-surface text-route-review-foreground group-hover:scale-[1.03]',
+  locked: 'border-border bg-card text-muted-foreground',
 } satisfies Record<RouteNodeView['status'], string>
 
 const nodeBadgeClasses = {
   completed:
     'border-route-complete-border bg-route-complete-surface text-route-complete-foreground',
-  current: 'border-focus/30 bg-accent text-accent-foreground',
+  current: 'border-focus/50 bg-accent text-accent-foreground',
   review:
     'border-route-review-border bg-route-review-surface text-route-review-foreground',
   locked: 'border-border bg-background text-muted-foreground',
@@ -110,7 +110,7 @@ export function RouteMap({ nodeViews, progressPercent }: RouteMapProps) {
                 </span>
                 <Badge
                   className={cn(
-                    'rounded-md px-1.5 py-0 text-[0.6875rem]',
+                    'rounded-sm px-1.5 py-0 text-[0.6875rem]',
                     nodeBadgeClasses[status],
                   )}
                   variant="outline"
@@ -170,7 +170,7 @@ function RouteConnector({
         pathLength="100"
         stroke="var(--border)"
         strokeLinecap="round"
-        strokeWidth="12"
+        strokeWidth="6"
       />
       <path
         d={d}
@@ -179,7 +179,7 @@ function RouteConnector({
         stroke="var(--progress)"
         strokeDasharray={`${progressPercent} 100`}
         strokeLinecap="round"
-        strokeWidth="12"
+        strokeWidth="5"
       />
     </>
   )

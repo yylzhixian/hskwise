@@ -17,11 +17,13 @@ import {
 type LearningStoreProviderProps = {
   children: ReactNode
   fallback: ReactNode
+  showScenarioSwitcher?: boolean
 }
 
 export function LearningStoreProvider({
   children,
   fallback,
+  showScenarioSwitcher = true,
 }: LearningStoreProviderProps) {
   const [store] = useState(createLearningStore)
   const persistenceRef = useRef<LearningPersistenceRuntime>(
@@ -30,7 +32,11 @@ export function LearningStoreProvider({
 
   return (
     <Provider store={store}>
-      <LearningRuntimeGate fallback={fallback} persistenceRef={persistenceRef}>
+      <LearningRuntimeGate
+        fallback={fallback}
+        persistenceRef={persistenceRef}
+        showScenarioSwitcher={showScenarioSwitcher}
+      >
         {children}
       </LearningRuntimeGate>
     </Provider>
@@ -41,6 +47,7 @@ function LearningRuntimeGate({
   children,
   fallback,
   persistenceRef,
+  showScenarioSwitcher,
 }: LearningStoreProviderProps & {
   persistenceRef: RefObject<LearningPersistenceRuntime>
 }) {
@@ -53,7 +60,7 @@ function LearningRuntimeGate({
   return (
     <>
       {children}
-      <DevScenarioSwitcher />
+      {showScenarioSwitcher ? <DevScenarioSwitcher /> : null}
     </>
   )
 }

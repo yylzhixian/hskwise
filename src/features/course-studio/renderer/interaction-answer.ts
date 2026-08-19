@@ -1,4 +1,11 @@
 import type { SceneInteraction } from '../scene-schema/interaction-schema'
+import {
+  areOrderedIdsEqual,
+  isAcceptedText,
+  normalizeAnswerText,
+} from '@/features/learning-core/model/answer-evaluation'
+
+export { isAcceptedText, normalizeAnswerText }
 
 type MatchingInteraction = Extract<SceneInteraction, { kind: 'matching' }>
 type OrderingInteraction = Extract<SceneInteraction, { kind: 'ordering' }>
@@ -49,7 +56,7 @@ export function evaluateOrderingAnswer(
   const expectedItemIds = [...interaction.items]
     .sort((left, right) => left.correctOrder - right.correctOrder)
     .map((item) => item.id)
-  return arraysEqual(expectedItemIds, answer.itemIds)
+  return areOrderedIdsEqual(expectedItemIds, answer.itemIds)
 }
 
 export function evaluateClozeAnswer(
@@ -90,22 +97,4 @@ export function meetsShortAnswerMinLength(
 ) {
   const length = Array.from(normalizeAnswerText(answer.text)).length
   return length >= (interaction.minLength ?? 1)
-}
-
-export function isAcceptedText(value: string, acceptedAnswers: string[]) {
-  const normalizedValue = normalizeAnswerText(value)
-  return acceptedAnswers.some(
-    (answer) => normalizeAnswerText(answer) === normalizedValue,
-  )
-}
-
-export function normalizeAnswerText(value: string) {
-  return value.normalize('NFKC').trim().replace(/\s+/g, ' ').toLocaleLowerCase()
-}
-
-function arraysEqual(left: string[], right: string[]) {
-  return (
-    left.length === right.length &&
-    left.every((value, index) => value === right[index])
-  )
 }

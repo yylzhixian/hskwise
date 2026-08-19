@@ -2,35 +2,45 @@ import { XIcon } from 'lucide-react'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
+import { cn } from '@/lib/utils'
+
+import {
+  LearningAppearanceRoot,
+  LearningAppearanceToggle,
+} from './learning-appearance'
 
 type LessonChromeProps = {
   children: ReactNode
   title: string
   progress?: number
   action?: ReactNode
+  exitHref?: string
+  feedback?: ReactNode
+  reserveFeedbackSpace?: boolean
 }
 
 export function LessonChrome({
   action,
   children,
+  exitHref = '/learn',
+  feedback,
   progress = 0,
+  reserveFeedbackSpace = false,
   title,
 }: LessonChromeProps) {
   return (
-    <div className="learning-theme flex min-h-dvh flex-col bg-background text-foreground">
-      <header className="border-b bg-card">
+    <LearningAppearanceRoot className="flex min-h-dvh flex-col bg-background text-foreground">
+      <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md">
         <div className="mx-auto grid h-16 w-full max-w-4xl grid-cols-[2.5rem_minmax(0,1fr)_2.5rem] items-center gap-3 px-3 sm:px-6">
-          <Button
+          <Link
             aria-label="Exit lesson"
-            nativeButton={false}
-            render={<Link href="/learn" />}
-            size="icon-lg"
-            variant="ghost"
+            className={buttonVariants({ size: 'icon-lg', variant: 'ghost' })}
+            href={exitHref}
           >
             <XIcon />
-          </Button>
+          </Link>
 
           <div className="flex min-w-0 flex-col gap-1">
             <div className="flex items-center justify-between gap-3 text-xs font-medium text-muted-foreground">
@@ -40,7 +50,9 @@ export function LessonChrome({
             <Progress aria-label="Lesson progress" value={progress} />
           </div>
 
-          <div aria-hidden="true" />
+          <div className="flex justify-end">
+            <LearningAppearanceToggle />
+          </div>
         </div>
       </header>
 
@@ -51,7 +63,19 @@ export function LessonChrome({
         {children}
       </main>
 
-      <footer className="border-t bg-card">
+      {reserveFeedbackSpace || feedback ? (
+        <div
+          aria-live="polite"
+          className={cn(
+            'mx-auto flex min-h-[5.5rem] w-full max-w-3xl items-center px-4 py-3 sm:px-6',
+            !feedback && 'invisible',
+          )}
+        >
+          {feedback}
+        </div>
+      ) : null}
+
+      <footer className="border-t bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex min-h-20 w-full max-w-3xl items-center justify-end px-4 py-3 sm:px-6">
           {action ?? (
             <Button disabled size="learning" variant="learning">
@@ -60,6 +84,6 @@ export function LessonChrome({
           )}
         </div>
       </footer>
-    </div>
+    </LearningAppearanceRoot>
   )
 }

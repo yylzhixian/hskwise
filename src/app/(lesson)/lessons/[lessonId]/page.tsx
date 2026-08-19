@@ -3,6 +3,11 @@ import { BookOpenIcon } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import { LessonRuntimeExperience } from '@/features/lesson-runtime/components/lesson-runtime-experience'
+import {
+  isRuntimeMediaFixtureId,
+  type RuntimeMediaFixtureId,
+} from '@/features/lesson-runtime/fixtures/runtime-media-fixtures'
 import { LessonChrome } from '@/features/learning-shell/components/lesson-chrome'
 
 const lessonTitles: Record<string, string> = {
@@ -18,8 +23,21 @@ export const metadata: Metadata = {
 
 export default async function Page({
   params,
+  searchParams,
 }: PageProps<'/lessons/[lessonId]'>) {
   const { lessonId } = await params
+  const query = await searchParams
+  const mediaParam = Array.isArray(query.media) ? query.media[0] : query.media
+  const mediaFixtureId: RuntimeMediaFixtureId = isRuntimeMediaFixtureId(
+    mediaParam,
+  )
+    ? mediaParam
+    : 'normal'
+
+  if (lessonId === 'runtime-lab') {
+    return <LessonRuntimeExperience mediaFixtureId={mediaFixtureId} />
+  }
+
   const lessonTitle = lessonTitles[lessonId] ?? 'Mandarin lesson'
 
   return (

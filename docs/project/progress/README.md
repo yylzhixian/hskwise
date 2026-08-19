@@ -26,8 +26,14 @@
 | FE0 基线冻结与工程准备 | 已完成 | 2026-08-19 | [FE0 开发进度](FE0-baseline-and-engineering-preparation.md) |
 | FE1 设计系统与应用骨架 | 已完成 | 2026-08-19 | [FE1 开发进度](FE1-design-system-and-application-shell.md) |
 | FE2 路线模型、路线 UI 与情景模拟器 | 已完成 | 2026-08-19 | [FE2 开发进度](FE2-route-model-ui-and-scenario-simulator.md) |
-| FE3 共享课程运行时与学习原语 | 进行中 | - | 完成后新增 |
-| FE4 拼音与声调课程 | 待开始 | - | 完成后新增 |
+| FE3 共享课程运行时与学习原语 | 已完成 | 2026-08-19 | [FE3 开发进度](FE3-shared-lesson-runtime-and-learning-primitives.md) |
+| FE4 拼音与声调课程 | 进行中 | - | 完成后新增 |
 | FE5 对话精读与跟读课程 | 待开始 | - | 完成后新增 |
 | FE6 生词、检查点与复习闭环 | 待开始 | - | 完成后新增 |
 | FE7 整体验收、性能和回归 | 待开始 | - | 完成后新增 |
+
+## 阶段内校准记录
+
+| 子阶段 | 状态 | 完成日期 | 归档 |
+|---|---|---|---|
+| FE4-01 语音导视视觉基础 | 已完成 | 2026-08-19 | [FE4-01 开发进度](FE4-01-phonetic-wayfinding-visual-foundation.md) |

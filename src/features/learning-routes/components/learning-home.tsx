@@ -46,12 +46,12 @@ export function LearningHome() {
             {progress.route.title}
           </h1>
         </div>
-        <Badge className="rounded-md" variant="outline">
+        <Badge className="rounded-sm" variant="outline">
           {progress.progressPercent}% complete
         </Badge>
       </header>
 
-      <div className="grid gap-5 rounded-lg border bg-card px-5 py-5 sm:grid-cols-[1fr_auto] sm:items-center sm:px-6">
+      <div className="grid gap-5 border-y border-focus/40 bg-accent/40 px-1 py-5 sm:grid-cols-[1fr_auto] sm:items-center sm:px-5">
         <div className="flex min-w-0 flex-col gap-2">
           <div className="flex items-center gap-2 text-sm font-semibold text-focus">
             {continueTarget.kind === 'review' ? (
@@ -125,18 +125,15 @@ export function LearningHome() {
             progressPercent={progress.progressPercent}
           />
 
-          <section
-            className="scroll-mt-24 border-t pt-6"
-            id="review-due"
-          >
+          <section className="scroll-mt-24 border-t pt-6" id="review-due">
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-reward-foreground">
+                <p className="text-sm font-semibold text-reward">
                   Today
                 </p>
                 <h2 className="mt-1 text-lg font-semibold">Review queue</h2>
               </div>
-              <Badge className="rounded-md" variant="outline">
+              <Badge className="rounded-sm" variant="outline">
                 {reviews.dueCount} due
               </Badge>
             </div>
@@ -162,7 +159,7 @@ export function LearningHome() {
           </section>
         </div>
 
-        <aside className="flex flex-col gap-6 lg:sticky lg:top-6">
+        <aside className="flex flex-col gap-6 lg:sticky lg:top-22">
           <section aria-labelledby="today-summary-title">
             <div className="flex items-center gap-2">
               <Clock3Icon className="size-4 text-focus" />

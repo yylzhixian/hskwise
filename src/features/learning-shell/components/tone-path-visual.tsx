@@ -13,15 +13,14 @@ export function TonePathVisual() {
       </desc>
 
       <path
-        className="stroke-border"
+        className="stroke-focus/40"
         d="M48 100C130 100 144 57 222 57S305 118 376 118 466 44 538 44s86 68 134 68"
         fill="none"
-        strokeDasharray="4 8"
         strokeLinecap="round"
-        strokeWidth="3"
+        strokeWidth="2"
       />
 
-      <g className="fill-card stroke-focus" strokeWidth="3">
+      <g className="fill-background stroke-focus" strokeWidth="3">
         <circle cx="72" cy="100" r="19" />
         <circle cx="238" cy="61" r="19" />
         <circle cx="392" cy="114" r="19" />

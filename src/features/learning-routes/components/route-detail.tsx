@@ -47,7 +47,7 @@ export function RouteDetail() {
               {stage.description}
             </p>
           </div>
-          <Badge className="rounded-md" variant="outline">
+          <Badge className="rounded-sm" variant="outline">
             {progress.progressPercent}% complete
           </Badge>
         </div>
@@ -78,7 +78,7 @@ export function RouteDetail() {
               <div>
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-semibold">{node.title}</h3>
-                  <Badge className="rounded-md" variant="outline">
+                  <Badge className="rounded-sm" variant="outline">
                     {status}
                   </Badge>
                 </div>

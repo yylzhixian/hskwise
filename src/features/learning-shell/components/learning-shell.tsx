@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react'
 
 import { AppBrand } from './app-brand'
+import {
+  LearningAppearanceRoot,
+  LearningAppearanceToggle,
+} from './learning-appearance'
 import { DesktopNavigation, MobileNavigation } from './learning-navigation'
 
 type LearningShellProps = {
@@ -9,18 +13,21 @@ type LearningShellProps = {
 
 export function LearningShell({ children }: LearningShellProps) {
   return (
-    <div className="learning-theme min-h-dvh bg-background text-foreground">
+    <LearningAppearanceRoot className="min-h-dvh bg-background text-foreground">
       <a
-        className="fixed start-3 top-3 -translate-y-20 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background outline-none transition-transform focus:translate-y-0"
+        className="fixed start-3 top-3 z-50 -translate-y-20 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background outline-none transition-transform focus:translate-y-0"
         href="#learning-content"
       >
         Skip to content
       </a>
 
-      <header className="border-b bg-card/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <AppBrand />
-          <DesktopNavigation />
+          <div className="flex items-center gap-1">
+            <DesktopNavigation />
+            <LearningAppearanceToggle />
+          </div>
         </div>
       </header>
 
@@ -32,6 +39,6 @@ export function LearningShell({ children }: LearningShellProps) {
       </main>
 
       <MobileNavigation />
-    </div>
+    </LearningAppearanceRoot>
   )
 }

@@ -15,7 +15,7 @@ export function LearningRuntimeAlert() {
   if (hydration.status !== 'degraded') return null
 
   return (
-    <Alert className="border-2 border-route-review-border bg-route-review-surface px-5 py-4 text-route-review-foreground shadow-[0_3px_0_var(--route-review-shadow)]">
+    <Alert className="border-route-review-border border-s-4 bg-route-review-surface px-5 py-4 text-route-review-foreground">
       <HardDriveIcon className="size-5" />
       <AlertTitle className="text-base font-semibold">
         Progress will not be saved
