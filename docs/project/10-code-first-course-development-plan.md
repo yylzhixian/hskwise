@@ -1,12 +1,14 @@
 # 代码优先课程开发与模板演进计划
 
-本文记录 HSKWise 在完成 Course Studio Phase 0-4 技术实验和 Phase U1 第一批优化后作出的课程开发方向调整。自本文生效后，它是课程前端开发的当前主线；[Course Studio 开发计划](07-course-studio-development-plan.md)和[可用性重构实施计划](08-course-studio-usability-refactor-plan.md)保留为历史方案与技术资产清单。
+> 本文是课程实现专题方案；课程在网站整体中的执行顺序以[网站整体规划与正式开发主线](11-website-master-plan.md)为准。
+
+本文记录 HSKWise 在完成 Course Studio Phase 0-4 技术实验和 Phase U1 第一批优化后作出的课程开发方向调整。它是课程前端实现的专题主线；[Course Studio 开发计划](07-course-studio-development-plan.md)和[可用性重构实施计划](08-course-studio-usability-refactor-plan.md)保留为历史方案与技术资产清单。
 
 | 项目 | 当前值 |
 |---|---|
 | 决策日期 | 2026-08-18 |
 | 文档状态 | 当前执行方案 |
-| 当前阶段 | CF0：冻结 Studio，整理可复用能力 |
+| 专题阶段 | CF0：冻结 Studio，整理可复用能力；整体处于 M0 |
 | 课程生产方式 | 代码优先，模板后置 |
 | Course Studio 状态 | 暂停通用编辑器开发 |
 
