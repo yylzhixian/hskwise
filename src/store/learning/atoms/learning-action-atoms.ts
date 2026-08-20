@@ -22,6 +22,16 @@ type HydrateLearningInput = {
   hydration: LearningHydrationState
 }
 
+export type RecordLearningMistakeInput = {
+  lessonId: string
+  nodeId: string
+  knowledgeIds: string[]
+  prompt: string
+  correction: string
+  reviewLabel: string
+  now: string
+}
+
 export const hydrateLearningStateAtom = atom(
   null,
   (_get, set, input: HydrateLearningInput) => {
@@ -83,6 +93,11 @@ export const completeRouteNodeAtom = atom(
     if (nodeIndex < 0) return
 
     const now = get(learningClockAtom)
+    const currentProgress = get(routeProgressAtom)[starterRouteId]
+    if (!currentProgress || currentProgress.completedNodeIds.includes(nodeId)) {
+      return
+    }
+
     const nextNode = nodes[nodeIndex + 1] ?? null
     const completedNode = nodes[nodeIndex]
 
@@ -90,9 +105,7 @@ export const completeRouteNodeAtom = atom(
       const progress = draft[starterRouteId]
 
       if (!progress) return
-      if (!progress.completedNodeIds.includes(nodeId)) {
-        progress.completedNodeIds.push(nodeId)
-      }
+      progress.completedNodeIds.push(nodeId)
       progress.currentNodeId = nextNode?.id ?? null
       progress.updatedAt = now
     })
@@ -107,6 +120,70 @@ export const completeRouteNodeAtom = atom(
         occurredAt: now,
       })
       draft.recentActivity = draft.recentActivity.slice(0, 6)
+    })
+  },
+)
+
+export const recordLearningMistakeAtom = atom(
+  null,
+  (_get, set, input: RecordLearningMistakeInput) => {
+    const dueAt = new Date(
+      Date.parse(input.now) + 24 * 60 * 60 * 1000,
+    ).toISOString()
+
+    set(mistakesAtom, (draft) => {
+      for (const knowledgeId of input.knowledgeIds) {
+        const existing = draft.find(
+          (mistake) =>
+            !mistake.resolved &&
+            mistake.lessonId === input.lessonId &&
+            mistake.nodeId === input.nodeId &&
+            mistake.knowledgeId === knowledgeId,
+        )
+
+        if (existing) {
+          existing.prompt = input.prompt
+          existing.correction = input.correction
+          existing.occurredAt = input.now
+          continue
+        }
+
+        draft.unshift({
+          id: `mistake:${input.lessonId}:${input.nodeId}:${knowledgeId}`,
+          lessonId: input.lessonId,
+          nodeId: input.nodeId,
+          knowledgeId,
+          prompt: input.prompt,
+          correction: input.correction,
+          occurredAt: input.now,
+          resolved: false,
+        })
+      }
+    })
+
+    set(reviewQueueAtom, (draft) => {
+      for (const knowledgeId of input.knowledgeIds) {
+        const exists = draft.some(
+          (item) =>
+            item.status === 'queued' &&
+            item.lessonId === input.lessonId &&
+            item.sourceNodeId === input.nodeId &&
+            item.knowledgeId === knowledgeId,
+        )
+
+        if (exists) continue
+
+        draft.push({
+          id: `review:${input.lessonId}:${input.nodeId}:${knowledgeId}`,
+          lessonId: input.lessonId,
+          sourceNodeId: input.nodeId,
+          knowledgeId,
+          label: input.reviewLabel,
+          dueAt,
+          status: 'queued',
+          attemptCount: 0,
+        })
+      }
     })
   },
 )

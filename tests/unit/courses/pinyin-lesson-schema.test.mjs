@@ -23,11 +23,17 @@ describe('pinyin lesson schema', () => {
       'media',
       'interaction',
       'interaction',
+      'media',
       'continue',
     ])
     expect(runtimeDefinition.steps[1].completionRule).toEqual({
       kind: 'media',
       mediaId: 'four-tones-pitch-guide:pitch-guide',
+    })
+    expect(runtimeDefinition.steps[4].completionRule).toEqual({
+      kind: 'media',
+      mediaId:
+        'four-tones-pronunciation-practice:pronunciation-practice',
     })
   })
 
@@ -61,6 +67,41 @@ describe('pinyin lesson schema', () => {
       )
       expect(result.error.issues.map((issue) => issue.message)).toContain(
         'The correct tone must be included in the options.',
+      )
+    }
+  })
+
+  test('requires generated audio placeholders to carry replacement flags', () => {
+    const pronunciationStep = fourTonesLesson.steps.find(
+      (step) => step.kind === 'pronunciation-practice',
+    )
+
+    expect(pronunciationStep?.referenceAudio).toMatchObject({
+      contentOrigin: 'generated-placeholder',
+      placeholder: true,
+      mustReplaceBeforePublish: true,
+    })
+
+    const invalidLesson = {
+      ...fourTonesLesson,
+      steps: fourTonesLesson.steps.map((step) =>
+        step.kind === 'pronunciation-practice'
+          ? {
+              ...step,
+              referenceAudio: {
+                ...step.referenceAudio,
+                mustReplaceBeforePublish: false,
+              },
+            }
+          : step,
+      ),
+    }
+    const result = pinyinLessonSchema.safeParse(invalidLesson)
+
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues.map((issue) => issue.message)).toContain(
+        'Generated placeholder audio must be marked placeholder and replaced before publish.',
       )
     }
   })

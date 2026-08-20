@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo } from 'react'
 
+import { useLearningActions } from '@/hooks/learning/use-learning-actions'
 import { useLessonSession } from '@/hooks/lesson/use-lesson-session'
 import { useLessonStep } from '@/hooks/lesson/use-lesson-step'
 import { LessonStoreProvider } from '@/learning/runtime/provider/lesson-store-provider'
@@ -14,6 +15,7 @@ import {
   type PinyinTone,
 } from '../model/pinyin-lesson-schema'
 import { PinyinLessonSummary } from './pinyin-lesson-summary'
+import { PronunciationPractice } from './pronunciation-practice'
 import { ToneChoiceInteraction } from './tone-choice-interaction'
 import { ToneOverview } from './tone-overview'
 import { TonePitchGuide } from './tone-pitch-guide'
@@ -41,6 +43,7 @@ function PinyinLessonSession({
   lesson: PinyinLessonDefinition
 }) {
   const session = useLessonSession()
+  const { recordMistake } = useLearningActions()
   const { completeMedia, feedback, step, submitAnswer } = useLessonStep()
   const contentStep = step
     ? lesson.steps.find((item) => item.id === step.definition.id)
@@ -55,6 +58,16 @@ function PinyinLessonSession({
       },
     })
   }, [completeMedia, contentStep])
+  const completePronunciationPractice = useCallback(() => {
+    if (!contentStep || contentStep.kind !== 'pronunciation-practice') return
+    completeMedia({
+      mediaId: `${contentStep.id}:pronunciation-practice`,
+      feedback: {
+        title: 'Voice practice complete',
+        message: 'Keep the four pitch directions distinct as you continue.',
+      },
+    })
+  }, [completeMedia, contentStep])
 
   if (!step || !contentStep) return null
 
@@ -66,6 +79,8 @@ function PinyinLessonSession({
         key={contentStep.id}
         lesson={lesson}
         onCompletePitchGuide={completePitchGuide}
+        onCompletePronunciationPractice={completePronunciationPractice}
+        onRecordMistake={recordMistake}
         onSubmitAnswer={submitAnswer}
         runtimeReady={step.session.isReady}
         step={contentStep}
@@ -79,6 +94,8 @@ function PinyinStepView({
   disabled,
   lesson,
   onCompletePitchGuide,
+  onCompletePronunciationPractice,
+  onRecordMistake,
   onSubmitAnswer,
   runtimeReady,
   step,
@@ -87,6 +104,8 @@ function PinyinStepView({
   disabled: boolean
   lesson: PinyinLessonDefinition
   onCompletePitchGuide: () => void
+  onCompletePronunciationPractice: () => void
+  onRecordMistake: ReturnType<typeof useLearningActions>['recordMistake']
   onSubmitAnswer: ReturnType<typeof useLessonStep>['submitAnswer']
   runtimeReady: boolean
   step: PinyinLessonStep
@@ -107,7 +126,18 @@ function PinyinStepView({
         <ToneChoiceInteraction
           correctToneNumber={step.correctToneNumber}
           disabled={disabled}
-          onSubmit={(result) =>
+          onSubmit={(result) => {
+            if (!result.isCorrect && lesson.nodeId) {
+              onRecordMistake({
+                lessonId: lesson.id,
+                nodeId: lesson.nodeId,
+                knowledgeIds: step.knowledgeIds,
+                prompt: step.prompt,
+                correction: step.correctFeedback,
+                reviewLabel: step.title,
+              })
+            }
+
             onSubmitAnswer({
               interactionId: `${step.id}:answer`,
               answer: result.selectedId,
@@ -121,9 +151,17 @@ function PinyinStepView({
                 message: step.incorrectFeedback,
               },
             })
-          }
+          }}
           prompt={step.prompt}
           tones={selectTones(lesson.tones, step.optionToneNumbers)}
+        />
+      )
+    case 'pronunciation-practice':
+      return (
+        <PronunciationPractice
+          completed={runtimeReady}
+          onComplete={onCompletePronunciationPractice}
+          step={step}
         />
       )
     case 'lesson-summary':

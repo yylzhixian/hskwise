@@ -9,7 +9,7 @@ export const fourTonesLesson = definePinyinLesson({
     'Recognize the four Mandarin tone shapes and connect each one with a pitch direction.',
   routeId: 'hsk3-level-1-starter',
   nodeId: 'node-four-tones',
-  estimatedMinutes: 6,
+  estimatedMinutes: 8,
   tones: [
     {
       number: 1,
@@ -98,7 +98,26 @@ export const fourTonesLesson = definePinyinLesson({
         'The fourth tone falls without turning upward. Its grave accent follows that drop.',
       incorrectFeedback:
         'Choose the path that starts high and ends low without a turn.',
+      knowledgeIds: ['pinyin.tone-shapes.tone3', 'pinyin.tone-shapes.tone4'],
+    },
+    {
+      id: 'four-tones-pronunciation-practice',
+      kind: 'pronunciation-practice',
+      eyebrow: 'Speak',
+      title: 'Follow the four-tone sequence',
+      instruction:
+        'Listen once, then record the same syllable across all four pitch paths.',
+      target: 'mā · má · mǎ · mà',
+      referenceAudio: {
+        src: '/audio/placeholders/pinyin/ma-four-tones.mp3',
+        label: 'Four-tone ma sequence',
+        contentOrigin: 'generated-placeholder',
+        placeholder: true,
+        mustReplaceBeforePublish: true,
+      },
       knowledgeIds: [
+        'pinyin.tone-shapes.tone1',
+        'pinyin.tone-shapes.tone2',
         'pinyin.tone-shapes.tone3',
         'pinyin.tone-shapes.tone4',
       ],
@@ -112,11 +131,11 @@ export const fourTonesLesson = definePinyinLesson({
         'You now have a visual map for noticing tones in future words and dialogues.',
       takeaways: [
         'First tone stays high and level.',
-        'Second tone rises; third tone dips and turns.',
+        'Second tone rises.',
+        'Third tone dips and turns.',
         'Fourth tone falls directly from high to low.',
       ],
       knowledgeIds: ['pinyin.tone-shapes'],
     },
   ],
 })
-

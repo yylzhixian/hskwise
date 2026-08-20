@@ -6,7 +6,7 @@
 |---|---|
 | 决策日期 | 2026-08-19 |
 | 文档状态 | 当前前端执行计划 |
-| 当前阶段 | FE4-03 原创发音素材、跟读与错误回流；[FE4-02 首门可运行拼音课程](progress/FE4-02-first-pinyin-lesson.md)已完成并归档 |
+| 当前阶段 | FE4-04 听辨扩展、原创真人音频替换与拼音课程验收；[FE4-03 发音练习与错误回流](progress/FE4-03-pronunciation-practice-and-error-flow.md)已完成并归档 |
 | 预计周期 | 5-7 周，约 25-33 个工程日 |
 | 目标版本 | Frontend Learning Alpha |
 | 数据方式 | 本地 TypeScript + Zod + 版本化 localStorage |
@@ -726,7 +726,7 @@ React 页面、课程类型组件、Lesson Session 状态机和共享学习原�
 3. FE2 已完成：Starter 路线、情景模拟和版本化本地存储见[阶段归档](progress/FE2-route-model-ui-and-scenario-simulator.md)；其中页面 fixture 注入已在 FE4-R1 移除。
 4. FE3 已完成：共享 Lesson Runtime、学习原语和媒体异常情景见[阶段归档](progress/FE3-shared-lesson-runtime-and-learning-primitives.md)。
 5. FE4-R1 已完成源码结构收敛，见[阶段归档](progress/FE4-R1-source-structure-simplification.md)。
-6. 当前继续 FE4-03，再按 FE5 -> FE6 顺序完成三类课程和闭环。
+6. 当前继续 FE4-04，再按 FE5 -> FE6 顺序完成三类课程和闭环。
 7. FE7 通过后，将 Frontend Learning Alpha 交给真实用户试用。
 
 在 FE7 完成前，不启动数据库、后端 API、Google 服务端登录或 Course Studio 工作。

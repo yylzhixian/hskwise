@@ -47,6 +47,43 @@ const pitchGuideStepSchema = z
   })
   .strict()
 
+export const pinyinAudioAssetSchema = z
+  .object({
+    src: z.string().startsWith('/'),
+    label: z.string().min(1),
+    contentOrigin: z.enum([
+      'original',
+      'licensed',
+      'generated-placeholder',
+    ]),
+    placeholder: z.boolean(),
+    mustReplaceBeforePublish: z.boolean(),
+  })
+  .strict()
+  .superRefine((asset, context) => {
+    const isPlaceholder = asset.contentOrigin === 'generated-placeholder'
+
+    if (
+      asset.placeholder !== isPlaceholder ||
+      asset.mustReplaceBeforePublish !== isPlaceholder
+    ) {
+      context.addIssue({
+        code: 'custom',
+        message:
+          'Generated placeholder audio must be marked placeholder and replaced before publish.',
+      })
+    }
+  })
+
+const pronunciationPracticeStepSchema = z
+  .object({
+    ...pinyinStepBase,
+    kind: z.literal('pronunciation-practice'),
+    target: z.string().min(1),
+    referenceAudio: pinyinAudioAssetSchema,
+  })
+  .strict()
+
 const toneChoiceStepSchema = z
   .object({
     ...pinyinStepBase,
@@ -70,6 +107,7 @@ const lessonSummaryStepSchema = z
 export const pinyinLessonStepSchema = z.discriminatedUnion('kind', [
   toneOverviewStepSchema,
   pitchGuideStepSchema,
+  pronunciationPracticeStepSchema,
   toneChoiceStepSchema,
   lessonSummaryStepSchema,
 ])
@@ -169,6 +207,11 @@ export function createPinyinRuntimeDefinition(
       completionRule:
         step.kind === 'pitch-guide'
           ? { kind: 'media' as const, mediaId: `${step.id}:pitch-guide` }
+          : step.kind === 'pronunciation-practice'
+            ? {
+                kind: 'media' as const,
+                mediaId: `${step.id}:pronunciation-practice`,
+              }
           : step.kind === 'tone-choice'
             ? {
                 kind: 'interaction' as const,
@@ -179,4 +222,3 @@ export function createPinyinRuntimeDefinition(
     })),
   })
 }
-
