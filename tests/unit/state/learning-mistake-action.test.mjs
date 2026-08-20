@@ -10,6 +10,8 @@ describe('learning mistake action', () => {
     const input = {
       lessonId: 'four-tones',
       nodeId: 'node-four-tones',
+      stepId: 'four-tones-falling-check',
+      interactionId: 'four-tones-falling-check:answer',
       knowledgeIds: [
         'pinyin.tone-shapes.tone3',
         'pinyin.tone-shapes.tone4',
@@ -31,9 +33,15 @@ describe('learning mistake action', () => {
     expect(state.reviewQueue).toHaveLength(2)
     expect(state.mistakes.every((mistake) => !mistake.resolved)).toBe(true)
     expect(state.mistakes[0].occurredAt).toBe('2026-08-20T08:06:00.000Z')
+    expect(state.mistakes[0]).toMatchObject({
+      stepId: 'four-tones-falling-check',
+      interactionId: 'four-tones-falling-check:answer',
+    })
     expect(state.reviewQueue[0]).toMatchObject({
       lessonId: 'four-tones',
       sourceNodeId: 'node-four-tones',
+      sourceStepId: 'four-tones-falling-check',
+      sourceInteractionId: 'four-tones-falling-check:answer',
       dueAt: '2026-08-21T08:05:00.000Z',
       status: 'queued',
       attemptCount: 0,

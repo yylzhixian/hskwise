@@ -134,6 +134,8 @@ function PinyinStepView({
               onRecordMistake({
                 lessonId: lesson.id,
                 nodeId: lesson.nodeId,
+                stepId: step.id,
+                interactionId: `${step.id}:answer`,
                 knowledgeIds: step.knowledgeIds,
                 prompt: step.prompt,
                 correction: step.correctFeedback,
@@ -168,6 +170,8 @@ function PinyinStepView({
               onRecordMistake({
                 lessonId: lesson.id,
                 nodeId: lesson.nodeId,
+                stepId: step.id,
+                interactionId: `${step.id}:answer`,
                 knowledgeIds: step.knowledgeIds,
                 prompt: step.prompt,
                 correction: step.correctFeedback,
@@ -249,6 +253,8 @@ function recordCheckMistake({
   onRecordMistake({
     lessonId: lesson.id,
     nodeId: lesson.nodeId,
+    stepId: step.id,
+    interactionId: `${step.id}:${question.id}`,
     knowledgeIds: question.knowledgeIds,
     prompt: question.prompt,
     correction: question.correctFeedback,

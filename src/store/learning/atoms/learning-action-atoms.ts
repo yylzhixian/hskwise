@@ -25,6 +25,8 @@ type HydrateLearningInput = {
 export type RecordLearningMistakeInput = {
   lessonId: string
   nodeId: string
+  stepId: string
+  interactionId: string
   knowledgeIds: string[]
   prompt: string
   correction: string
@@ -138,6 +140,8 @@ export const recordLearningMistakeAtom = atom(
             !mistake.resolved &&
             mistake.lessonId === input.lessonId &&
             mistake.nodeId === input.nodeId &&
+            mistake.stepId === input.stepId &&
+            mistake.interactionId === input.interactionId &&
             mistake.knowledgeId === knowledgeId,
         )
 
@@ -149,9 +153,11 @@ export const recordLearningMistakeAtom = atom(
         }
 
         draft.unshift({
-          id: `mistake:${input.lessonId}:${input.nodeId}:${knowledgeId}`,
+          id: `mistake:${input.lessonId}:${input.stepId}:${input.interactionId}:${knowledgeId}`,
           lessonId: input.lessonId,
           nodeId: input.nodeId,
+          stepId: input.stepId,
+          interactionId: input.interactionId,
           knowledgeId,
           prompt: input.prompt,
           correction: input.correction,
@@ -168,15 +174,19 @@ export const recordLearningMistakeAtom = atom(
             item.status === 'queued' &&
             item.lessonId === input.lessonId &&
             item.sourceNodeId === input.nodeId &&
+            item.sourceStepId === input.stepId &&
+            item.sourceInteractionId === input.interactionId &&
             item.knowledgeId === knowledgeId,
         )
 
         if (exists) continue
 
         draft.push({
-          id: `review:${input.lessonId}:${input.nodeId}:${knowledgeId}`,
+          id: `review:${input.lessonId}:${input.stepId}:${input.interactionId}:${knowledgeId}`,
           lessonId: input.lessonId,
           sourceNodeId: input.nodeId,
+          sourceStepId: input.stepId,
+          sourceInteractionId: input.interactionId,
           knowledgeId,
           label: input.reviewLabel,
           dueAt,

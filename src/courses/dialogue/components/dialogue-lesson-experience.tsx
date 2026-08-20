@@ -234,10 +234,12 @@ function recordDialogueMistake({
   if (!lesson.nodeId) return
   onRecordMistake({
     correction,
+    interactionId: `${step.id}:answer`,
     knowledgeIds: step.knowledgeIds,
     lessonId: lesson.id,
     nodeId: lesson.nodeId,
     prompt,
     reviewLabel,
+    stepId: step.id,
   })
 }

@@ -1,9 +1,30 @@
+import { z } from 'zod'
+
 import {
   learningStateSchema,
   type LearningState,
 } from '../model/learning-state-schema'
 
-export const learningStorageKey = 'hskwise.learning:v1'
+export const learningStorageKey = 'hskwise.learning:v2'
+export const legacyLearningStorageKey = 'hskwise.learning:v1'
+
+const legacyLearningStateSchema = learningStateSchema
+  .omit({ version: true, mistakes: true, reviewQueue: true })
+  .extend({
+    version: z.literal(1),
+    mistakes: z.array(
+      learningStateSchema.shape.mistakes.element.omit({
+        stepId: true,
+        interactionId: true,
+      }),
+    ),
+    reviewQueue: z.array(
+      learningStateSchema.shape.reviewQueue.element.omit({
+        sourceStepId: true,
+        sourceInteractionId: true,
+      }),
+    ),
+  })
 
 export type LearningStorageAdapter = {
   read: () => string | null
@@ -19,9 +40,17 @@ export type LearningStorageLoadResult =
 
 export function createWebStorageAdapter(storage: Storage): LearningStorageAdapter {
   return {
-    read: () => storage.getItem(learningStorageKey),
-    write: (value) => storage.setItem(learningStorageKey, value),
-    remove: () => storage.removeItem(learningStorageKey),
+    read: () =>
+      storage.getItem(learningStorageKey) ??
+      storage.getItem(legacyLearningStorageKey),
+    write: (value) => {
+      storage.setItem(learningStorageKey, value)
+      storage.removeItem(legacyLearningStorageKey)
+    },
+    remove: () => {
+      storage.removeItem(learningStorageKey)
+      storage.removeItem(legacyLearningStorageKey)
+    },
   }
 }
 
@@ -42,22 +71,45 @@ export function loadLearningState(
   if (serialized === null) return { kind: 'empty' }
 
   try {
-    const parsed = learningStateSchema.safeParse(JSON.parse(serialized))
+    const rawState: unknown = JSON.parse(serialized)
+    const parsed = learningStateSchema.safeParse(rawState)
 
-    if (!parsed.success) {
-      return {
-        kind: 'invalid',
-        diagnostic: 'Saved progress was invalid and has been reset safely.',
-      }
+    if (parsed.success) return { kind: 'loaded', state: parsed.data }
+
+    const legacy = legacyLearningStateSchema.safeParse(rawState)
+    if (legacy.success) {
+      return { kind: 'loaded', state: migrateLearningStateV1(legacy.data) }
     }
 
-    return { kind: 'loaded', state: parsed.data }
+    return {
+      kind: 'invalid',
+      diagnostic: 'Saved progress was invalid and has been reset safely.',
+    }
   } catch {
     return {
       kind: 'invalid',
       diagnostic: 'Saved progress could not be read and has been reset safely.',
     }
   }
+}
+
+function migrateLearningStateV1(
+  legacy: z.infer<typeof legacyLearningStateSchema>,
+): LearningState {
+  return learningStateSchema.parse({
+    ...legacy,
+    version: 2,
+    mistakes: legacy.mistakes.map((mistake) => ({
+      ...mistake,
+      stepId: 'legacy-unlinked',
+      interactionId: 'legacy-unlinked',
+    })),
+    reviewQueue: legacy.reviewQueue.map((item) => ({
+      ...item,
+      sourceStepId: 'legacy-unlinked',
+      sourceInteractionId: 'legacy-unlinked',
+    })),
+  })
 }
 
 export function saveLearningState(

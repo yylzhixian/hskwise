@@ -225,10 +225,12 @@ function recordVocabularyMistake({
   if (!lesson.nodeId) return
   recordMistake({
     correction,
+    interactionId: `${step.id}:answer`,
     knowledgeIds: step.knowledgeIds,
     lessonId: lesson.id,
     nodeId: lesson.nodeId,
     prompt,
     reviewLabel: step.title,
+    stepId: step.id,
   })
 }

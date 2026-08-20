@@ -29,6 +29,8 @@ function createRouteState({ complete = false, reviewDue = false } = {}) {
       id: 'review-four-tones',
       lessonId: nodes[0].lessonId,
       sourceNodeId: nodes[0].id,
+      sourceStepId: 'four-tones-falling-check',
+      sourceInteractionId: 'four-tones-falling-check:answer',
       knowledgeId: 'tone-shapes',
       label: 'Four tones',
       dueAt: now,

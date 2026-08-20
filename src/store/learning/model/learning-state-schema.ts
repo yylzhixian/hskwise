@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { learningGoalIds } from './learning-goal'
 
-export const learningStateVersion = 1 as const
+export const learningStateVersion = 2 as const
 
 const timestampSchema = z.string().datetime()
 const learningGoalSchema = z.enum(learningGoalIds)
@@ -19,6 +19,8 @@ export const mistakeRecordSchema = z.object({
   id: z.string().min(1),
   lessonId: z.string().min(1),
   nodeId: z.string().min(1),
+  stepId: z.string().min(1),
+  interactionId: z.string().min(1),
   knowledgeId: z.string().min(1),
   prompt: z.string().min(1),
   correction: z.string().min(1),
@@ -30,6 +32,8 @@ export const reviewItemSchema = z.object({
   id: z.string().min(1),
   lessonId: z.string().min(1),
   sourceNodeId: z.string().min(1),
+  sourceStepId: z.string().min(1),
+  sourceInteractionId: z.string().min(1),
   knowledgeId: z.string().min(1),
   label: z.string().min(1),
   dueAt: timestampSchema,

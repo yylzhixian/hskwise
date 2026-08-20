@@ -29,7 +29,7 @@
 | FE3 共享课程运行时与学习原语 | 已完成 | 2026-08-19 | [FE3 开发进度](FE3-shared-lesson-runtime-and-learning-primitives.md) |
 | FE4 拼音与声调课程 | 已完成 | 2026-08-20 | [FE4-04 拼音课程验收](FE4-04-listening-and-pinyin-course-acceptance.md) |
 | FE5 对话精读与跟读课程 | 已完成 | 2026-08-20 | [FE5 开发进度](FE5-dialogue-close-reading-and-role-practice.md) |
-| FE6 生词、检查点与复习闭环 | 进行中 | - | [FE6-01 首门生词课程](FE6-01-first-vocabulary-course.md) |
+| FE6 生词、检查点与复习闭环 | 进行中 | - | [FE6-02 混合检查点与错误关联升级](FE6-02-mixed-checkpoint-and-error-linkage.md) |
 | FE7 整体验收、性能和回归 | 待开始 | - | 完成后新增 |
 
 ## 阶段内校准记录
@@ -51,3 +51,4 @@
 | FE5-P7 对话练习反馈与逐句回听 | 已完成 | 2026-08-20 | [FE5-P7 校准记录](FE5-P7-dialogue-practice-feedback-and-playback.md) |
 | FE6-01 首门生词课程 | 已完成 | 2026-08-20 | [FE6-01 开发进度](FE6-01-first-vocabulary-course.md) |
 | FE6-P1 主动回忆反馈语义校准 | 已完成 | 2026-08-20 | [FE6-P1 校准记录](FE6-P1-recall-feedback-semantic-correction.md) |
+| FE6-02 混合检查点与错误关联升级 | 已完成 | 2026-08-20 | [FE6-02 开发进度](FE6-02-mixed-checkpoint-and-error-linkage.md) |

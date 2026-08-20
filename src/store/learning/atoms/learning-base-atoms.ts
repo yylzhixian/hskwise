@@ -2,6 +2,7 @@ import { atom } from 'jotai'
 import { atomWithImmer } from 'jotai-immer'
 
 import {
+  learningStateVersion,
   type MistakeRecord,
   type RecentActivity,
   type ReviewItem,
@@ -10,7 +11,7 @@ import {
 import type { LearningGoalId } from '../model/learning-goal'
 
 export type LearningProfileState = {
-  version: 1
+  version: typeof learningStateVersion
   goalId: LearningGoalId | null
   currentRouteId: string | null
   recentActivity: RecentActivity[]
@@ -23,7 +24,7 @@ export type LearningHydrationState = {
 }
 
 export const learningProfileAtom = atomWithImmer<LearningProfileState>({
-  version: 1,
+  version: learningStateVersion,
   goalId: null,
   currentRouteId: null,
   recentActivity: [],
