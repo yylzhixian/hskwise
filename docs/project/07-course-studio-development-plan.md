@@ -1,6 +1,6 @@
 # Course Studio 开发计划
 
-> 文档状态：历史技术计划。2026-08-18 起暂停通用 Course Studio 产品化，当前课程开发主线改为[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。Phase 0-4 和 U1 第一批成果保留用于运行时复用，但不再继续 U2-U4。
+> 文档状态：历史技术计划。2026-08-18 起暂停通用 Course Studio 产品化；2026-08-20 FE4-R1 已将其实现从当前源码移除，文内源码链接仅表示历史位置，可通过 Git 查阅。当前课程开发主线见[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。
 
 Course Studio 是 HSKWise 的课程生产平台。它面向 admin、老师和教研人员，让他们像制作 PPT 一样制作课程，但底层不是 PPT 文件、视频文件或题库文件，而是一套统一的可编排互动学习场景。
 

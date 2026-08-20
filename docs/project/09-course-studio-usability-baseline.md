@@ -2,7 +2,7 @@
 
 本文记录 Phase U0 的可用性基线、人工验收路径和遗留问题。详细实施顺序见 [Course Studio 可用性重构实施计划](08-course-studio-usability-refactor-plan.md)。
 
-> 文档状态：历史基线。U1 第一批完成后，通用 Course Studio 已暂停；当前路线见[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。
+> 文档状态：历史基线。通用 Course Studio 已暂停，并在 2026-08-20 FE4-R1 从当前源码移除；下文入口和样例均为历史记录。当前路线见[代码优先课程开发与模板演进计划](10-code-first-course-development-plan.md)。
 
 | 项目 | 当前值 |
 |---|---|

@@ -1,6 +1,6 @@
 # 开发方案
 
-> 本文保留技术专题设计。当前阶段和正式开发顺序以[网站整体规划与正式开发主线](11-website-master-plan.md)为准。
+> 本文保留早期技术专题设计。2026-08-20 后的源码结构见 [src/README.md](/Users/yanglong/Documents/YL/hskwise/src/README.md)，当前阶段和正式开发顺序以[网站整体规划与正式开发主线](11-website-master-plan.md)为准。
 
 ## 1. 当前仓库状态
 
@@ -27,8 +27,8 @@
 | Google 类型 | credential response、payload、按钮配置相关类型 | [src/types/google-identity.ts](/Users/yanglong/Documents/YL/hskwise/src/types/google-identity.ts) |
 | API | 只提供 `/api/health` 和 `/api/db` | [src/app/api/[[...slugs]]/route.ts](/Users/yanglong/Documents/YL/hskwise/src/app/api/[[...slugs]]/route.ts) |
 | 数据库 schema | 第一阶段用户/登录/目标/内容表，按表拆分，字段说明维护在代码注释中 | [src/db/schema/](/Users/yanglong/Documents/YL/hskwise/src/db/schema/) |
-| 课程运行时实验 | 已完成 scene、interaction、音频、事件、进度和 sample project；后续供代码优先课程复用 | [src/features/course-studio/](/Users/yanglong/Documents/YL/hskwise/src/features/course-studio/) |
-| Course Studio 历史原型 | 已完成 admin 预览、时间轴和 U1 第一批，当前暂停产品化 | [src/app/admin/studio/page.tsx](/Users/yanglong/Documents/YL/hskwise/src/app/admin/studio/page.tsx) |
+| 正式学习运行时 | Lesson Session、Jotai store 隔离、路线进度和本地持久化 | [src/learning/](/Users/yanglong/Documents/YL/hskwise/src/learning/) |
+| Course Studio 历史原型 | 曾完成 admin 预览、时间轴和 U1 第一批；FE4-R1 已从当前源码移除 | [FE4-R1 进度](progress/FE4-R1-source-structure-simplification.md) |
 
 尚未实现：服务端 Google ID token 校验、用户 upsert、session 创建、退出登录、设备管理、内容导入脚本和真实学习路线页面。
 
@@ -53,62 +53,43 @@ flowchart TB
 
 ## 3. 前端结构
 
-当前已落地的前端文件比较扁平：
+当前前端按路由、页面、公共能力和领域运行时分层：
 
 ```text
 src/
   app/
+    (learning)/
+    (lesson)/
     page.tsx
     api/[[...slugs]]/route.ts
+  views/
+    home/
+    learning/
+    lesson/
   components/
-    google-login-button.tsx
+    learning-shell/
+    lesson/
     ui/
   hooks/
-    use-google-credential-callback.ts
-  types/
-    google-identity.ts
-    global.d.ts
-```
-
-随着功能变多，再逐步演进为按业务域组织：
-
-```text
-src/
-  app/
-    page.tsx
-    dashboard/
-    learn/
-    routes/
-    courses/
-    vocabulary/
-    practice/
-    review/
-    mock-exams/
-    mistakes/
-    progress/
-    api/[[...slugs]]/route.ts
-  components/
-    app-shell/
     learning/
-    practice/
-    progress/
-    ui/
-  features/
-    onboarding/
-    learning-routes/
-    courses/
-    vocabulary/
-    practice/
-    review/
-    exams/
-    mistakes/
+    lesson/
+  store/
+    learning/
+  courses/
+    pinyin/
+  learning/
+    routes/
+    runtime/
   lib/
-    api/
-    content/
-    srs/
-    scoring/
-    utils.ts
+  types/
 ```
+
+目录约束：
+
+- `app/` 只保留 Next.js 路由、布局、边界和 Route Handler。
+- 页面实现放在 `views/`，跨页面组件与 hooks 分别放在 `components/` 和 `hooks/`。
+- 全局 Jotai 状态进入 `store/`，课程类型与局部运行时进入 `courses/` 和 `learning/`。
+- 公共工具与跨领域类型分别进入 `lib/` 和 `types/`，不重新建立万能 `features/` 容器。
 
 ## 4. API 模块
 

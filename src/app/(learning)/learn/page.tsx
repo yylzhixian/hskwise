@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 
-import { LearningHome } from '@/features/learning-routes/components/learning-home'
+import { LearningHomeView } from '@/views/learning/learning-home-view'
 
 export const metadata: Metadata = {
   title: 'Learn',
 }
 
 export default function Page() {
-  return <LearningHome />
+  return <LearningHomeView />
 }

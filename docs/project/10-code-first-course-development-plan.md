@@ -10,7 +10,7 @@
 | 文档状态 | 当前执行方案 |
 | 专题阶段 | CF1：首门拼音课程已可运行；整体处于 M0-FE4-03 |
 | 课程生产方式 | 代码优先，模板后置 |
-| Course Studio 状态 | 暂停通用编辑器开发 |
+| Course Studio 状态 | 已从当前源码移除，历史方案由文档与 Git 保留 |
 
 ## 1. 决策摘要
 
@@ -138,29 +138,32 @@ React 负责：
 具体目录在开始实现首门课程时根据现有代码调整，职责目标如下：
 
 ```text
-src/features/courses/
-  runtime/
-    course-session.ts
-    learning-events.ts
-    progress.ts
-    audio.ts
-  primitives/
-    lesson-shell.tsx
-    teaching-step.tsx
-    dialogue-line.tsx
-    vocabulary-card.tsx
-    interaction-feedback.tsx
-  templates/
-    pinyin-lesson/
-    dialogue-reading/
-    vocabulary-practice/
-  content/
-    hsk3-level-1/
-      lesson-01.ts
-      lesson-02.ts
+src/
+  app/                       纯 Next.js 路由与边界文件
+  views/                     页面实现与页面私有 components、hooks
+  components/                跨页面或跨课程公共组件与学习外壳
+  hooks/                     跨页面或跨课程公共 hooks
+  store/learning/            跨页面 Jotai 状态与持久化
+  courses/
+    lesson-registry.ts
+    pinyin/
+      components/
+      content/
+      hooks/
+      model/
+    dialogue/
+    vocabulary/
+  learning/
+    routes/                 路线数据与派生计算
+    runtime/                单课 atoms、状态机与隔离 store
+  lib/                      公共工具与基础设施
+  types/                    跨领域全局类型
+tests/
+  fixtures/                 仅测试使用的课程样本
+  unit/                     正式纯逻辑测试
 ```
 
-首批实现可以复用 `src/features/course-studio/` 中稳定的运行时；不要求立即移动文件。只有职责稳定后再重命名，避免为了新目录做无行为收益的迁移。
+2026-08-20 完成职责收敛后，旧 Course Studio、runtime lab 和开发 fixture 已从当前源码移除。仍有参考价值的实验结论保留在历史文档与 Git 中；正式课程不再依赖其 schema、播放器或编辑器代码。
 
 ## 6. 模板数据协议
 

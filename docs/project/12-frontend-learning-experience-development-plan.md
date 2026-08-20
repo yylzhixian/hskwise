@@ -1,6 +1,6 @@
 # 前端学习体验分阶段开发计划
 
-本文是 [HSKWise 网站整体规划与正式开发主线](11-website-master-plan.md) 下的当前前端执行子计划。当前阶段只实现前端 UI、课程运行逻辑、本地模拟数据和用户学习情景，不接数据库，不调用后端 API，也不以登录系统作为进入学习的前置条件。
+本文是 [HSKWise 网站整体规划与正式开发主线](11-website-master-plan.md) 下的当前前端执行子计划。当前阶段只实现前端 UI、课程运行逻辑、本地课程数据和用户学习状态，不接数据库，不调用后端 API，也不以登录系统作为进入学习的前置条件。
 
 | 项目 | 当前值 |
 |---|---|
@@ -48,7 +48,7 @@
 - 四节点 `HSK 3.0 Level 1 Starter` 路线。
 - 拼音、对话、生词、检查点四种课程组件。
 - 本地学习进度、尝试、错题、复习和事件日志。
-- 正常、返回学习、答错、音频失败、麦克风拒绝等模拟情景。
+- 正常、返回学习、答错、音频失败、麦克风拒绝等状态测试。
 - 桌面、平板、移动端、键盘和 reduced-motion 验收。
 
 ### 1.3 明确不包含
@@ -72,34 +72,25 @@
 3. 用户完成四种课程，获得即时反馈并推进路线。
 4. 错误被记录并在复习页面重新出现。
 5. 刷新或关闭页面后，进度可以从本地恢复。
-6. 开发者可以切换预设情景，演示返回用户、待复习用户和媒体错误用户。
+6. 开发者可以通过独立测试构造返回用户、待复习用户和媒体错误状态，不污染正式页面。
 7. 所有课程内容来自可校验数据，不散落在 JSX 中。
 8. 后续增加第二门同类型课程时，不需要复制课程外壳和运行逻辑。
 9. 拼音、对话、生词组件各用第二份内容 fixture 渲染通过，证明复用不依赖首课特例。
 
-## 3. 用户学习情景
+## 3. 用户状态测试
 
-开发过程使用固定 fixture，而不是靠手工反复修改 localStorage。
+开发状态不再通过查询参数或页面内切换器注入正式应用。测试在 `tests/` 中直接构造 `LearningState`、lesson store 或课程 fixture，并验证以下状态：
 
-| Fixture | 初始状态 | 用于验证 |
-|---|---|---|
-| `new-learner` | 无目标、无进度 | 首次目标选择、第一课启动、空状态 |
-| `active-learner` | 完成四声课，当前为对话课 | `/learn` Continue、路线状态、返回学习 |
-| `review-due` | 有两个到期错题 | 今日复习、复习完成、路线优先级 |
-| `mixed-mistakes` | 听辨、生词各有一次错误 | 错题分类、重试和答对后移出 |
-| `course-complete` | 四个节点全部完成 | 完成态、下一阶段预告和进度总结 |
-| `audio-unavailable` | 指定音频资源不可用 | 缺失、加载失败、重试和不阻断课程 |
-| `microphone-denied` | 录音能力返回权限拒绝 | 权限说明、跳过、自我练习替代路径 |
-| `storage-unavailable` | localStorage 读写抛错 | 内存降级、状态提示和页面可继续使用 |
+| 状态 | 用于验证 |
+|---|---|
+| 无目标、无进度 | 首次目标选择、第一课启动、空状态 |
+| 完成部分节点 | `/learn` Continue、路线状态、返回学习 |
+| 有到期错题 | 今日复习、路线优先级 |
+| 全部节点完成 | 完成态、下一阶段预告和进度总结 |
+| localStorage 不可用 | 内存降级、状态提示和页面可继续使用 |
+| 媒体不可用或权限拒绝 | 正式媒体接口的降级行为，不使用 fixture adapter |
 
-开发环境允许通过查询参数或内部情景切换器加载 fixture，例如：
-
-```text
-/learn?fixture=active-learner
-/lessons/four-tones?fixture=audio-unavailable
-```
-
-生产构建不显示情景切换器，fixture 数据与正式本地进度分开。
+这种方式让正式页面始终只读取真实本地状态，同时保留可重复、相互隔离的边界测试。
 
 ## 4. 前端架构
 
@@ -132,132 +123,67 @@ src/
       learn/
         page.tsx
         routes/[routeId]/page.tsx
-      review/page.tsx
-      mistakes/page.tsx
       layout.tsx
     (lesson)/
       lessons/[lessonId]/page.tsx
       layout.tsx
     page.tsx
 
-  features/
-    learning-state/
+  views/
+    home/                        首页实现与私有 components、hooks
+    learning/                    路线页面实现与私有 components、hooks
+    lesson/                      课程页面实现与内部组件
+
+  components/
+    learning-shell/              跨页面学习外壳
+    lesson/                      跨课程共享框架
+    ui/                          无业务语义的基础 UI
+
+  hooks/
+    learning/                    跨页面/课程的学习 hooks
+    lesson/                      跨课程类型的运行时 hooks
+
+  store/
+    learning/                    跨页面 Jotai 状态与持久化
+
+  courses/
+    lesson-registry.ts
+    pinyin/
+      components/
+      content/
+      hooks/
       model/
-        learning-state.ts
-        learning-state-schema.ts
+
+  learning/
+    routes/
+      content/
+      model/
+    runtime/
       atoms/
-        learning-progress-atoms.ts
-        mistake-atoms.ts
-        review-atoms.ts
-        learning-action-atoms.ts
-        learning-selector-atoms.ts
-      hooks/
-        use-learning-hydration.ts
-        use-learning-persistence.ts
-        use-learning-progress.ts
-        use-learning-actions.ts
-        use-mistake-book.ts
-        use-review-queue.ts
-      storage/
-        learning-storage.ts
-        memory-storage.ts
-
-    learning-routes/
       model/
-        route-schema.ts
-        route-progress.ts
-      content/
-        hsk3-level-1-starter.ts
-      components/
-        learning-home.tsx
-        route-map.tsx
-        route-node.tsx
-        route-stage.tsx
-
-    lesson-runtime/
-      model/
-        lesson-session.ts
-        learning-event.ts
-        attempt.ts
-        review-item.ts
+      provider/
       state/
-        lesson-session-atom.ts
-        lesson-session-action-atoms.ts
-        lesson-session-machine.ts
-        lesson-store-provider.tsx
-      hooks/
-        use-lesson-session.ts
-        use-lesson-step.ts
-        use-lesson-completion.ts
-      components/
-        lesson-frame.tsx
-        lesson-header.tsx
-        lesson-progress.tsx
-        lesson-action-bar.tsx
-        step-feedback.tsx
-        lesson-summary.tsx
 
-    courses/
-      shared/
-        components/
-          audio-control.tsx
-          choice-group.tsx
-          recording-control.tsx
-          prompt-block.tsx
-          sentence-builder.tsx
-          interaction-feedback.tsx
-        media/
-          audio-adapter.ts
-          recorder-adapter.ts
-        hooks/
-          use-audio-control.ts
-          use-recording-control.ts
-      pinyin/
-        pinyin-lesson-schema.ts
-        pinyin-lesson.tsx
-        tone-curve.tsx
-        tone-listening-step.tsx
-      dialogue/
-        dialogue-lesson-schema.ts
-        dialogue-lesson.tsx
-        dialogue-line.tsx
-        role-practice-step.tsx
-      vocabulary/
-        vocabulary-lesson-schema.ts
-        vocabulary-lesson.tsx
-        vocabulary-card.tsx
-        word-recall-step.tsx
-      checkpoint/
-        checkpoint-schema.ts
-        checkpoint-lesson.tsx
-      content/
-        hsk3-level-1/
-          four-tones.ts
-          first-greeting.ts
-          first-words.ts
-          starter-checkpoint.ts
-      registry/
-        lesson-registry.ts
+  lib/                           公共工具函数与基础设施
+  types/                         跨领域全局类型
 
-    learning-simulator/
-      fixtures/
-      scenario-provider.tsx
-      capability-adapters.ts
-      dev-scenario-switcher.tsx
+tests/
+  fixtures/                       仅测试可见的课程样本
+  unit/                           路线、状态、运行时和课程协议测试
 ```
 
-路由组只组织布局，不改变 URL。`page.tsx` 默认保持 Server Component，只把真正需要浏览器状态、音频、录音或事件处理的叶子组件标记为 Client Component。
+路由组只组织布局，不改变 URL。`app/` 内只保留 Next.js 路由、布局、加载/错误边界和 Route Handler；页面实现统一进入 `views/`。`page.tsx` 默认保持 Server Component，只把真正需要浏览器状态、音频、录音或事件处理的叶子组件标记为 Client Component。
 
-状态层不使用全局模块单例承载可变用户状态。应用根部创建跨页面 `learningStore`，单课页面按 `lessonId` 创建隔离的 `lessonStore`；切换课程时销毁旧会话，fixture 测试则注入独立 store，避免测试和课程之间串状态。LessonStore 不通过嵌套 Jotai Provider 遮蔽根 store，而由专用 Context 只传递 store 实例，课程 hooks 使用 Jotai hook 的 `{ store: lessonStore }` 选项访问。
+状态层不使用全局模块单例承载可变用户状态。应用根部创建跨页面 `learningStore`，单课页面按 `lessonId` 创建隔离的 `lessonStore`；切换课程时销毁旧会话，单元测试直接创建独立 store，避免测试和课程之间串状态。LessonStore 不通过嵌套 Jotai Provider 遮蔽根 store，而由专用 Context 只传递 store 实例，课程 hooks 使用 Jotai hook 的 `{ store: lessonStore }` 选项访问。
 
 ### 4.3 组件边界
 
 四层组件边界必须保持清楚：
 
-1. `components/ui`：shadcn 基础组件，不包含 HSK 或课程业务。
-2. `courses/shared`：音频、录音、选项、反馈等跨课程学习原语。
+1. `views/{page}`：页面实现和只服务该页面的 components、hooks 与辅助逻辑。
+2. `components`、`hooks` 与 `store`：真正跨页面/课程复用的公共能力和全局状态；store 私有 Hook 与 store 共置。
 3. `courses/{type}`：拼音、对话、生词、检查点的专用组件和 schema。
-4. `lesson-runtime`：步骤推进、尝试、完成、事件和持久化，不理解具体课程视觉。
+4. `learning/routes` 与 `learning/runtime`：路线纯逻辑和局部单课状态机，不理解页面视觉。
 
 禁止：
 
@@ -326,7 +252,6 @@ type LessonRuntimeProps<TLesson> = {
   onAnswer: (answer: LessonAnswer) => void
   onContinue: () => void
   onComplete: () => void
-  capabilities: LearningCapabilities
 }
 ```
 
@@ -344,13 +269,13 @@ type LessonRuntimeProps<TLesson> = {
 
 每种主要课程组件至少接入两份数据：
 
-| 类型 | 路线正式内容 | 复用验证 fixture |
+| 类型 | 路线正式内容 | 测试内容样本 |
 |---|---|---|
 | 拼音 | `four-tones` | `tone-contrast-sample` |
 | 对话 | `first-greeting` | `asking-name-sample` |
 | 生词 | `first-words` | `daily-items-sample` |
 
-第二份 fixture 只用于开发和测试，不进入四节点路线。验收要求：
+第二份内容样本只位于 `tests/fixtures`，不进入正式注册表和四节点路线。验收要求：
 
 - 不修改课程组件即可渲染第二份内容。
 - 不增加只服务单份内容的布尔配置。
@@ -370,8 +295,8 @@ type LessonRuntimeProps<TLesson> = {
 | 派生完成、锁定和到期状态 | 由领域状态计算 | 只读 selector atoms |
 | 音频播放状态 | 当前媒体控件 | 独立 audio hook / adapter |
 | 录音状态和 blob URL | 当前跟读步骤 | 独立 recorder hook / adapter |
-| fixture 初始学习状态 | 开发会话 | 独立预置 Jotai store |
-| fixture 媒体能力 | 开发会话 | `ScenarioProvider` 注入 adapter |
+| 测试初始学习状态 | 单元测试 | 测试内独立创建 state / Jotai store |
+| 媒体异常状态 | 媒体组件或浏览器测试 | 正式 adapter 的可控接口 |
 
 固定采用已安装的 `jotai` 和 `jotai-immer`。不建立一个包含全部 UI、媒体和课程数据的巨大 Context，也不把所有数据塞入单个根 atom。
 
@@ -418,7 +343,7 @@ hooks 是组件与状态/能力层之间的公开接口，用于聚合一个完�
 - 课程入口按 `lessonId` 创建独立 `lessonStore`，初始状态来自课程定义和已确认进度；离开或切换课程即丢弃未提交的会话临时状态。
 - `LessonStoreProvider` 只用轻量 Context 传递 store 实例，不嵌套第二个 Jotai Provider；课程 hooks 从 Context 取得实例，并通过 `useAtomValue(atom, { store })` / `useSetAtom(atom, { store })` 访问会话 atoms。
 - `useLessonCompletion` 可分别读取 lessonStore 并向根 learningStore 提交完成动作，两种状态不会因 Provider 遮蔽而断开。
-- fixture 使用 `createStore()` 构造全新实例并注入初始状态，禁止修改模块级默认 atom 值来切换情景。
+- 单元测试使用 `createStore()` 构造全新实例并注入初始状态，禁止修改模块级默认 atom 值。
 - Server Component 只传递可序列化的课程和路线输入，不读取或修改客户端 Jotai store。
 - Provider 只定义 store 边界，不承载业务方法；业务 API 统一由领域 hooks 提供。
 
@@ -479,7 +404,7 @@ hskwise.learning:v1
 - 首次答错立即创建 `ReviewItem`。
 - 当前课程内答对重试后仍保留“曾经答错”记录，但标记为已纠正。
 - 课程完成后，未纠正错误进入 `/review`。
-- fixture 可注入当前时间，稳定模拟到期复习。
+- 测试直接传入固定当前时间，稳定验证到期复习。
 - 复习答对后从当前队列移除；再次答错则保持并增加 attempt。
 
 本阶段不实现正式 SRS 算法，只保留未来需要的 `dueAt`、`interval` 和 `difficulty` 字段边界。
@@ -490,7 +415,7 @@ hskwise.learning:v1
 
 项目当前使用 `base-rhea`、Base UI、RSC、Tailwind v4、CSS variables 和 lucide。
 
-- 优先复用现有 `Button`、`Badge`、`Progress`、`ToggleGroup`、`Dialog`、`Tooltip`、`Separator`。
+- 优先复用现有 `Button`、`Badge`、`Progress`、`ToggleGroup`、`Tooltip`、`Separator`。
 - 新增组件前通过项目包管理器查询当前 shadcn 文档和 registry，不根据旧 API 猜写。
 - Base UI trigger 使用 `render`，不用 Radix 的 `asChild`。
 - 颜色写入 `src/styles/tailwind.css` 的语义 CSS variables，不在业务 JSX 写 raw color。
@@ -518,7 +443,7 @@ hskwise.learning:v1
 - 确认本计划为当前前端执行方案，后端工作暂停。
 - 阅读本地 Next.js 16.3 项目结构、布局与页面、Server/Client Components、lazy loading、UI state preservation 和 Playwright 指南。
 - 建立现有 Course Studio 代码的“直接复用、提取复用、仅参考、冻结”清单。
-- 确定四门课程 ID、路线节点 ID、知识点 ID 和 fixture ID。
+- 确定四门课程 ID、路线节点 ID、知识点 ID 和测试内容样本 ID。
 - 冻结 `learningStore` / `lessonStore` 作用域、atom 依赖图、Immer 使用边界和领域 hooks 公共接口。
 - 定义 ESLint `no-restricted-imports` 分层规则，阻止 UI 直连 atoms、storage、adapter，以及 model 反向依赖 React。
 - 确定测试命令、浏览器基准视口和开发 URL。
@@ -567,21 +492,21 @@ hskwise.learning:v1
 - 实现声调曲线路线、节点状态、锁定和检查点。
 - 实现根级 `learningStore`、progress / mistake / review atoms 和窄粒度 selector atoms。
 - 实现 `useLearningHydration`、`useLearningProgress`、`useLearningActions`、`useMistakeBook` 和 `useReviewQueue`。
-- 实现版本化本地存储、内存降级和 fixture store factory。
-- 实现开发环境情景切换和进度重置。
+- 实现版本化本地存储、内存降级和测试 state/store factory。
+- 实现正式进度重置，并在测试中覆盖边界状态。
 
 交付：
 
 - `/learn`
 - `/learn/routes/hsk3-level-1-starter`
-- 八种 fixture 可稳定复现。
+- 新用户、返回用户、到期复习、完成和存储异常状态可由独立测试稳定复现。
 
 验收：
 
 - 新用户、返回用户和已完成用户看到不同且正确的 Continue。
 - 刷新后进度保持；损坏数据自动降级。
 - 本地状态恢复期间不闪现错误的路线、连胜或新用户状态，骨架切换不引发布局跳动。
-- 页面组件不直接导入 writable atoms 或 storage；fixture 切换会创建新 store，不污染其他情景。
+- 页面组件不直接导入 writable atoms 或 storage；不同测试会创建独立 store，不污染其他情景。
 - 路线页不加载完整课程 bundle。
 - 当前、完成、锁定、复习和检查点同时使用颜色与非颜色提示。
 
@@ -595,12 +520,12 @@ hskwise.learning:v1
 - 实现选择题、音频控制、录音控制、句子排序和互动反馈原语。
 - 复用或提取现有文本规范化、判题、音频状态和录音逻辑，并封装 `useAudioControl`、`useRecordingControl`。
 - 建立事件记录和 progress / mistake / review 更新桥接。
-- 为媒体能力定义真实 adapter 和 fixture adapter。
+- 为媒体能力定义正式 adapter 和可测试接口。
 
 交付：
 
 - 可用通用 Lesson Frame。
-- 独立演示各共享互动状态的开发页面或测试 fixture。
+- 使用组件测试或浏览器测试覆盖各共享互动状态，不增加公开演示页。
 
 验收：
 
@@ -680,7 +605,7 @@ hskwise.learning:v1
 - 生词课程不是翻卡片到底，至少包含识别、回忆和应用。
 - 检查点只编排已经学过的能力，不引入新知识。
 - 错误可关联 lesson、step、interaction 和 knowledge ref。
-- `review-due`、`mixed-mistakes`、`course-complete` fixture 全部可演示。
+- 到期复习、混合错题和课程完成状态全部有自动化测试。
 - 刷新后复习和错题状态保持。
 - 两份生词内容使用同一组件和 schema 渲染通过。
 
@@ -690,7 +615,7 @@ hskwise.learning:v1
 
 - 从 `/` 开始完整走通四节点路线。
 - 每个课程分别验证正确、错误、重试、退出和刷新恢复。
-- 验证所有 fixture 和媒体异常。
+- 验证所有测试状态和媒体异常。
 - 验证浏览器前进/后退时课程临时状态不会错误泄漏。
 
 质量工作：
@@ -707,7 +632,7 @@ hskwise.learning:v1
 
 - 四节点路线无需开发者解释即可完成。
 - 三种课程共享稳定组件，但保留各自教学结构。
-- 拼音、对话和生词组件分别通过第二份内容 fixture，新增同类内容无需修改组件。
+- 拼音、对话和生词组件分别通过第二份测试内容，新增同类内容无需修改组件。
 - 所有正常和异常情景均有明确 UI。
 - 无后端环境下可以作为完整 Frontend Learning Alpha 演示。
 - 没有阻断级移动端、键盘、内容校验或版权标记问题。
@@ -719,7 +644,7 @@ hskwise.learning:v1
 - 每种课程 schema 接受合法数据并拒绝代码/样式泄漏。
 - `LessonSession` 每个状态转换。
 - Jotai write atoms 只接受语义动作，并正确调用纯状态迁移。
-- `learningStore` 与 `lessonStore`、不同 fixture store 之间互不泄漏状态。
+- `learningStore` 与 `lessonStore`、不同测试 store 之间互不泄漏状态。
 - 领域 hooks 只返回所需派生值和动作，不暴露 draft、storage 或底层 writable atom。
 - 重试 attempt 序号和最新正确性。
 - 完成规则不会提前完成。
@@ -787,7 +712,7 @@ hskwise.learning:v1
 |---|---|
 | `lesson-registry` 本地内容 | 课程 API / 发布内容读取 |
 | `learning-storage` localStorage | 进度 API adapter |
-| fixture route state | 用户真实路线和推荐结果 |
+| 本地路线派生状态 | 用户真实路线和推荐结果 API |
 | 内存事件日志 | 学习事件持久化 |
 | 本地 review queue | SRS / review API |
 | placeholder capability adapter | 真实媒体和语音服务 |
@@ -798,9 +723,10 @@ React 页面、课程类型组件、Lesson Session 状态机和共享学习原�
 
 1. FE0 已完成：稳定 ID、复用清单、工程约束和截图基线见[阶段归档](progress/FE0-baseline-and-engineering-preparation.md)。
 2. FE1 已完成：设计 token、学习布局、目标入口和课节壳见[阶段归档](progress/FE1-design-system-and-application-shell.md)。
-3. FE2 已完成：Starter 路线、fixture 和版本化本地存储见[阶段归档](progress/FE2-route-model-ui-and-scenario-simulator.md)。
+3. FE2 已完成：Starter 路线、情景模拟和版本化本地存储见[阶段归档](progress/FE2-route-model-ui-and-scenario-simulator.md)；其中页面 fixture 注入已在 FE4-R1 移除。
 4. FE3 已完成：共享 Lesson Runtime、学习原语和媒体异常情景见[阶段归档](progress/FE3-shared-lesson-runtime-and-learning-primitives.md)。
-5. 当前执行 FE4，再按 FE5 -> FE6 顺序完成三类课程和闭环。
-6. FE7 通过后，将 Frontend Learning Alpha 交给真实用户试用。
+5. FE4-R1 已完成源码结构收敛，见[阶段归档](progress/FE4-R1-source-structure-simplification.md)。
+6. 当前继续 FE4-03，再按 FE5 -> FE6 顺序完成三类课程和闭环。
+7. FE7 通过后，将 Frontend Learning Alpha 交给真实用户试用。
 
 在 FE7 完成前，不启动数据库、后端 API、Google 服务端登录或 Course Studio 工作。

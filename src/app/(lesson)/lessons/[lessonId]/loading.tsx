@@ -1,5 +1,5 @@
-import { LessonExperienceLoading } from '@/features/lesson-runtime/components/lesson-experience-loading'
+import { LessonLoadingView } from '@/views/lesson/lesson-loading-view'
 
 export default function Loading() {
-  return <LessonExperienceLoading />
+  return <LessonLoadingView />
 }

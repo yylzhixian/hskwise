@@ -233,15 +233,24 @@ HSKWise 不以题目数量取胜，而以三层组合取胜：
 首批课程使用本地 TypeScript 数据和窄范围 Zod schema：
 
 ```text
-src/features/learning-routes/
-src/features/courses/runtime/
-src/features/courses/pinyin/
-src/features/courses/dialogue/
-src/features/courses/vocabulary/
-src/features/courses/content/hsk3-level-1/
+src/app/                         # 纯路由、布局和边界文件
+src/views/home/
+src/views/learning/
+src/views/lesson/
+src/components/
+src/hooks/
+src/store/learning/
+src/learning/routes/
+src/learning/runtime/
+src/courses/pinyin/
+src/courses/dialogue/
+src/courses/vocabulary/
+src/lib/
+src/types/
 ```
 
 - 内容数据必须可序列化，不包含 React、函数、CSS class 或任意脚本。
+- 页面特有的组件、hooks 和辅助逻辑与对应 `views/{page}` 共置；公共目录只接收已有跨页面或跨课程消费者的能力。
 - React 直接实现课程体验，不先建立通用模板系统。
 - 复用现有判题、录音、事件和进度纯逻辑；`ScenePlayer`只作参考，不直接成为学习者课程外壳。
 - 访客进度第一阶段可以保存在本地；账户和云同步在纵向切片稳定后接入。
@@ -641,7 +650,7 @@ M0 使用以下初始方向，实际实现后通过桌面和移动截图校准�
 2. FE1 已完成：设计系统和应用骨架已归档。
 3. FE2 已完成：路线 UI、fixture 和版本化本地存储已归档。
 4. FE3 已完成：共享课程运行时、学习原语和媒体异常情景已归档。
-5. FE4-02 已完成首门可运行拼音课程；当前执行 FE4-03，再按 FE5-FE6 完成三种课程、检查点和复习闭环。
+5. FE4-02 已完成首门可运行拼音课程，FE4-R1 已完成源码结构收敛；当前执行 FE4-03，再按 FE5-FE6 完成三种课程、检查点和复习闭环。
 6. FE7 通过浏览器、视觉、性能和无障碍验收。
 
 当前下一项工作不是继续扩写规划，而是补齐 FE4 原创发音素材、跟读与错误回流。

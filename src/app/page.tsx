@@ -1,10 +1,5 @@
-import { GoalEntry } from '@/features/learning-entry/components/goal-entry'
-import { LearningShell } from '@/features/learning-shell/components/learning-shell'
+import { HomeView } from '@/views/home/home-view'
 
 export default function Page() {
-  return (
-    <LearningShell>
-      <GoalEntry />
-    </LearningShell>
-  )
+  return <HomeView />
 }
