@@ -85,7 +85,8 @@ export function RouteMap({ nodeViews, progressPercent }: RouteMapProps) {
         {nodeViews.map((view, index) => {
           const { node, status } = view
           const isInteractive = status !== 'locked'
-          const href = `/lessons/${node.lessonId}${status === 'review' ? '?mode=review' : ''}`
+          const href =
+            status === 'review' ? '/review' : `/lessons/${node.lessonId}`
           const content = (
             <>
               <span
@@ -131,7 +132,9 @@ export function RouteMap({ nodeViews, progressPercent }: RouteMapProps) {
                   aria-label={`${node.title}, ${statusLabels[status]}`}
                   className="group flex flex-col items-center gap-2 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
                   href={href}
-                  onClick={() => startStarterRoute()}
+                  onClick={
+                    status === 'review' ? undefined : () => startStarterRoute()
+                  }
                 >
                   {content}
                 </Link>

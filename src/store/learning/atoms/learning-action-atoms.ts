@@ -7,6 +7,11 @@ import type { LearningGoalId } from '../model/learning-goal'
 import { createEmptyLearningState } from '../model/learning-state'
 import type { LearningState } from '../model/learning-state-schema'
 import {
+  getReviewRetryDueAt,
+  reviewItemMatchesMistake,
+  type LearningReviewResult,
+} from '../model/review-schedule'
+import {
   learningClockAtom,
   learningHydrationAtom,
   learningProfileAtom,
@@ -31,6 +36,12 @@ export type RecordLearningMistakeInput = {
   prompt: string
   correction: string
   reviewLabel: string
+  now: string
+}
+
+export type SubmitLearningReviewInput = {
+  reviewItemId: string
+  result: LearningReviewResult
   now: string
 }
 
@@ -194,6 +205,55 @@ export const recordLearningMistakeAtom = atom(
           attemptCount: 0,
         })
       }
+    })
+  },
+)
+
+export const submitLearningReviewAtom = atom(
+  null,
+  (get, set, input: SubmitLearningReviewInput) => {
+    const item = get(reviewQueueAtom).find(
+      (candidate) => candidate.id === input.reviewItemId,
+    )
+
+    if (!item || item.status !== 'queued') return
+
+    set(learningClockAtom, input.now)
+    set(reviewQueueAtom, (draft) => {
+      const reviewItem = draft.find(
+        (candidate) => candidate.id === input.reviewItemId,
+      )
+
+      if (!reviewItem || reviewItem.status !== 'queued') return
+
+      reviewItem.attemptCount += 1
+
+      if (input.result === 'recalled') {
+        reviewItem.status = 'completed'
+        return
+      }
+
+      reviewItem.dueAt = getReviewRetryDueAt(input.now)
+    })
+
+    if (input.result === 'needs-review') return
+
+    set(mistakesAtom, (draft) => {
+      for (const mistake of draft) {
+        if (!mistake.resolved && reviewItemMatchesMistake(item, mistake)) {
+          mistake.resolved = true
+        }
+      }
+    })
+    set(learningProfileAtom, (draft) => {
+      draft.recentActivity.unshift({
+        id: `activity-review-${item.id}-${input.now}`,
+        kind: 'review-completed',
+        label: `Reviewed ${item.label}`,
+        nodeId: item.sourceNodeId,
+        occurredAt: input.now,
+      })
+      draft.recentActivity = draft.recentActivity.slice(0, 6)
     })
   },
 )

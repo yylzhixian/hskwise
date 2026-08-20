@@ -5,6 +5,11 @@ import {
   deriveRouteOverview,
   getDueReviewItems,
 } from '@/learning/routes/model/route-progress'
+import type {
+  MistakeRecord,
+  ReviewItem,
+} from '../model/learning-state-schema'
+import { reviewItemMatchesMistake } from '../model/review-schedule'
 
 import {
   learningClockAtom,
@@ -36,6 +41,24 @@ export const starterRouteOverviewAtom = atom((get) =>
 export const dueReviewItemsAtom = atom((get) =>
   getDueReviewItems(get(reviewQueueAtom), get(learningClockAtom)),
 )
+
+export type DueReviewPrompt = {
+  item: ReviewItem
+  mistake: MistakeRecord | null
+}
+
+export const dueReviewPromptsAtom = atom<DueReviewPrompt[]>((get) => {
+  const mistakes = get(mistakesAtom)
+
+  return get(dueReviewItemsAtom).map((item) => ({
+    item,
+    mistake:
+      mistakes.find((mistake) => reviewItemMatchesMistake(item, mistake)) ??
+      null,
+  }))
+})
+
+export const allMistakesAtom = atom((get) => get(mistakesAtom))
 
 export const unresolvedMistakesAtom = atom((get) =>
   get(mistakesAtom).filter((mistake) => !mistake.resolved),

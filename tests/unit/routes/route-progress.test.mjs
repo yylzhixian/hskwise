@@ -74,13 +74,14 @@ describe('starter route', () => {
   })
 
   test('prioritizes due review and recognizes route completion', () => {
-    expect(
-      deriveRouteOverview(
-        starterRoute,
-        createRouteState({ reviewDue: true }),
-        now,
-      ).continueTarget.kind,
-    ).toBe('review')
+    const reviewOverview = deriveRouteOverview(
+      starterRoute,
+      createRouteState({ reviewDue: true }),
+      now,
+    )
+
+    expect(reviewOverview.continueTarget.kind).toBe('review')
+    expect(reviewOverview.continueTarget.href).toBe('/review')
     expect(
       deriveRouteOverview(
         starterRoute,

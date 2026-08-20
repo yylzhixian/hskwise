@@ -134,19 +134,30 @@ export function LearningHomeView() {
               </Badge>
             </div>
             {reviews.dueItems.length > 0 ? (
-              <ul className="mt-4 divide-y border-y">
-                {reviews.dueItems.map((item) => (
-                  <li
-                    className="flex items-center justify-between gap-4 py-3"
-                    key={item.id}
-                  >
-                    <span className="text-sm font-medium">{item.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      Attempt {item.attemptCount + 1}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="mt-4 divide-y border-y">
+                  {reviews.dueItems.map((item) => (
+                    <li
+                      className="flex items-center justify-between gap-4 py-3"
+                      key={item.id}
+                    >
+                      <span className="text-sm font-medium">{item.label}</span>
+                      <span className="text-xs text-muted-foreground">
+                        Attempt {item.attemptCount + 1}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                <Button
+                  className="mt-4 w-full sm:w-auto"
+                  nativeButton={false}
+                  render={<Link href="/review" />}
+                  variant="learning"
+                >
+                  Review now
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Button>
+              </>
             ) : (
               <p className="mt-3 text-sm leading-6 text-muted-foreground">
                 Nothing is due today. Keep moving along the route.
@@ -164,8 +175,16 @@ export function LearningHomeView() {
               </h2>
             </div>
             <dl className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-1">
-              <SummaryStat label="Review due" value={reviews.dueCount} />
-              <SummaryStat label="To revisit" value={mistakes.count} />
+              <SummaryStat
+                href="/review"
+                label="Review due"
+                value={reviews.dueCount}
+              />
+              <SummaryStat
+                href="/mistakes"
+                label="To revisit"
+                value={mistakes.count}
+              />
             </dl>
           </section>
 
@@ -204,11 +223,27 @@ export function LearningHomeView() {
   )
 }
 
-function SummaryStat({ label, value }: { label: string; value: number }) {
+function SummaryStat({
+  href,
+  label,
+  value,
+}: {
+  href: string
+  label: string
+  value: number
+}) {
   return (
     <div className="flex flex-col gap-1">
       <dt className="text-xs text-muted-foreground">{label}</dt>
-      <dd className="text-2xl font-semibold tabular-nums">{value}</dd>
+      <dd>
+        <Link
+          aria-label={`${label}: ${value}`}
+          className="inline-flex rounded-sm text-2xl font-semibold tabular-nums outline-none hover:text-focus focus-visible:ring-3 focus-visible:ring-ring/30"
+          href={href}
+        >
+          {value}
+        </Link>
+      </dd>
     </div>
   )
 }

@@ -6,7 +6,7 @@
 |---|---|
 | 决策日期 | 2026-08-19 |
 | 文档状态 | 当前前端执行计划 |
-| 当前阶段 | FE6 生词、检查点与复习闭环；[FE6-02 混合检查点与错误关联升级](progress/FE6-02-mixed-checkpoint-and-error-linkage.md)已完成，下一项为复习页、错题页与答对移出闭环 |
+| 当前阶段 | FE7 整体验收、性能和回归；[FE6-03 复习页、错题页与状态闭环](progress/FE6-03-review-and-mistake-loop.md)已完成 |
 | 预计周期 | 5-7 周，约 25-33 个工程日 |
 | 目标版本 | Frontend Learning Alpha |
 | 数据方式 | 本地 TypeScript + Zod + 版本化 localStorage |
@@ -726,7 +726,7 @@ React 页面、课程类型组件、Lesson Session 状态机和共享学习原�
 3. FE2 已完成：Starter 路线、情景模拟和版本化本地存储见[阶段归档](progress/FE2-route-model-ui-and-scenario-simulator.md)；其中页面 fixture 注入已在 FE4-R1 移除。
 4. FE3 已完成：共享 Lesson Runtime、学习原语和媒体异常情景见[阶段归档](progress/FE3-shared-lesson-runtime-and-learning-primitives.md)。
 5. FE4-R1 已完成源码结构收敛，见[阶段归档](progress/FE4-R1-source-structure-simplification.md)。
-6. FE4 拼音课程与 FE5 对话课程已完成前端验收；当前继续 FE6，完成生词、检查点与复习闭环。
-7. FE7 通过后，将 Frontend Learning Alpha 交给真实用户试用。
+6. FE4 拼音课程、FE5 对话课程与 FE6 生词、检查点、复习闭环已完成前端验收。
+7. 当前执行 FE7；通过后，将 Frontend Learning Alpha 交给真实用户试用。
 
 在 FE7 完成前，不启动数据库、后端 API、Google 服务端登录或 Course Studio 工作。

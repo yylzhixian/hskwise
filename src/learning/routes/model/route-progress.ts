@@ -88,7 +88,7 @@ export function deriveRouteOverview(
       kind: 'review',
       label: `Review ${dueReviews.length} due ${dueReviews.length === 1 ? 'item' : 'items'}`,
       description: 'Strengthen the material that is ready for another pass.',
-      href: '/learn#review-due',
+      href: '/review',
       nodeId: null,
     }
   } else if (isComplete) {
