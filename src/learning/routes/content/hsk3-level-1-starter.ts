@@ -22,7 +22,7 @@ export const starterRoute = learningRouteSchema.parse({
             'Hear how pitch changes meaning and trace the four tone shapes.',
           kind: 'lesson',
           courseType: 'pinyin',
-          estimatedMinutes: 7,
+          estimatedMinutes: 12,
           knowledgeIds: [
             'pinyin.tone-shapes.tone1',
             'pinyin.tone-shapes.tone2',

@@ -8,12 +8,13 @@ import {
   SquareIcon,
   Volume2Icon,
 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
+import { useAudioPlayback } from '../hooks/use-audio-playback'
 import { usePronunciationRecorder } from '../hooks/use-pronunciation-recorder'
 import type { PinyinLessonStep } from '../model/pinyin-lesson-schema'
 
@@ -21,8 +22,6 @@ type PronunciationPracticeStep = Extract<
   PinyinLessonStep,
   { kind: 'pronunciation-practice' }
 >
-
-type ReferenceStatus = 'idle' | 'playing' | 'blocked' | 'error'
 
 export function PronunciationPractice({
   completed,
@@ -33,28 +32,19 @@ export function PronunciationPractice({
   onComplete: () => void
   step: PronunciationPracticeStep
 }) {
-  const referenceAudioRef = useRef<HTMLAudioElement | null>(null)
-  const [referenceStatus, setReferenceStatus] =
-    useState<ReferenceStatus>('idle')
+  const {
+    audioRef: referenceAudioRef,
+    markEnded,
+    markError,
+    play: playReference,
+    status: referenceStatus,
+  } = useAudioPlayback()
   const { recordingUrl, reset, start, status, stop } =
     usePronunciationRecorder()
 
   useEffect(() => {
     if (status === 'recorded' && !completed) onComplete()
   }, [completed, onComplete, status])
-
-  async function playReference() {
-    const audio = referenceAudioRef.current
-    if (!audio) return
-
-    audio.currentTime = 0
-    try {
-      await audio.play()
-      setReferenceStatus('playing')
-    } catch {
-      setReferenceStatus('blocked')
-    }
-  }
 
   const canContinueWithoutRecording =
     status === 'requesting' ||
@@ -65,8 +55,8 @@ export function PronunciationPractice({
   return (
     <section className="flex w-full flex-col gap-6">
       <audio
-        onEnded={() => setReferenceStatus('idle')}
-        onError={() => setReferenceStatus('error')}
+        onEnded={markEnded}
+        onError={markError}
         preload="metadata"
         ref={referenceAudioRef}
         src={step.referenceAudio.src}

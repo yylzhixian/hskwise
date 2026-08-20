@@ -10,13 +10,16 @@ import { LessonFrame } from '@/components/lesson/lesson-frame'
 
 import {
   createPinyinRuntimeDefinition,
+  type PinyinLessonCheckQuestion,
   type PinyinLessonDefinition,
   type PinyinLessonStep,
   type PinyinTone,
 } from '../model/pinyin-lesson-schema'
+import { PinyinLessonCheck } from './pinyin-lesson-check'
 import { PinyinLessonSummary } from './pinyin-lesson-summary'
 import { PronunciationPractice } from './pronunciation-practice'
 import { ToneChoiceInteraction } from './tone-choice-interaction'
+import { ToneListeningChoice } from './tone-listening-choice'
 import { ToneOverview } from './tone-overview'
 import { TonePitchGuide } from './tone-pitch-guide'
 
@@ -156,12 +159,69 @@ function PinyinStepView({
           tones={selectTones(lesson.tones, step.optionToneNumbers)}
         />
       )
+    case 'tone-listening-choice':
+      return (
+        <ToneListeningChoice
+          disabled={disabled}
+          onSubmit={(result) => {
+            if (!result.isCorrect && lesson.nodeId) {
+              onRecordMistake({
+                lessonId: lesson.id,
+                nodeId: lesson.nodeId,
+                knowledgeIds: step.knowledgeIds,
+                prompt: step.prompt,
+                correction: step.correctFeedback,
+                reviewLabel: step.title,
+              })
+            }
+
+            onSubmitAnswer({
+              interactionId: `${step.id}:answer`,
+              answer: result.selectedId,
+              isCorrect: result.isCorrect,
+              correctFeedback: {
+                title: 'Sound identified',
+                message: step.correctFeedback,
+              },
+              incorrectFeedback: {
+                title: 'Listen once more',
+                message: step.incorrectFeedback,
+              },
+            })
+          }}
+          step={step}
+          tones={selectTones(lesson.tones, step.optionToneNumbers)}
+        />
+      )
     case 'pronunciation-practice':
       return (
         <PronunciationPractice
           completed={runtimeReady}
           onComplete={onCompletePronunciationPractice}
           step={step}
+        />
+      )
+    case 'lesson-check':
+      return (
+        <PinyinLessonCheck
+          completed={runtimeReady}
+          onComplete={(answers) =>
+            onSubmitAnswer({
+              interactionId: `${step.id}:answer`,
+              answer: answers,
+              isCorrect: true,
+              correctFeedback: {
+                title: 'Final check complete',
+                message: 'All five tone connections are ready to carry forward.',
+              },
+            })
+          }
+          onIncorrect={(question) => {
+            if (!lesson.nodeId) return
+            recordCheckMistake({ lesson, onRecordMistake, question, step })
+          }}
+          step={step}
+          tones={lesson.tones}
         />
       )
     case 'lesson-summary':
@@ -172,6 +232,28 @@ function PinyinStepView({
         />
       )
   }
+}
+
+function recordCheckMistake({
+  lesson,
+  onRecordMistake,
+  question,
+  step,
+}: {
+  lesson: PinyinLessonDefinition
+  onRecordMistake: ReturnType<typeof useLearningActions>['recordMistake']
+  question: PinyinLessonCheckQuestion
+  step: Extract<PinyinLessonStep, { kind: 'lesson-check' }>
+}) {
+  if (!lesson.nodeId) return
+  onRecordMistake({
+    lessonId: lesson.id,
+    nodeId: lesson.nodeId,
+    knowledgeIds: question.knowledgeIds,
+    prompt: question.prompt,
+    correction: question.correctFeedback,
+    reviewLabel: `${step.title}: ${question.id}`,
+  })
 }
 
 function selectTones(

@@ -15,7 +15,7 @@ import {
 import { useChoiceInteraction } from '@/hooks/lesson/use-choice-interaction'
 
 import type { PinyinTone } from '../model/pinyin-lesson-schema'
-import { ToneContour } from './tone-contour'
+import { ToneOptionContour } from './tone-contour'
 
 export function ToneChoiceInteraction({
   correctToneNumber,
@@ -48,7 +48,7 @@ export function ToneChoiceInteraction({
 
       <ToggleGroup
         aria-label={prompt}
-        className="grid w-full grid-cols-1 gap-3 sm:grid-cols-3"
+        className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2"
         disabled={disabled}
         onValueChange={select}
         size="learning"
@@ -57,7 +57,7 @@ export function ToneChoiceInteraction({
       >
         {tones.map((tone) => (
           <ToggleGroupItem
-            className="min-h-36 flex-col items-stretch gap-2"
+            className="min-h-44 flex-col items-stretch gap-2"
             key={tone.number}
             value={`tone-${tone.number}`}
           >
@@ -65,7 +65,7 @@ export function ToneChoiceInteraction({
               <span className="font-semibold">Tone {tone.number}</span>
               <CheckIcon className="opacity-0 transition-opacity group-data-[state=on]/toggle:opacity-100" />
             </span>
-            <ToneContour tone={tone} />
+            <ToneOptionContour tone={tone} />
             <span className="text-xs font-normal text-muted-foreground">
               {tone.example}
             </span>
@@ -85,4 +85,3 @@ export function ToneChoiceInteraction({
     </FieldSet>
   )
 }
-

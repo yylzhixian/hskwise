@@ -9,7 +9,7 @@ export const fourTonesLesson = definePinyinLesson({
     'Recognize the four Mandarin tone shapes and connect each one with a pitch direction.',
   routeId: 'hsk3-level-1-starter',
   nodeId: 'node-four-tones',
-  estimatedMinutes: 8,
+  estimatedMinutes: 12,
   tones: [
     {
       number: 1,
@@ -76,7 +76,7 @@ export const fourTonesLesson = definePinyinLesson({
       title: 'Find the rising path',
       instruction: 'Use the line shape before checking the tone number.',
       prompt: 'Which tone rises from a lower pitch to a higher pitch?',
-      optionToneNumbers: [1, 2, 4],
+      optionToneNumbers: [1, 2, 3, 4],
       correctToneNumber: 2,
       correctFeedback:
         'The second tone climbs. Its acute accent points in the same direction.',
@@ -92,13 +92,82 @@ export const fourTonesLesson = definePinyinLesson({
       instruction:
         'The third tone turns near the bottom; the fourth tone keeps falling.',
       prompt: 'Which tone falls directly from high to low?',
-      optionToneNumbers: [2, 3, 4],
+      optionToneNumbers: [1, 2, 3, 4],
       correctToneNumber: 4,
       correctFeedback:
         'The fourth tone falls without turning upward. Its grave accent follows that drop.',
       incorrectFeedback:
         'Choose the path that starts high and ends low without a turn.',
       knowledgeIds: ['pinyin.tone-shapes.tone3', 'pinyin.tone-shapes.tone4'],
+    },
+    {
+      id: 'four-tones-listening-level',
+      kind: 'tone-listening-choice',
+      eyebrow: 'Listen 1 of 3',
+      title: 'Hear a steady pitch',
+      instruction:
+        'Play the sample before choosing. The answer stays hidden until the sound ends.',
+      prompt: 'Which tone did you hear?',
+      optionToneNumbers: [1, 2, 3, 4],
+      correctToneNumber: 1,
+      correctFeedback:
+        'The voice stayed high and level from beginning to end: first tone.',
+      incorrectFeedback:
+        'Listen for whether the pitch moves. This sample holds one steady height.',
+      audio: {
+        src: '/audio/placeholders/pinyin/tone-sample-a.mp3',
+        label: 'Listening sample A',
+        contentOrigin: 'generated-placeholder',
+        placeholder: true,
+        mustReplaceBeforePublish: true,
+      },
+      knowledgeIds: ['pinyin.tone-shapes.tone1'],
+    },
+    {
+      id: 'four-tones-listening-turning',
+      kind: 'tone-listening-choice',
+      eyebrow: 'Listen 2 of 3',
+      title: 'Catch the low turn',
+      instruction:
+        'Focus on the middle of the sound. Does the pitch keep moving or change direction?',
+      prompt: 'Which tone did you hear?',
+      optionToneNumbers: [1, 2, 3, 4],
+      correctToneNumber: 3,
+      correctFeedback:
+        'The pitch dipped low before turning upward: third tone.',
+      incorrectFeedback:
+        'Replay the sample and listen for the turn near the bottom.',
+      audio: {
+        src: '/audio/placeholders/pinyin/tone-sample-b.mp3',
+        label: 'Listening sample B',
+        contentOrigin: 'generated-placeholder',
+        placeholder: true,
+        mustReplaceBeforePublish: true,
+      },
+      knowledgeIds: ['pinyin.tone-shapes.tone3'],
+    },
+    {
+      id: 'four-tones-listening-falling',
+      kind: 'tone-listening-choice',
+      eyebrow: 'Listen 3 of 3',
+      title: 'Notice a direct drop',
+      instruction:
+        'Listen for a clean fall without a turn at the bottom.',
+      prompt: 'Which tone did you hear?',
+      optionToneNumbers: [1, 2, 3, 4],
+      correctToneNumber: 4,
+      correctFeedback:
+        'The pitch dropped directly from high to low: fourth tone.',
+      incorrectFeedback:
+        'Replay the sample. This pitch falls once and does not turn upward.',
+      audio: {
+        src: '/audio/placeholders/pinyin/tone-sample-c.mp3',
+        label: 'Listening sample C',
+        contentOrigin: 'generated-placeholder',
+        placeholder: true,
+        mustReplaceBeforePublish: true,
+      },
+      knowledgeIds: ['pinyin.tone-shapes.tone4'],
     },
     {
       id: 'four-tones-pronunciation-practice',
@@ -120,6 +189,62 @@ export const fourTonesLesson = definePinyinLesson({
         'pinyin.tone-shapes.tone2',
         'pinyin.tone-shapes.tone3',
         'pinyin.tone-shapes.tone4',
+      ],
+    },
+    {
+      id: 'four-tones-lesson-check',
+      kind: 'lesson-check',
+      eyebrow: 'Final check',
+      title: 'Connect marks, paths, and pitch',
+      instruction:
+        'Answer five short questions. Each mistake becomes a future review item.',
+      knowledgeIds: ['pinyin.tone-shapes'],
+      questions: [
+        {
+          id: 'check-level',
+          prompt: 'Which pitch path stays high and level?',
+          optionToneNumbers: [1, 2, 3, 4],
+          correctToneNumber: 1,
+          correctFeedback: 'First tone holds one high pitch.',
+          incorrectFeedback: 'Choose the path that does not rise or fall.',
+          knowledgeIds: ['pinyin.tone-shapes.tone1'],
+        },
+        {
+          id: 'check-rising',
+          prompt: 'Which tone rises toward the end?',
+          optionToneNumbers: [1, 2, 3, 4],
+          correctToneNumber: 2,
+          correctFeedback: 'Second tone rises from lower to higher.',
+          incorrectFeedback: 'Look for the path that finishes higher.',
+          knowledgeIds: ['pinyin.tone-shapes.tone2'],
+        },
+        {
+          id: 'check-turning',
+          prompt: 'Which tone dips before it turns upward?',
+          optionToneNumbers: [1, 2, 3, 4],
+          correctToneNumber: 3,
+          correctFeedback: 'Third tone has the low turn.',
+          incorrectFeedback: 'Choose the only path with three pitch points.',
+          knowledgeIds: ['pinyin.tone-shapes.tone3'],
+        },
+        {
+          id: 'check-falling',
+          prompt: 'Which tone falls directly from high to low?',
+          optionToneNumbers: [1, 2, 3, 4],
+          correctToneNumber: 4,
+          correctFeedback: 'Fourth tone makes one direct fall.',
+          incorrectFeedback: 'Choose the falling path without a turn.',
+          knowledgeIds: ['pinyin.tone-shapes.tone4'],
+        },
+        {
+          id: 'check-mark',
+          prompt: 'Which pitch path belongs to mǎ?',
+          optionToneNumbers: [1, 2, 3, 4],
+          correctToneNumber: 3,
+          correctFeedback: 'The caron in mǎ marks the third tone.',
+          incorrectFeedback: 'Match the caron with the low turning path.',
+          knowledgeIds: ['pinyin.tone-shapes.tone3'],
+        },
       ],
     },
     {

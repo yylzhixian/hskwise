@@ -27,7 +27,7 @@
 | FE1 设计系统与应用骨架 | 已完成 | 2026-08-19 | [FE1 开发进度](FE1-design-system-and-application-shell.md) |
 | FE2 路线模型、路线 UI 与情景模拟器 | 已完成 | 2026-08-19 | [FE2 开发进度](FE2-route-model-ui-and-scenario-simulator.md) |
 | FE3 共享课程运行时与学习原语 | 已完成 | 2026-08-19 | [FE3 开发进度](FE3-shared-lesson-runtime-and-learning-primitives.md) |
-| FE4 拼音与声调课程 | 进行中 | - | 完成后新增 |
+| FE4 拼音与声调课程 | 已完成 | 2026-08-20 | [FE4-04 拼音课程验收](FE4-04-listening-and-pinyin-course-acceptance.md) |
 | FE5 对话精读与跟读课程 | 待开始 | - | 完成后新增 |
 | FE6 生词、检查点与复习闭环 | 待开始 | - | 完成后新增 |
 | FE7 整体验收、性能和回归 | 待开始 | - | 完成后新增 |
@@ -40,3 +40,5 @@
 | FE4-02 首门可运行拼音课程 | 已完成 | 2026-08-20 | [FE4-02 开发进度](FE4-02-first-pinyin-lesson.md) |
 | FE4-R1 前端源码结构收敛 | 已完成 | 2026-08-20 | [FE4-R1 开发进度](FE4-R1-source-structure-simplification.md) |
 | FE4-03 发音练习与错误回流 | 已完成 | 2026-08-20 | [FE4-03 开发进度](FE4-03-pronunciation-practice-and-error-flow.md) |
+| FE4-04 听辨与拼音课程验收 | 已完成 | 2026-08-20 | [FE4-04 开发进度](FE4-04-listening-and-pinyin-course-acceptance.md) |
+| FE4-P1 声调选项视觉校准 | 已完成 | 2026-08-20 | [FE4-P1 校准记录](FE4-P1-tone-option-visual-correction.md) |

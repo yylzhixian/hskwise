@@ -11,10 +11,12 @@ import {
 export function ToneContour({
   active = false,
   className,
+  style,
   tone,
 }: {
   active?: boolean
   className?: string
+  style?: CSSProperties
   tone: PinyinTone
 }) {
   const path = createTonePath(tone.contour)
@@ -27,6 +29,7 @@ export function ToneContour({
       aria-label={`${tone.name}: ${tone.shape}`}
       className={cn('h-auto w-full', className)}
       role="img"
+      style={style}
       viewBox="0 0 180 72"
     >
       <g className="stroke-border" strokeWidth="1">
@@ -56,5 +59,20 @@ export function ToneContour({
         />
       ) : null}
     </svg>
+  )
+}
+
+export function ToneOptionContour({ tone }: { tone: PinyinTone }) {
+  return (
+    <span
+      className="block flex-none self-stretch overflow-hidden"
+      style={{ height: '6rem', width: '100%' }}
+    >
+      <ToneContour
+        className="block"
+        style={{ height: '100%', width: '100%' }}
+        tone={tone}
+      />
+    </span>
   )
 }

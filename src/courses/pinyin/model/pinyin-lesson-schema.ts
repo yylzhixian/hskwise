@@ -84,15 +84,44 @@ const pronunciationPracticeStepSchema = z
   })
   .strict()
 
+const toneChoiceFields = {
+  prompt: z.string().min(1),
+  optionToneNumbers: z.array(toneNumberSchema).length(4),
+  correctToneNumber: toneNumberSchema,
+  correctFeedback: z.string().min(1),
+  incorrectFeedback: z.string().min(1),
+}
+
 const toneChoiceStepSchema = z
   .object({
     ...pinyinStepBase,
     kind: z.literal('tone-choice'),
-    prompt: z.string().min(1),
-    optionToneNumbers: z.array(toneNumberSchema).min(2).max(4),
-    correctToneNumber: toneNumberSchema,
-    correctFeedback: z.string().min(1),
-    incorrectFeedback: z.string().min(1),
+    ...toneChoiceFields,
+  })
+  .strict()
+
+const toneListeningChoiceStepSchema = z
+  .object({
+    ...pinyinStepBase,
+    kind: z.literal('tone-listening-choice'),
+    ...toneChoiceFields,
+    audio: pinyinAudioAssetSchema,
+  })
+  .strict()
+
+export const pinyinLessonCheckQuestionSchema = z
+  .object({
+    id: stableIdSchema,
+    ...toneChoiceFields,
+    knowledgeIds: z.array(stableIdSchema).min(1),
+  })
+  .strict()
+
+const lessonCheckStepSchema = z
+  .object({
+    ...pinyinStepBase,
+    kind: z.literal('lesson-check'),
+    questions: z.array(pinyinLessonCheckQuestionSchema).length(5),
   })
   .strict()
 
@@ -109,6 +138,8 @@ export const pinyinLessonStepSchema = z.discriminatedUnion('kind', [
   pitchGuideStepSchema,
   pronunciationPracticeStepSchema,
   toneChoiceStepSchema,
+  toneListeningChoiceStepSchema,
+  lessonCheckStepSchema,
   lessonSummaryStepSchema,
 ])
 
@@ -158,27 +189,36 @@ export const pinyinLessonSchema = z
         }
       }
 
-      if (step.kind === 'tone-choice') {
-        const uniqueOptions = new Set(step.optionToneNumbers)
-        if (uniqueOptions.size !== step.optionToneNumbers.length) {
-          context.addIssue({
-            code: 'custom',
-            message: 'Tone choice options must be unique.',
-            path: ['steps', index, 'optionToneNumbers'],
-          })
-        }
-        if (!uniqueOptions.has(step.correctToneNumber)) {
-          context.addIssue({
-            code: 'custom',
-            message: 'The correct tone must be included in the options.',
-            path: ['steps', index, 'correctToneNumber'],
-          })
-        }
+      if (step.kind === 'tone-choice' || step.kind === 'tone-listening-choice') {
+        validateToneChoice(step, context, ['steps', index])
+      }
+
+      if (step.kind === 'lesson-check') {
+        const questionIds = new Set<string>()
+        step.questions.forEach((question, questionIndex) => {
+          if (questionIds.has(question.id)) {
+            context.addIssue({
+              code: 'custom',
+              message: `Duplicate lesson check question id: ${question.id}`,
+              path: ['steps', index, 'questions', questionIndex, 'id'],
+            })
+          }
+          questionIds.add(question.id)
+          validateToneChoice(question, context, [
+            'steps',
+            index,
+            'questions',
+            questionIndex,
+          ])
+        })
       }
     })
   })
 
 export type PinyinTone = z.infer<typeof pinyinToneSchema>
+export type PinyinLessonCheckQuestion = z.infer<
+  typeof pinyinLessonCheckQuestionSchema
+>
 export type PinyinLessonStep = z.infer<typeof pinyinLessonStepSchema>
 export type PinyinLessonDefinition = z.infer<typeof pinyinLessonSchema>
 
@@ -212,7 +252,9 @@ export function createPinyinRuntimeDefinition(
                 kind: 'media' as const,
                 mediaId: `${step.id}:pronunciation-practice`,
               }
-          : step.kind === 'tone-choice'
+          : step.kind === 'tone-choice' ||
+              step.kind === 'tone-listening-choice' ||
+              step.kind === 'lesson-check'
             ? {
                 kind: 'interaction' as const,
                 interactionId: `${step.id}:answer`,
@@ -221,4 +263,29 @@ export function createPinyinRuntimeDefinition(
             : { kind: 'continue' as const },
     })),
   })
+}
+
+function validateToneChoice(
+  choice: {
+    optionToneNumbers: Array<1 | 2 | 3 | 4>
+    correctToneNumber: 1 | 2 | 3 | 4
+  },
+  context: z.RefinementCtx,
+  path: Array<string | number>,
+) {
+  const uniqueOptions = new Set(choice.optionToneNumbers)
+  if (uniqueOptions.size !== choice.optionToneNumbers.length) {
+    context.addIssue({
+      code: 'custom',
+      message: 'Tone choice options must be unique.',
+      path: [...path, 'optionToneNumbers'],
+    })
+  }
+  if (!uniqueOptions.has(choice.correctToneNumber)) {
+    context.addIssue({
+      code: 'custom',
+      message: 'The correct tone must be included in the options.',
+      path: [...path, 'correctToneNumber'],
+    })
+  }
 }

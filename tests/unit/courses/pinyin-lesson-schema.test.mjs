@@ -23,23 +23,71 @@ describe('pinyin lesson schema', () => {
       'media',
       'interaction',
       'interaction',
+      'interaction',
+      'interaction',
+      'interaction',
       'media',
+      'interaction',
       'continue',
     ])
     expect(runtimeDefinition.steps[1].completionRule).toEqual({
       kind: 'media',
       mediaId: 'four-tones-pitch-guide:pitch-guide',
     })
-    expect(runtimeDefinition.steps[4].completionRule).toEqual({
+    expect(runtimeDefinition.steps.find((step) =>
+      step.id === 'four-tones-pronunciation-practice'
+    )?.completionRule).toEqual({
       kind: 'media',
       mediaId:
         'four-tones-pronunciation-practice:pronunciation-practice',
     })
+    expect(runtimeDefinition.steps.find((step) =>
+      step.id === 'four-tones-lesson-check'
+    )?.completionRule).toEqual({
+      kind: 'interaction',
+      interactionId: 'four-tones-lesson-check:answer',
+      requireCorrect: true,
+    })
+  })
+
+  test('defines three concealed listening checks and a five-question final check', () => {
+    const listeningSteps = fourTonesLesson.steps.filter(
+      (step) => step.kind === 'tone-listening-choice',
+    )
+    const lessonCheck = fourTonesLesson.steps.find(
+      (step) => step.kind === 'lesson-check',
+    )
+
+    expect(listeningSteps).toHaveLength(3)
+    expect(listeningSteps.every((step) => step.audio.placeholder)).toBe(true)
+    expect(
+      fourTonesLesson.steps
+        .filter(
+          (step) =>
+            step.kind === 'tone-choice' ||
+            step.kind === 'tone-listening-choice',
+        )
+        .every((step) => step.optionToneNumbers.length === 4),
+    ).toBe(true)
+    expect(lessonCheck?.questions).toHaveLength(5)
+    expect(
+      lessonCheck?.questions.every(
+        (question) => question.optionToneNumbers.length === 4,
+      ),
+    ).toBe(true)
   })
 
   test('validates a second unpublished lesson with the same protocol', () => {
     expect(toneShapeReviewFixture.schemaVersion).toBe('pinyinLesson/v1')
-    expect(toneShapeReviewFixture.steps).toHaveLength(3)
+    expect(toneShapeReviewFixture.steps).toHaveLength(5)
+    expect(
+      toneShapeReviewFixture.steps.some(
+        (step) => step.kind === 'tone-listening-choice',
+      ),
+    ).toBe(true)
+    expect(
+      toneShapeReviewFixture.steps.some((step) => step.kind === 'lesson-check'),
+    ).toBe(true)
     expect(pinyinLessonSchema.safeParse(toneShapeReviewFixture).success).toBe(true)
   })
 
@@ -103,6 +151,45 @@ describe('pinyin lesson schema', () => {
       expect(result.error.issues.map((issue) => issue.message)).toContain(
         'Generated placeholder audio must be marked placeholder and replaced before publish.',
       )
+    }
+  })
+
+  test('rejects duplicate lesson-check question ids and missing answers', () => {
+    const lessonCheck = fourTonesLesson.steps.find(
+      (step) => step.kind === 'lesson-check',
+    )
+    expect(lessonCheck).toBeDefined()
+    if (!lessonCheck || lessonCheck.kind !== 'lesson-check') return
+
+    const invalidLesson = {
+      ...fourTonesLesson,
+      steps: fourTonesLesson.steps.map((step) =>
+        step.id === lessonCheck.id
+          ? {
+              ...lessonCheck,
+              questions: lessonCheck.questions.map((question, index) =>
+                index === 1
+                  ? {
+                      ...question,
+                      id: lessonCheck.questions[0].id,
+                      optionToneNumbers: [1, 3, 4],
+                      correctToneNumber: 2,
+                    }
+                  : question,
+              ),
+            }
+          : step,
+      ),
+    }
+    const result = pinyinLessonSchema.safeParse(invalidLesson)
+
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const messages = result.error.issues.map((issue) => issue.message)
+      expect(messages).toContain(
+        `Duplicate lesson check question id: ${lessonCheck.questions[0].id}`,
+      )
+      expect(messages).toContain('The correct tone must be included in the options.')
     }
   })
 })
