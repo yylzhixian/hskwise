@@ -17,6 +17,7 @@ type SubmitLessonAttemptInput = {
   answer?: unknown
   now: string
   correctFeedback?: Omit<LessonFeedback, 'kind'>
+  infoFeedback?: Omit<LessonFeedback, 'kind'>
   incorrectFeedback?: Omit<LessonFeedback, 'kind'>
 }
 
@@ -105,30 +106,42 @@ export function submitLessonAttempt(
   const isReady = step.completionRule.requireCorrect
     ? input.isCorrect === true
     : true
-  const feedback: LessonFeedback = input.isCorrect
-    ? {
-        kind: 'correct',
-        title: input.correctFeedback?.title ?? 'Correct',
-        message:
-          input.correctFeedback?.message ?? 'You are ready to continue.',
-      }
-    : {
-        kind: 'incorrect',
-        title: input.incorrectFeedback?.title ?? 'Try that again',
-        message:
-          input.incorrectFeedback?.message ??
-          'Check the prompt and make another attempt.',
-      }
-  const events = appendEvents(session, input.now, [
-    { type: 'interaction.submitted', stepId: step.id },
-    {
+  const feedback: LessonFeedback =
+    input.isCorrect === null
+      ? {
+          kind: 'info',
+          title: input.infoFeedback?.title ?? 'Saved for review',
+          message:
+            input.infoFeedback?.message ??
+            'This item will return in a future review.',
+        }
+      : input.isCorrect
+        ? {
+            kind: 'correct',
+            title: input.correctFeedback?.title ?? 'Correct',
+            message:
+              input.correctFeedback?.message ?? 'You are ready to continue.',
+          }
+        : {
+            kind: 'incorrect',
+            title: input.incorrectFeedback?.title ?? 'Try that again',
+            message:
+              input.incorrectFeedback?.message ??
+              'Check the prompt and make another attempt.',
+          }
+  const eventInputs: Array<
+    Pick<LessonRuntimeEvent, 'type' | 'stepId'>
+  > = [{ type: 'interaction.submitted', stepId: step.id }]
+  if (input.isCorrect !== null) {
+    eventInputs.push({
       type:
         input.isCorrect === true
           ? 'interaction.correct'
           : 'interaction.incorrect',
       stepId: step.id,
-    },
-  ])
+    })
+  }
+  const events = appendEvents(session, input.now, eventInputs)
 
   return {
     ...session,

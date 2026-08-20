@@ -4,6 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { DialogueLessonExperience } from '@/courses/dialogue/components/dialogue-lesson-experience'
 import { PinyinLessonExperience } from '@/courses/pinyin/components/pinyin-lesson-experience'
+import { VocabularyLessonExperience } from '@/courses/vocabulary/components/vocabulary-lesson-experience'
 import { getPublishedLesson } from '@/courses/lesson-registry'
 import { LessonChrome } from '@/components/learning-shell/lesson-chrome'
 
@@ -21,6 +22,9 @@ export function LessonView({ lessonId }: { lessonId: string }) {
   }
   if (lesson?.kind === 'dialogue') {
     return <DialogueLessonExperience lesson={lesson} />
+  }
+  if (lesson?.kind === 'vocabulary') {
+    return <VocabularyLessonExperience lesson={lesson} />
   }
 
   const lessonTitle = lessonTitles[lessonId] ?? 'Mandarin lesson'

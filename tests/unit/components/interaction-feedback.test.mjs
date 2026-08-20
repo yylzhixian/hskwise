@@ -36,4 +36,20 @@ describe('interaction feedback', () => {
     expect(html).toContain('Follow the exchange again')
     expect(html).toContain('bg-destructive/10')
   })
+
+  test('renders a saved review item as information instead of an error', () => {
+    const html = renderToStaticMarkup(
+      createElement(InteractionFeedback, {
+        feedback: {
+          kind: 'info',
+          title: 'Added to review',
+          message: 'This word will return in review.',
+        },
+      }),
+    )
+
+    expect(html).toContain('data-feedback-kind="info"')
+    expect(html).toContain('Added to review')
+    expect(html).not.toContain('bg-destructive/10')
+  })
 })

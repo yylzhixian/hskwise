@@ -43,6 +43,25 @@ const definition = lessonDefinitionSchema.parse({
 
 const at = (minute) => `2026-08-19T08:0${minute}:00.000Z`
 
+const selfAssessmentDefinition = lessonDefinitionSchema.parse({
+  id: 'self-assessment-test',
+  title: 'Self assessment test',
+  description: 'Allows a learner to continue after an honest review response.',
+  estimatedMinutes: 1,
+  steps: [
+    {
+      id: 'recall',
+      title: 'Recall',
+      instruction: 'Assess the recall attempt.',
+      completionRule: {
+        kind: 'interaction',
+        interactionId: 'recall-one',
+        requireCorrect: false,
+      },
+    },
+  ],
+})
+
 describe('lesson session machine', () => {
   test('allows manual steps but does not skip a required correct answer', () => {
     let session = createLessonSession(definition, {
@@ -146,5 +165,38 @@ describe('lesson session machine', () => {
     })
 
     expect(unchanged).toBe(session)
+  })
+
+  test('records an honest self-assessment as information and allows continuing', () => {
+    let session = createLessonSession(selfAssessmentDefinition, {
+      sessionId: 'session-self-assessment',
+      now: at(0),
+    })
+
+    session = submitLessonAttempt(selfAssessmentDefinition, session, {
+      stepId: 'recall',
+      interactionId: 'recall-one',
+      answer: 'needs-review',
+      isCorrect: null,
+      now: at(1),
+      infoFeedback: {
+        title: 'Added to review',
+        message: 'This word will return in review.',
+      },
+    })
+
+    expect(session.feedback).toEqual({
+      kind: 'info',
+      title: 'Added to review',
+      message: 'This word will return in review.',
+    })
+    expect(session.stepStates.recall.isReady).toBe(true)
+    expect(session.stepStates.recall.attempts[0].isCorrect).toBeNull()
+    expect(
+      session.events.some((event) => event.type === 'interaction.incorrect'),
+    ).toBe(false)
+
+    session = advanceLessonSession(selfAssessmentDefinition, session, at(2))
+    expect(session.status).toBe('completed')
   })
 })

@@ -6,7 +6,7 @@
 |---|---|
 | 决策日期 | 2026-08-19 |
 | 文档状态 | 当前前端执行计划 |
-| 当前阶段 | FE6 生词、检查点与复习闭环；[FE5 对话精读与角色练习](progress/FE5-dialogue-close-reading-and-role-practice.md)已完成并归档，真人音频仍是发布门禁 |
+| 当前阶段 | FE6 生词、检查点与复习闭环；[FE6-01 首门生词课程](progress/FE6-01-first-vocabulary-course.md)已完成，下一项为混合检查点与错误关联升级 |
 | 预计周期 | 5-7 周，约 25-33 个工程日 |
 | 目标版本 | Frontend Learning Alpha |
 | 数据方式 | 本地 TypeScript + Zod + 版本化 localStorage |

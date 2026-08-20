@@ -24,6 +24,7 @@ type SubmitAttemptAction = {
   answer?: unknown
   now: string
   correctFeedback?: Omit<LessonFeedback, 'kind'>
+  infoFeedback?: Omit<LessonFeedback, 'kind'>
   incorrectFeedback?: Omit<LessonFeedback, 'kind'>
 }
 

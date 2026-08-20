@@ -35,7 +35,7 @@ export function LessonFrame({ children }: { children: ReactNode }) {
       Return to route
       <ArrowRightIcon data-icon="inline-end" />
     </Link>
-  ) : feedback?.kind === 'incorrect' ? (
+  ) : feedback?.kind === 'incorrect' && !step.session.isReady ? (
     <Button onClick={retry} size="learning" variant="learning">
       <RotateCcwIcon data-icon="inline-start" />
       Try again

@@ -21,6 +21,7 @@ type SubmitAnswerInput = {
   isCorrect: boolean | null
   answer?: unknown
   correctFeedback?: Omit<LessonFeedback, 'kind'>
+  infoFeedback?: Omit<LessonFeedback, 'kind'>
   incorrectFeedback?: Omit<LessonFeedback, 'kind'>
 }
 
