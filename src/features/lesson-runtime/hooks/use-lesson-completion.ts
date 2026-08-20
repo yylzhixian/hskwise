@@ -7,11 +7,13 @@ import {
   lessonCompletionAtom,
   type LessonCompletion,
 } from '../atoms/lesson-selector-atoms'
+import { useLessonStore } from '../provider/lesson-store-provider'
 
 export function useLessonCompletion(
   onComplete?: (completion: LessonCompletion) => void,
 ) {
-  const completion = useAtomValue(lessonCompletionAtom)
+  const store = useLessonStore()
+  const completion = useAtomValue(lessonCompletionAtom, { store })
   const deliveredEventIdRef = useRef<string | null>(null)
 
   useEffect(() => {

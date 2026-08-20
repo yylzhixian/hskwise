@@ -37,3 +37,4 @@
 | 子阶段 | 状态 | 完成日期 | 归档 |
 |---|---|---|---|
 | FE4-01 语音导视视觉基础 | 已完成 | 2026-08-19 | [FE4-01 开发进度](FE4-01-phonetic-wayfinding-visual-foundation.md) |
+| FE4-02 首门可运行拼音课程 | 已完成 | 2026-08-20 | [FE4-02 开发进度](FE4-02-first-pinyin-lesson.md) |

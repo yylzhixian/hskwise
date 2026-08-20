@@ -15,7 +15,7 @@ export function LearningShell({ children }: LearningShellProps) {
   return (
     <LearningAppearanceRoot className="min-h-dvh bg-background text-foreground">
       <a
-        className="fixed start-3 top-3 z-50 -translate-y-20 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background outline-none transition-transform focus:translate-y-0"
+        className="fixed inset-s-3 top-3 z-50 -translate-y-20 rounded-md bg-foreground px-3 py-2 text-sm font-medium text-background outline-none transition-transform focus:translate-y-0"
         href="#learning-content"
       >
         Skip to content

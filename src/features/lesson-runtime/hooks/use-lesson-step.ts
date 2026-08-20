@@ -14,6 +14,7 @@ import {
   lessonFeedbackAtom,
 } from '../atoms/lesson-selector-atoms'
 import type { LessonFeedback } from '../model/lesson-session-schema'
+import { useLessonStore } from '../provider/lesson-store-provider'
 
 type SubmitAnswerInput = {
   interactionId: string
@@ -29,12 +30,13 @@ type CompleteMediaInput = {
 }
 
 export function useLessonStep() {
-  const step = useAtomValue(currentLessonStepAtom)
-  const feedback = useAtomValue(lessonFeedbackAtom)
-  const submitAttempt = useSetAtom(submitLessonAttemptAtom)
-  const retryStep = useSetAtom(retryLessonStepAtom)
-  const completeMediaAction = useSetAtom(completeLessonMediaAtom)
-  const advanceSession = useSetAtom(advanceLessonSessionAtom)
+  const store = useLessonStore()
+  const step = useAtomValue(currentLessonStepAtom, { store })
+  const feedback = useAtomValue(lessonFeedbackAtom, { store })
+  const submitAttempt = useSetAtom(submitLessonAttemptAtom, { store })
+  const retryStep = useSetAtom(retryLessonStepAtom, { store })
+  const completeMediaAction = useSetAtom(completeLessonMediaAtom, { store })
+  const advanceSession = useSetAtom(advanceLessonSessionAtom, { store })
 
   const submitAnswer = useCallback(
     (input: SubmitAnswerInput) => {

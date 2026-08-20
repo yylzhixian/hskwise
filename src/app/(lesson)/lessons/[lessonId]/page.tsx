@@ -3,6 +3,8 @@ import { BookOpenIcon } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import { PinyinLessonExperience } from '@/features/courses/pinyin/components/pinyin-lesson-experience'
+import { getPublishedLesson } from '@/features/courses/registry/lesson-registry'
 import { LessonRuntimeExperience } from '@/features/lesson-runtime/components/lesson-runtime-experience'
 import {
   isRuntimeMediaFixtureId,
@@ -36,6 +38,11 @@ export default async function Page({
 
   if (lessonId === 'runtime-lab') {
     return <LessonRuntimeExperience mediaFixtureId={mediaFixtureId} />
+  }
+
+  const lesson = getPublishedLesson(lessonId)
+  if (lesson?.kind === 'pinyin') {
+    return <PinyinLessonExperience lesson={lesson} />
   }
 
   const lessonTitle = lessonTitles[lessonId] ?? 'Mandarin lesson'

@@ -6,7 +6,7 @@
 |---|---|
 | 决策日期 | 2026-08-19 |
 | 文档状态 | 当前前端执行计划 |
-| 当前阶段 | FE4 拼音与声调课程；[FE0](progress/FE0-baseline-and-engineering-preparation.md)、[FE1](progress/FE1-design-system-and-application-shell.md)、[FE2](progress/FE2-route-model-ui-and-scenario-simulator.md)和[FE3](progress/FE3-shared-lesson-runtime-and-learning-primitives.md)已完成并归档 |
+| 当前阶段 | FE4-03 原创发音素材、跟读与错误回流；[FE4-02 首门可运行拼音课程](progress/FE4-02-first-pinyin-lesson.md)已完成并归档 |
 | 预计周期 | 5-7 周，约 25-33 个工程日 |
 | 目标版本 | Frontend Learning Alpha |
 | 数据方式 | 本地 TypeScript + Zod + 版本化 localStorage |

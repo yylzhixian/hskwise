@@ -1,10 +1,19 @@
 'use client'
 
-import { Provider } from 'jotai'
-import { type ReactNode, useState } from 'react'
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useState,
+} from 'react'
 
 import type { LessonDefinition } from '../model/lesson-definition'
-import { createLessonStore } from '../state/lesson-store'
+import {
+  createLessonStore,
+  type LessonStore,
+} from '../state/lesson-store'
+
+const LessonStoreContext = createContext<LessonStore | null>(null)
 
 export function LessonStoreProvider({
   children,
@@ -15,5 +24,17 @@ export function LessonStoreProvider({
 }) {
   const [store] = useState(() => createLessonStore({ definition }))
 
-  return <Provider store={store}>{children}</Provider>
+  return (
+    <LessonStoreContext.Provider value={store}>
+      {children}
+    </LessonStoreContext.Provider>
+  )
+}
+
+export function useLessonStore() {
+  const store = useContext(LessonStoreContext)
+  if (!store) {
+    throw new Error('useLessonStore must be used within LessonStoreProvider')
+  }
+  return store
 }

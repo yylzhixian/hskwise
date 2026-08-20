@@ -4,6 +4,29 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@keyframes tone-path-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.tone-path-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: tone-path-draw var(--tone-path-duration) linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tone-path-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
 @keyframes course-studio-fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
