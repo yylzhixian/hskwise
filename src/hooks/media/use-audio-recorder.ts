@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-export type PronunciationRecorderStatus =
+export type AudioRecorderStatus =
   | 'idle'
   | 'requesting'
   | 'recording'
@@ -12,17 +12,19 @@ export type PronunciationRecorderStatus =
   | 'error'
 
 type Recording = {
+  blob: Blob
+  durationMs: number
   mimeType: string
   url: string
 }
 
-export function usePronunciationRecorder() {
-  const [status, setStatus] =
-    useState<PronunciationRecorderStatus>('idle')
+export function useAudioRecorder() {
+  const [status, setStatus] = useState<AudioRecorderStatus>('idle')
   const [recording, setRecording] = useState<Recording | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const mountedRef = useRef(true)
   const recorderRef = useRef<MediaRecorder | null>(null)
+  const recordingStartedAtRef = useRef<number | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
 
   const releaseStream = useCallback(() => {
@@ -74,14 +76,21 @@ export function usePronunciationRecorder() {
           }
 
           setRecording({
+            blob,
+            durationMs: Math.max(
+              0,
+              Date.now() - (recordingStartedAtRef.current ?? Date.now()),
+            ),
             mimeType: blob.type,
             url: URL.createObjectURL(blob),
           })
+          recordingStartedAtRef.current = null
           setStatus('recorded')
         },
         { once: true },
       )
 
+      recordingStartedAtRef.current = Date.now()
       recorder.start()
       setStatus('recording')
     } catch (error) {
@@ -108,6 +117,7 @@ export function usePronunciationRecorder() {
       recorderRef.current.stop()
     }
     releaseStream()
+    recordingStartedAtRef.current = null
     setRecording(null)
     setStatus('idle')
   }, [releaseStream])
@@ -132,7 +142,9 @@ export function usePronunciationRecorder() {
   }, [recording?.url])
 
   return {
+    durationMs: recording?.durationMs ?? null,
     mimeType: recording?.mimeType ?? null,
+    recordingBlob: recording?.blob ?? null,
     recordingUrl: recording?.url ?? null,
     reset,
     start,

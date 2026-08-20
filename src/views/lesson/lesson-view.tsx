@@ -2,6 +2,7 @@ import { BookOpenIcon } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
+import { DialogueLessonExperience } from '@/courses/dialogue/components/dialogue-lesson-experience'
 import { PinyinLessonExperience } from '@/courses/pinyin/components/pinyin-lesson-experience'
 import { getPublishedLesson } from '@/courses/lesson-registry'
 import { LessonChrome } from '@/components/learning-shell/lesson-chrome'
@@ -17,6 +18,9 @@ export function LessonView({ lessonId }: { lessonId: string }) {
   const lesson = getPublishedLesson(lessonId)
   if (lesson?.kind === 'pinyin') {
     return <PinyinLessonExperience lesson={lesson} />
+  }
+  if (lesson?.kind === 'dialogue') {
+    return <DialogueLessonExperience lesson={lesson} />
   }
 
   const lessonTitle = lessonTitles[lessonId] ?? 'Mandarin lesson'

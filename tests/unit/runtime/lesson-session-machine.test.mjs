@@ -110,7 +110,12 @@ describe('lesson session machine', () => {
       stepId: 'record',
       mediaId: 'recording-one',
       now: at(4),
+      feedback: {
+        title: 'Recording complete',
+        message: 'Your recording is ready.',
+      },
     })
+    expect(session.feedback?.kind).toBe('completion')
     session = advanceLessonSession(definition, session, at(5))
 
     expect(session.status).toBe('completed')

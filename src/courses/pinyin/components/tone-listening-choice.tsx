@@ -21,8 +21,8 @@ import {
   ToggleGroupItem,
 } from '@/components/ui/toggle-group'
 import { useChoiceInteraction } from '@/hooks/lesson/use-choice-interaction'
+import { useAudioPlayback } from '@/hooks/media/use-audio-playback'
 
-import { useAudioPlayback } from '../hooks/use-audio-playback'
 import type {
   PinyinLessonStep,
   PinyinTone,

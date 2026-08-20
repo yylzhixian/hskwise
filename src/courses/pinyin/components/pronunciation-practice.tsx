@@ -13,9 +13,9 @@ import { useEffect } from 'react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useAudioPlayback } from '@/hooks/media/use-audio-playback'
+import { useAudioRecorder } from '@/hooks/media/use-audio-recorder'
 
-import { useAudioPlayback } from '../hooks/use-audio-playback'
-import { usePronunciationRecorder } from '../hooks/use-pronunciation-recorder'
 import type { PinyinLessonStep } from '../model/pinyin-lesson-schema'
 
 type PronunciationPracticeStep = Extract<
@@ -39,8 +39,7 @@ export function PronunciationPractice({
     play: playReference,
     status: referenceStatus,
   } = useAudioPlayback()
-  const { recordingUrl, reset, start, status, stop } =
-    usePronunciationRecorder()
+  const { recordingUrl, reset, start, status, stop } = useAudioRecorder()
 
   useEffect(() => {
     if (status === 'recorded' && !completed) onComplete()

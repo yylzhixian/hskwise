@@ -40,7 +40,7 @@ export const starterRoute = learningRouteSchema.parse({
             'Read and respond to an original greeting between two new classmates.',
           kind: 'lesson',
           courseType: 'dialogue',
-          estimatedMinutes: 8,
+          estimatedMinutes: 10,
           knowledgeIds: [
             'dialogue.greeting-ni-hao',
             'dialogue.self-introduction-jiao',

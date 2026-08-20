@@ -4,6 +4,7 @@ import {
   type LessonDefinition,
   lessonDefinitionSchema,
 } from '@/learning/runtime/model/lesson-definition'
+import { lessonAudioAssetSchema } from '@/lib/media/lesson-audio-asset'
 
 const stableIdSchema = z.string().min(1).max(128)
 const toneNumberSchema = z.union([
@@ -47,33 +48,7 @@ const pitchGuideStepSchema = z
   })
   .strict()
 
-export const pinyinAudioAssetSchema = z
-  .object({
-    src: z.string().startsWith('/'),
-    label: z.string().min(1),
-    contentOrigin: z.enum([
-      'original',
-      'licensed',
-      'generated-placeholder',
-    ]),
-    placeholder: z.boolean(),
-    mustReplaceBeforePublish: z.boolean(),
-  })
-  .strict()
-  .superRefine((asset, context) => {
-    const isPlaceholder = asset.contentOrigin === 'generated-placeholder'
-
-    if (
-      asset.placeholder !== isPlaceholder ||
-      asset.mustReplaceBeforePublish !== isPlaceholder
-    ) {
-      context.addIssue({
-        code: 'custom',
-        message:
-          'Generated placeholder audio must be marked placeholder and replaced before publish.',
-      })
-    }
-  })
+export const pinyinAudioAssetSchema = lessonAudioAssetSchema
 
 const pronunciationPracticeStepSchema = z
   .object({

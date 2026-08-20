@@ -4,7 +4,7 @@ const timestampSchema = z.string().datetime()
 
 export const lessonFeedbackSchema = z
   .object({
-    kind: z.enum(['correct', 'incorrect', 'info']),
+    kind: z.enum(['completion', 'correct', 'incorrect', 'info']),
     title: z.string().min(1),
     message: z.string().min(1),
   })

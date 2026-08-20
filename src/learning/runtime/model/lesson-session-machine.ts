@@ -189,7 +189,7 @@ export function completeLessonMedia(
       [step.id]: { ...stepState, isReady: true },
     },
     feedback: input.feedback
-      ? { kind: 'info', ...input.feedback }
+      ? { kind: 'completion', ...input.feedback }
       : session.feedback,
     events: appendEvents(session, input.now, [
       { type: 'media.completed', stepId: step.id },

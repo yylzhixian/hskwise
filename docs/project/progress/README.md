@@ -28,7 +28,7 @@
 | FE2 路线模型、路线 UI 与情景模拟器 | 已完成 | 2026-08-19 | [FE2 开发进度](FE2-route-model-ui-and-scenario-simulator.md) |
 | FE3 共享课程运行时与学习原语 | 已完成 | 2026-08-19 | [FE3 开发进度](FE3-shared-lesson-runtime-and-learning-primitives.md) |
 | FE4 拼音与声调课程 | 已完成 | 2026-08-20 | [FE4-04 拼音课程验收](FE4-04-listening-and-pinyin-course-acceptance.md) |
-| FE5 对话精读与跟读课程 | 待开始 | - | 完成后新增 |
+| FE5 对话精读与跟读课程 | 已完成 | 2026-08-20 | [FE5 开发进度](FE5-dialogue-close-reading-and-role-practice.md) |
 | FE6 生词、检查点与复习闭环 | 待开始 | - | 完成后新增 |
 | FE7 整体验收、性能和回归 | 待开始 | - | 完成后新增 |
 
@@ -42,3 +42,10 @@
 | FE4-03 发音练习与错误回流 | 已完成 | 2026-08-20 | [FE4-03 开发进度](FE4-03-pronunciation-practice-and-error-flow.md) |
 | FE4-04 听辨与拼音课程验收 | 已完成 | 2026-08-20 | [FE4-04 开发进度](FE4-04-listening-and-pinyin-course-acceptance.md) |
 | FE4-P1 声调选项视觉校准 | 已完成 | 2026-08-20 | [FE4-P1 校准记录](FE4-P1-tone-option-visual-correction.md) |
+| FE5-P1 课程底栏反馈布局校准 | 已完成 | 2026-08-20 | [FE5-P1 校准记录](FE5-P1-lesson-footer-feedback-layout-correction.md) |
+| FE5-P2 对话音频完成条件校准 | 已完成 | 2026-08-20 | [FE5-P2 校准记录](FE5-P2-dialogue-audio-completion-rule-correction.md) |
+| FE5-P3 课程反馈类型视觉校准 | 已完成 | 2026-08-20 | [FE5-P3 校准记录](FE5-P3-lesson-feedback-type-visual-correction.md) |
+| FE5-P4 对话排序拖放交互校准 | 已完成 | 2026-08-20 | [FE5-P4 校准记录](FE5-P4-dialogue-line-order-drag-and-drop-correction.md) |
+| FE5-P5 模拟对话自动轮换交互校准 | 已完成 | 2026-08-20 | [FE5-P5 校准记录](FE5-P5-dialogue-role-practice-turn-taking-correction.md) |
+| FE5-P6 模拟对话回合节奏校准 | 已完成 | 2026-08-20 | [FE5-P6 校准记录](FE5-P6-dialogue-role-practice-pacing-correction.md) |
+| FE5-P7 对话练习反馈与逐句回听 | 已完成 | 2026-08-20 | [FE5-P7 校准记录](FE5-P7-dialogue-practice-feedback-and-playback.md) |
