@@ -8,8 +8,8 @@
 |---|---|
 | 决策日期 | 2026-08-18 |
 | 文档状态 | 当前执行方案 |
-| 专题阶段 | CF2：首门拼音、对话、生词课程与混合检查点已完成；M0-FE6 复习和错题闭环已验收，进入 FE7 整体回归 |
-| 课程生产方式 | 代码优先，模板后置 |
+| 专题阶段 | CF3 / CP0：首批课程与学习闭环已跑通，进入 schema v2、交互原语和规模化课程生产基础阶段 |
+| 课程生产方式 | 从代码优先进入稳定模板提取与 JSON 试产 |
 | Course Studio 状态 | 已从当前源码移除，历史方案由文档与 Git 保留 |
 
 ## 1. 决策摘要
@@ -324,8 +324,9 @@ export const lesson = definePinyinLesson({
 - Course Studio Phase 0-4 完成了 schema、播放器、互动、音频、事件、进度和时间轴技术验证。
 - Phase U1 第一批完成了中文壳层、工作模式和 Travels 历史实验。
 - 实测证明继续完成通用 Studio 需要过高投入，U2-U4 暂停。
-- FE6-02 已完成原创 Starter 混合检查点、路线第四节点闭环、错误 step/interaction 关联和 LearningState v1 -> v2 迁移；TTS 占位音频继续作为发布前替换门禁，下一项为 `/review`、`/mistakes` 与答对移出闭环。
-- Phase 5 原“模板和效率工具”不再按旧计划解冻；模板能力改由 CF3 从真实课程中提取。
+- FE6-03 和 FE7-01 已完成复习闭环与自动化回归基础，Frontend Learning Alpha 已证明课程和学习主流程可以运行。
+- 当前进入 CF3 / CP0；模板能力按照[第二阶段课程生产基础计划](13-course-production-foundation-plan.md)从真实课程、OCR 教学方法统计和交互原语中提取。
+- Phase 5 原“模板和效率工具”不按旧计划解冻；先完成 schema v2、renderer 分离和小批量 JSON 试产。
 
 ## 12. 决策记录
 

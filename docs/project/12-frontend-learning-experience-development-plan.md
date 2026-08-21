@@ -1,12 +1,12 @@
 # 前端学习体验分阶段开发计划
 
-本文是 [HSKWise 网站整体规划与正式开发主线](11-website-master-plan.md) 下的当前前端执行子计划。当前阶段只实现前端 UI、课程运行逻辑、本地课程数据和用户学习状态，不接数据库，不调用后端 API，也不以登录系统作为进入学习的前置条件。
+本文是 [HSKWise 网站整体规划与正式开发主线](11-website-master-plan.md) 下的第一阶段前端执行计划。课程与学习闭环已经跑通，后续 FE7 专项回归不再扩展；当前执行方案切换到[第二阶段：规模化课程生产基础开发计划](13-course-production-foundation-plan.md)。
 
 | 项目 | 当前值 |
 |---|---|
 | 决策日期 | 2026-08-19 |
-| 文档状态 | 当前前端执行计划 |
-| 当前阶段 | FE7 整体验收、性能和回归；[FE6-03 复习页、错题页与状态闭环](progress/FE6-03-review-and-mistake-loop.md)已完成 |
+| 文档状态 | 第一阶段已收束，保留为历史执行计划 |
+| 当前阶段 | 停止于 FE7-01 自动化回归基础；当前转入第二阶段 CP0 |
 | 预计周期 | 5-7 周，约 25-33 个工程日 |
 | 目标版本 | Frontend Learning Alpha |
 | 数据方式 | 本地 TypeScript + Zod + 版本化 localStorage |
@@ -719,7 +719,7 @@ hskwise.learning:v1
 
 React 页面、课程类型组件、Lesson Session 状态机和共享学习原语不应因为存储方式变化而重写。
 
-## 13. 当前立即执行顺序
+## 13. 第一阶段收束记录
 
 1. FE0 已完成：稳定 ID、复用清单、工程约束和截图基线见[阶段归档](progress/FE0-baseline-and-engineering-preparation.md)。
 2. FE1 已完成：设计 token、学习布局、目标入口和课节壳见[阶段归档](progress/FE1-design-system-and-application-shell.md)。
@@ -727,6 +727,7 @@ React 页面、课程类型组件、Lesson Session 状态机和共享学习原�
 4. FE3 已完成：共享 Lesson Runtime、学习原语和媒体异常情景见[阶段归档](progress/FE3-shared-lesson-runtime-and-learning-primitives.md)。
 5. FE4-R1 已完成源码结构收敛，见[阶段归档](progress/FE4-R1-source-structure-simplification.md)。
 6. FE4 拼音课程、FE5 对话课程与 FE6 生词、检查点、复习闭环已完成前端验收。
-7. 当前执行 FE7；通过后，将 Frontend Learning Alpha 交给真实用户试用。
+7. FE7-01 已完成自动化回归基础；其余 FE7 专项工作按 2026-08-21 决策停止扩展。
+8. 当前执行顺序转入[第二阶段课程生产基础计划](13-course-production-foundation-plan.md)的 CP0。
 
-在 FE7 完成前，不启动数据库、后端 API、Google 服务端登录或 Course Studio 工作。
+第二阶段继续暂停数据库、后端 API、Google 服务端登录和完整 Course Studio，直到课程 JSON 生产边界稳定。

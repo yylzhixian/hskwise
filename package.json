@@ -26,6 +26,8 @@
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
     "elysia": "^1.4.29",
+    "hanzi-writer": "^3.7.3",
+    "hanzi-writer-data": "^2.0.1",
     "jotai": "^2.20.2",
     "jotai-immer": "^0.4.3",
     "lucide-react": "^1.28.0",

@@ -1,6 +1,6 @@
 # HSKWise 项目方案索引
 
-> 当前唯一执行主线：[网站整体规划与正式开发主线](11-website-master-plan.md)。其余文档提供专题设计、历史决策或资料依据；如开发顺序冲突，以该主线为准。
+> 当前产品总纲：[网站整体规划与正式开发主线](11-website-master-plan.md)。当前开发执行方案：[第二阶段：规模化课程生产基础开发计划](13-course-production-foundation-plan.md)。
 
 HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能力提升平台。
 
@@ -16,7 +16,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 - 课程内容采用“内部参考来源 + 原创 course/unit/section/scene + 字词引用”的存储规范；HSK 2.0 和 HSK 3.0 共用同一套课程规则，只在学习内容和等级映射上区分。
 - 课程开发当前采用“代码优先、模板后置”：先为拼音、对话、生词等类型直接实现高质量 React 课程，再从多个真实课程中提取稳定模板和 JSON 协议。
 - 通用 Course Studio 已停止产品化并从当前源码移除；有价值的实验结论由历史文档和 Git 保留，正式课程使用收敛后的独立运行时。
-- M0 先完成“路线 -> 互动课程 -> 检查点 -> 错误回流”的四节点纵向切片；诊断、模考和完整备考报告后续接入。
+- 第一阶段已经跑通“路线 -> 互动课程 -> 检查点 -> 错误回流”的四节点纵向切片；当前进入课程 schema、交互原语和原创内容生产管线建设。
 
 ## 当前代码快照
 
@@ -32,7 +32,8 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 ## 文档列表
 
 - [网站整体规划与正式开发主线](11-website-master-plan.md)（当前执行总纲）
-- [前端学习体验分阶段开发计划](12-frontend-learning-experience-development-plan.md)（当前执行子计划）
+- [第二阶段：规模化课程生产基础开发计划](13-course-production-foundation-plan.md)（当前执行子计划）
+- [前端学习体验分阶段开发计划](12-frontend-learning-experience-development-plan.md)（第一阶段历史执行计划）
 - [前端开发阶段进度档案](progress/README.md)（每阶段完成后的实际记录）
 - [产品方案](01-product-plan.md)
 - [内容与数据方案](02-content-data-plan.md)
@@ -47,7 +48,7 @@ HSKWise 的产品方向是：面向非汉语母语者的专业 HSK 备考与能�
 
 文档状态：
 
-- 当前主线：`11-website-master-plan.md`；当前执行子计划：`12-frontend-learning-experience-development-plan.md`；[FE5 对话精读与角色练习](progress/FE5-dialogue-close-reading-and-role-practice.md)已完成并归档，当前进入 FE6 生词、检查点与复习闭环。
+- 当前主线：`11-website-master-plan.md`；当前执行子计划：`13-course-production-foundation-plan.md`；Frontend Learning Alpha 已完成课程与学习闭环验证，当前进入 CP0 课程分类和 OCR 教学方法盘点。
 - 当前专题方案：`02-content-data-plan.md`、`05-db-schema.md`、`06-course-storage-design.md`、`10-code-first-course-development-plan.md`。
 - 设计背景：`01-product-plan.md`、`03-development-plan.md`、`04-roadmap.md`。
 - 历史实验：`07-course-studio-development-plan.md`、`08-course-studio-usability-refactor-plan.md`、`09-course-studio-usability-baseline.md`。
