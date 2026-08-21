@@ -6,8 +6,8 @@
 |---|---|
 | 决策日期 | 2026-08-21 |
 | 文档状态 | 第二阶段当前执行方案 |
-| 当前子阶段 | CP2：Renderer Registry 与运行时收敛 |
-| 最近归档 | [CP2-02：正式对话课与词汇课 v2 迁移](progress/CP2-02-formal-dialogue-vocabulary-migration.md) |
+| 当前子阶段 | CP3：语音与拼音课程体系 |
+| 最近归档 | [CP2-03：检查点 v2 迁移与运行时收束](progress/CP2-03-checkpoint-v2-migration-and-runtime-consolidation.md) |
 | 核心目标 | 课程 schema 与 React 交互组件分离，课程实例以可校验 JSON 生产 |
 | 内容边界 | 官方大纲确定范围，教材 OCR 只研究教学方法，正文、题目和反馈必须原创 |
 | 技术边界 | 纯前端、本地 JSON、Zod、Jotai/Jotai Immer、`hanzi-writer@3.7.3`、`hanzi-writer-data@2.0.1`；暂不接数据库和后端 API |
@@ -540,7 +540,7 @@ type ActivityRendererProps<TActivity> = {
 | 各类 `*-summary` | `content-explore/v1` 的 summary purpose |
 | `checkpoint-*` | 标准 activity + assessment policy |
 
-迁移原则：先保证现有课程行为一致，再删除 v1 schema。迁移期间 registry 同时支持 v1 和 v2；四门课程全部迁移且内容 diff 人工审核后，才移除 v1。
+迁移原则：先保证现有课程行为一致，再删除 v1 schema。CP2 迁移可由现有标准原语完整表达的对话、词汇和检查点；四声课需要语音专用原语，由 CP3 作为语音 v2 基准迁移。全部四门课程完成迁移且内容 diff 人工审核后，才移除 v1。
 
 ## 11. 建议目录结构
 
@@ -716,10 +716,10 @@ draft
 - 建立 `useLessonActivity` 等领域 hooks。
 - 集中提交、反馈、错题、完成和媒体上报逻辑。
 - 把现有选择、排序、主动回忆、音频探索和角色扮演接入 registry。
-- 迁移现有四门课程，保持学习体验不变。
-- 移除四个 Experience 中重复的业务提交代码。
+- 迁移可由标准原语表达的对话、词汇和检查点课程，保持学习体验不变。
+- 移除三门已迁移课程 Experience 中重复的业务提交代码；四声 Experience 在 CP3 语音原语就绪后移除。
 
-退出标准：现有课程由 JSON + registry 渲染；新增相同 activity 不修改课程页面 switch。
+退出标准：通用活动课程由 JSON + registry 渲染；新增相同 activity 不修改课程页面 switch；四声课的专用迁移边界和 CP3 任务明确。
 
 ### CP3：语音与拼音课程体系，8-12 个工程日
 
@@ -827,13 +827,13 @@ draft
 
 ## 18. 下一步立即执行顺序
 
-CP1 已完成并归档。CP2 按以下顺序推进：
+CP2 已完成并归档。CP3 按以下顺序推进：
 
-1. 定义 renderer props、resolved resources、activity state 和 semantic actions 的公共契约。
-2. 建立静态 renderer registry，先接入 CP1 已支持的 7 个原语，不让 JSON 指定组件。
-3. 建立 `useLessonActivity`、`useActivityAttempt`、`useLessonMedia` 和错题关联等领域 hooks。
-4. 优先让 v2 对话与词汇试点在现有 Lesson Runtime 中可视化运行，并与 v1 行为逐步对照。
-5. 集中选择、排序、反馈、媒体完成和自评提交逻辑，移除 Experience 中对应的重复 switch 分支。
-6. 两门试点稳定后迁移四声课和检查点；全部迁移前不删除 v1 schema 或现有课程入口。
+1. 盘点现有四声课程中声调轮廓、听辨、跟读、录音回听和综合检查的真实协议，确定可复用部分与语音专用状态。
+2. 先定义 `pronunciation-guide/v1`、`pronunciation-visualizer/v1`、`sound-contrast/v1` 和 `speech-repeat/v1` 的最小 schema 与 renderer contract。
+3. 将四声课迁移为 `lesson/v2` 语音基准，保持现有声调路径动画、四选项听辨和录音反馈体验。
+4. 删除最后一个正式 v1 Experience，并在确认 legacy fixture 已无独立价值后清理 v1 schema 与 TypeScript 内容。
+5. 用一组唇音声母课和一组单韵母课验证同一语音原语能服务不同内容，不通过 TSX 分支扩展课程。
+6. 补齐拼音 Unicode、声调符号、媒体失败、录音拒绝和 reduced-motion 验证。
 
 第二阶段完成前，数据库、后端 API、完整 Course Studio 和批量 AI 自动发布继续保持暂停。

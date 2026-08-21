@@ -1,5 +1,6 @@
 import firstGreetingInput from './lessons/first-greeting.v2.json'
 import firstWordsInput from './lessons/first-words.v2.json'
+import starterCheckpointInput from './lessons/starter-checkpoint.v2.json'
 
 import { compileLessonV2 } from '../compiler/compile-lesson-v2'
 import {
@@ -18,8 +19,10 @@ export type LessonV2Definition = {
 
 const firstGreeting = parseLessonV2(firstGreetingInput)
 const firstWords = parseLessonV2(firstWordsInput)
+const starterCheckpoint = parseLessonV2(starterCheckpointInput)
 const greetingContext = { dependencies: [] }
 const wordsContext = { dependencies: [firstGreeting] }
+const checkpointContext = { dependencies: [firstGreeting, firstWords] }
 
 const lessons = new Map<string, LessonV2Definition>([
   [
@@ -36,6 +39,17 @@ const lessons = new Map<string, LessonV2Definition>([
       lesson: firstWords,
       resources: resolveLessonResources(firstWords, wordsContext),
       runtime: compileLessonV2(firstWords, wordsContext),
+    },
+  ],
+  [
+    starterCheckpoint.id,
+    {
+      lesson: starterCheckpoint,
+      resources: resolveLessonResources(
+        starterCheckpoint,
+        checkpointContext,
+      ),
+      runtime: compileLessonV2(starterCheckpoint, checkpointContext),
     },
   ],
 ])

@@ -88,6 +88,14 @@ export function createFirstWordsLearningState(): LearningState {
   return state
 }
 
+export function createCheckpointLearningState(): LearningState {
+  const state = createReturningLearningState()
+  state.mistakes = []
+  state.reviewQueue = []
+  state.recentActivity = []
+  return state
+}
+
 export async function seedLearningState(
   page: Page,
   state = createReturningLearningState(),

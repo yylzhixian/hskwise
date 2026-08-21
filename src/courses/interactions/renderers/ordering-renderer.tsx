@@ -13,7 +13,7 @@ type OrderingActivity = Extract<LessonActivity, { type: 'ordering/v1' }>
 
 const genericRole: DialogueRoleView = {
   id: 'sequence-item',
-  name: 'Sequence',
+  name: '',
 }
 
 export function OrderingRenderer({
@@ -52,6 +52,11 @@ export function OrderingRenderer({
 
   return (
     <DialogueLineOrder
+      description={
+        activity.presentation === 'dialogue-lines'
+          ? 'Arrange the lines into the order you heard.'
+          : 'Arrange the items into a natural sequence.'
+      }
       disabled={state.disabled}
       lines={lines}
       onSubmit={({ orderedIds, isCorrect }) =>

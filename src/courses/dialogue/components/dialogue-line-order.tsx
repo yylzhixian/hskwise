@@ -21,12 +21,14 @@ import { useOrderingInteraction } from '@/hooks/lesson/use-ordering-interaction'
 import { cn } from '@/lib/utils'
 
 export function DialogueLineOrder({
+  description = 'Arrange the lines into the order you heard.',
   disabled,
   lines,
   onSubmit,
   roles,
   step,
 }: {
+  description?: string
   disabled: boolean
   lines: DialogueLineView[]
   onSubmit: (result: { orderedIds: string[]; isCorrect: boolean }) => void
@@ -56,9 +58,7 @@ export function DialogueLineOrder({
         <FieldLegend className="mb-0 text-xl font-semibold text-balance">
           {step.prompt}
         </FieldLegend>
-        <FieldDescription>
-          Arrange the lines into the order you heard.
-        </FieldDescription>
+        <FieldDescription>{description}</FieldDescription>
       </div>
 
       <DragDropProvider onDragEnd={handleDragEnd}>
@@ -131,8 +131,17 @@ function SortableDialogueLine({
         {index + 1}
       </span>
       <div className="min-w-0">
-        <p className="text-xs font-medium text-muted-foreground">{roleName}</p>
-        <p className="mt-1 text-lg leading-7 font-semibold text-wrap">
+        {roleName ? (
+          <p className="text-xs font-medium text-muted-foreground">
+            {roleName}
+          </p>
+        ) : null}
+        <p
+          className={cn(
+            'text-lg leading-7 font-semibold text-wrap',
+            roleName && 'mt-1',
+          )}
+        >
           {line.tokens.map((token) => token.text).join('')}
         </p>
       </div>

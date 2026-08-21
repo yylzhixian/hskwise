@@ -10,10 +10,14 @@ import {
 } from '@/courses/compiler/validate-lesson-v2.ts'
 import firstGreetingInput from '@/courses/content/lessons/first-greeting.v2.json'
 import firstWordsInput from '@/courses/content/lessons/first-words.v2.json'
+import starterCheckpointInput from '@/courses/content/lessons/starter-checkpoint.v2.json'
 import { getLessonV2Definition } from '@/courses/content/lesson-v2-registry.ts'
 import { registeredActivityTypes } from '@/courses/interactions/activity-renderer.tsx'
 
 const firstGreeting = parseLessonV2(firstGreetingInput)
+const firstWords = parseLessonV2(firstWordsInput, {
+  dependencies: [firstGreeting],
+})
 const dependencies = [firstGreeting]
 
 describe('lesson/v2 schema and compiler', () => {
@@ -64,6 +68,34 @@ describe('lesson/v2 schema and compiler', () => {
     })
   })
 
+  test('compiles the formal checkpoint from standard activities', () => {
+    const checkpoint = validateLessonV2(starterCheckpointInput, {
+      dependencies: [firstGreeting, firstWords],
+    })
+    const runtime = compileLessonV2(checkpoint, {
+      dependencies: [firstGreeting, firstWords],
+    })
+
+    expect(checkpoint.type).toBe('checkpoint')
+    expect(runtime.steps.map((step) => step.completionRule.kind)).toEqual([
+      'continue',
+      'interaction',
+      'interaction',
+      'interaction',
+      'interaction',
+      'continue',
+    ])
+    expect(
+      runtime.steps
+        .filter((step) => step.completionRule.kind === 'interaction')
+        .every(
+          (step) =>
+            step.completionRule.kind === 'interaction' &&
+            step.completionRule.requireCorrect,
+        ),
+    ).toBe(true)
+  })
+
   test('resolves local media and cross-lesson vocabulary context for renderers', () => {
     const greetingResources = resolveLessonResources(firstGreeting)
     const wordResources = resolveLessonResources(firstWordsInput, {
@@ -86,7 +118,7 @@ describe('lesson/v2 schema and compiler', () => {
     })
   })
 
-  test('registers every supported primitive and exposes both formal lessons', () => {
+  test('registers every supported primitive and exposes all formal lessons', () => {
     expect([...registeredActivityTypes].sort()).toEqual([
       'active-recall/v1',
       'audio-explore/v1',
@@ -99,11 +131,15 @@ describe('lesson/v2 schema and compiler', () => {
 
     const greeting = getLessonV2Definition('first-greeting')
     const words = getLessonV2Definition('first-words')
+    const checkpoint = getLessonV2Definition('starter-checkpoint')
     expect(greeting?.runtime.steps).toHaveLength(
       greeting?.lesson.steps.length ?? -1,
     )
     expect(words?.runtime.steps).toHaveLength(
       words?.lesson.steps.length ?? -1,
+    )
+    expect(checkpoint?.runtime.steps).toHaveLength(
+      checkpoint?.lesson.steps.length ?? -1,
     )
     expect(getLessonV2Definition('missing-lesson')).toBeNull()
   })

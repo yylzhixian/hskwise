@@ -2,7 +2,6 @@ import { BookOpenIcon } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { CheckpointExperience } from '@/courses/checkpoint/components/checkpoint-experience'
 import { PinyinLessonExperience } from '@/courses/pinyin/components/pinyin-lesson-experience'
 import { getPublishedLesson } from '@/courses/lesson-registry'
 import { getLessonV2Definition } from '@/courses/content/lesson-v2-registry'
@@ -32,10 +31,6 @@ export function LessonView({ lessonId }: { lessonId: string }) {
   if (lesson?.kind === 'pinyin') {
     return <PinyinLessonExperience lesson={lesson} />
   }
-  if (lesson?.kind === 'checkpoint') {
-    return <CheckpointExperience checkpoint={lesson} />
-  }
-
   const lessonTitle = lessonTitles[lessonId] ?? 'Mandarin lesson'
 
   return (

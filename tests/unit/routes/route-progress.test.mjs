@@ -63,6 +63,10 @@ describe('starter route', () => {
       nodeId: 'node-first-words',
       routeId: 'hsk3-level-1-starter',
     })
+    expect(getLessonPlacement(starterRoute, 'starter-checkpoint')).toEqual({
+      nodeId: 'node-starter-checkpoint',
+      routeId: 'hsk3-level-1-starter',
+    })
     expect(getLessonPlacement(starterRoute, 'missing-lesson')).toBeUndefined()
   })
 

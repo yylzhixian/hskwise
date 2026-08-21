@@ -6,10 +6,14 @@ import {
   createCheckpointRuntimeDefinition,
 } from '@/courses/checkpoint/model/checkpoint-schema.ts'
 import { getPublishedLesson } from '@/courses/lesson-registry.ts'
+import { getLessonV2Definition } from '@/courses/content/lesson-v2-registry.ts'
 
 describe('checkpoint schema', () => {
-  test('publishes a mixed checkpoint across the three learned courses', () => {
-    expect(getPublishedLesson('starter-checkpoint')).toBe(starterCheckpoint)
+  test('keeps the legacy schema as a fixture while publishing checkpoint v2', () => {
+    expect(getPublishedLesson('starter-checkpoint')).toBeNull()
+    expect(getLessonV2Definition('starter-checkpoint')?.lesson.type).toBe(
+      'checkpoint',
+    )
     expect(starterCheckpoint.reviewedLessonIds).toEqual([
       'four-tones',
       'first-greeting',

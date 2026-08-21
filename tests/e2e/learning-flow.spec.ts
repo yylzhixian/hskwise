@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import {
+  createCheckpointLearningState,
   createFirstWordsLearningState,
   seedLearningState,
 } from './fixtures/learning-state'
@@ -36,7 +37,7 @@ test('restores route progress after a reload', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'To revisit: 1' })).toBeVisible()
 })
 
-test('runs the formal dialogue and vocabulary urls through v2 renderers', async ({
+test('runs every formal v2 lesson url through shared renderers', async ({
   page,
 }) => {
   await seedLearningState(page, createFirstWordsLearningState())
@@ -51,6 +52,59 @@ test('runs the formal dialogue and vocabulary urls through v2 renderers', async 
     page.getByRole('heading', { name: 'The words already live in a greeting' }),
   ).toBeVisible()
   await expect(page.getByText('Lesson preview')).toHaveCount(0)
+
+  await page.goto('/lessons/starter-checkpoint')
+  await expect(
+    page.getByRole('heading', {
+      name: 'Bring the first three lessons together',
+    }),
+  ).toBeVisible()
+  await expect(page.getByText('Lesson preview')).toHaveCount(0)
+})
+
+test('completes the formal checkpoint and records a missed answer', async ({
+  page,
+}) => {
+  await seedLearningState(page, createCheckpointLearningState())
+  await page.goto('/lessons/starter-checkpoint')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.locator('audio').dispatchEvent('ended')
+  await page.getByRole('button', { name: /^Tone 3/ }).click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page
+    .getByRole('button', { name: /It asks for the other person's name/ })
+    .click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await expect(page.getByText('Try once more')).toBeVisible()
+  await page.getByRole('button', { name: 'Try again' }).click()
+  await page
+    .getByRole('button', { name: /It introduces the speaker's name/ })
+    .click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page.getByRole('button', { name: /你好，林月！我叫安娜。/ }).click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page
+    .getByRole('button', { name: 'Drag line 1 to reorder' })
+    .dragTo(page.getByRole('button', { name: 'Drag line 3 to reorder' }))
+  await page.getByRole('button', { name: 'Check order' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('button', { name: 'Finish lesson' }).click()
+  await page.getByRole('link', { name: 'Return to route' }).click()
+
+  await expect(page).toHaveURL(/\/learn$/)
+  await expect(page.getByText('100% complete')).toBeVisible()
+
+  await page.goto('/mistakes')
+  await expect(
+    page.getByRole('cell', { name: 'What does 叫 do in “我叫安娜”?' }),
+  ).toBeVisible()
 })
 
 test('bridges a migrated vocabulary lesson to mistakes and route progress', async ({

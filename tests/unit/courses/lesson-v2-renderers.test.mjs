@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { resolveLessonResources } from '@/courses/compiler/resolve-lesson-resources.ts'
 import firstGreetingInput from '@/courses/content/lessons/first-greeting.v2.json'
 import firstWordsInput from '@/courses/content/lessons/first-words.v2.json'
+import starterCheckpointInput from '@/courses/content/lessons/starter-checkpoint.v2.json'
 import { getActivityReviewAnswers } from '@/courses/interactions/model/activity-review-answers.ts'
 import { ActiveRecallRenderer } from '@/courses/interactions/renderers/active-recall-renderer.tsx'
 import { AudioExploreRenderer } from '@/courses/interactions/renderers/audio-explore-renderer.tsx'
@@ -17,9 +18,13 @@ import { parseLessonV2 } from '@/courses/compiler/validate-lesson-v2.ts'
 
 const firstGreeting = parseLessonV2(firstGreetingInput)
 const firstWords = parseLessonV2(firstWordsInput)
+const starterCheckpoint = parseLessonV2(starterCheckpointInput)
 const greetingResources = resolveLessonResources(firstGreeting)
 const wordResources = resolveLessonResources(firstWords, {
   dependencies: [firstGreeting],
+})
+const checkpointResources = resolveLessonResources(starterCheckpoint, {
+  dependencies: [firstGreeting, firstWords],
 })
 const actions = {
   assessRecall: () => {},
@@ -39,12 +44,13 @@ const renderers = {
 }
 
 describe('lesson/v2 renderers', () => {
-  test('renders every registered primitive from the two JSON pilots', () => {
+  test('renders every registered primitive from the formal JSON lessons', () => {
     const renderedTypes = new Set()
 
     for (const { lesson, resources } of [
       { lesson: firstGreeting, resources: greetingResources },
       { lesson: firstWords, resources: wordResources },
+      { lesson: starterCheckpoint, resources: checkpointResources },
     ]) {
       for (const activity of lesson.steps) {
         const Renderer = renderers[activity.type]

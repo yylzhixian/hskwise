@@ -1,0 +1,193 @@
+{
+  "$schema": "../../../../schemas/lesson-v2.schema.json",
+  "schemaVersion": "lesson/v2",
+  "id": "starter-checkpoint",
+  "type": "checkpoint",
+  "meta": {
+    "title": "Starter checkpoint",
+    "description": "Reconnect tone direction, greeting meaning, first words, and conversation order.",
+    "level": { "standard": "hsk3", "value": "1" },
+    "estimatedMinutes": 6,
+    "topics": ["starter-review", "mixed-checkpoint"]
+  },
+  "objectives": [
+    {
+      "knowledgeId": "checkpoint.starter-foundations",
+      "canDo": "Reconnect sound, vocabulary, and dialogue knowledge from the starter route."
+    },
+    {
+      "knowledgeId": "pinyin.tone-shapes.tone3",
+      "canDo": "Recognize the third tone by its low turning pitch."
+    },
+    {
+      "knowledgeId": "vocabulary.introduction-jiao",
+      "canDo": "Recognize how 叫 connects a speaker with a name."
+    },
+    {
+      "knowledgeId": "dialogue.greeting-ni-hao",
+      "canDo": "Choose a natural response to a first greeting."
+    },
+    {
+      "knowledgeId": "dialogue.self-introduction-jiao",
+      "canDo": "Place a name introduction in a natural exchange."
+    },
+    {
+      "knowledgeId": "dialogue.greeting-nice-to-meet",
+      "canDo": "Close a first introduction warmly."
+    }
+  ],
+  "resources": {
+    "media": [
+      {
+        "id": "audio.checkpoint-turning-tone",
+        "kind": "audio",
+        "src": "/audio/placeholders/pinyin/tone-sample-b.mp3",
+        "label": "Checkpoint third-tone cue",
+        "rights": {
+          "origin": "generated-placeholder",
+          "publishable": false,
+          "mustReplaceBeforePublish": true
+        }
+      }
+    ],
+    "dialogues": [],
+    "lexemes": []
+  },
+  "steps": [
+    {
+      "id": "starter-checkpoint-intro",
+      "type": "content-explore/v1",
+      "eyebrow": "Checkpoint",
+      "title": "Bring the first three lessons together",
+      "instruction": "Each prompt revisits something you already practiced. Missed answers return to your review queue.",
+      "knowledgeIds": ["checkpoint.starter-foundations"],
+      "purpose": "intro",
+      "resourceRefs": [],
+      "body": "Move from sound to meaning, then rebuild the order of a first meeting."
+    },
+    {
+      "id": "starter-checkpoint-tone",
+      "type": "single-choice/v1",
+      "eyebrow": "1 of 4 · Listen",
+      "title": "Recognize the pitch turn",
+      "instruction": "Play the cue and identify its tone before moving on.",
+      "knowledgeIds": ["pinyin.tone-shapes.tone3"],
+      "prompt": "Which tone did you hear?",
+      "stimulus": { "kind": "audio", "ref": "audio.checkpoint-turning-tone" },
+      "options": [
+        { "id": "checkpoint-tone-1", "label": "Tone 1", "supportingText": "High and level" },
+        { "id": "checkpoint-tone-2", "label": "Tone 2", "supportingText": "Rising" },
+        { "id": "checkpoint-tone-3", "label": "Tone 3", "supportingText": "Low, then turning up" },
+        { "id": "checkpoint-tone-4", "label": "Tone 4", "supportingText": "Falling" }
+      ],
+      "answer": "checkpoint-tone-3",
+      "feedback": {
+        "correct": "The pitch dipped low before turning upward: third tone.",
+        "retry": "Replay the sample and listen for the turn near the bottom."
+      }
+    },
+    {
+      "id": "starter-checkpoint-meaning",
+      "type": "single-choice/v1",
+      "eyebrow": "2 of 4 · Meaning",
+      "title": "Use 叫 inside a sentence",
+      "instruction": "Recall what 叫 does in the greeting pattern.",
+      "knowledgeIds": ["vocabulary.introduction-jiao"],
+      "prompt": "What does 叫 do in “我叫安娜”?",
+      "options": [
+        {
+          "id": "meaning-introduce-name",
+          "label": "It introduces the speaker's name.",
+          "supportingText": "to be called"
+        },
+        {
+          "id": "meaning-ask-name",
+          "label": "It asks for the other person's name."
+        },
+        {
+          "id": "meaning-greet-person",
+          "label": "It greets the other person."
+        }
+      ],
+      "answer": "meaning-introduce-name",
+      "feedback": {
+        "correct": "叫 connects 我 with the name that follows.",
+        "retry": "Return to the pattern 我 + 叫 + name."
+      }
+    },
+    {
+      "id": "starter-checkpoint-dialogue",
+      "type": "single-choice/v1",
+      "eyebrow": "3 of 4 · Respond",
+      "title": "Choose the natural reply",
+      "instruction": "Use the greeting exchange you explored earlier.",
+      "knowledgeIds": [
+        "dialogue.greeting-ni-hao",
+        "dialogue.self-introduction-jiao"
+      ],
+      "prompt": "Lin Yue says “你好！我叫林月。” What is the best reply?",
+      "options": [
+        {
+          "id": "dialogue-reply-greeting",
+          "label": "你好，林月！我叫安娜。",
+          "supportingText": "Nǐ hǎo, Lín Yuè! Wǒ jiào Ānnà."
+        },
+        {
+          "id": "dialogue-reply-name-only",
+          "label": "我叫林月。",
+          "supportingText": "Wǒ jiào Lín Yuè."
+        },
+        {
+          "id": "dialogue-reply-goodbye",
+          "label": "再见！",
+          "supportingText": "Zàijiàn!"
+        }
+      ],
+      "answer": "dialogue-reply-greeting",
+      "feedback": {
+        "correct": "Anna returns the greeting and then gives her own name.",
+        "retry": "A first meeting reply should greet back before introducing a name."
+      }
+    },
+    {
+      "id": "starter-checkpoint-order",
+      "type": "ordering/v1",
+      "eyebrow": "4 of 4 · Rebuild",
+      "title": "Rebuild the meeting",
+      "instruction": "Drag the three moments into a natural conversation order.",
+      "knowledgeIds": [
+        "dialogue.greeting-ni-hao",
+        "dialogue.self-introduction-jiao",
+        "dialogue.greeting-nice-to-meet"
+      ],
+      "prompt": "What happens first, next, and last?",
+      "presentation": "text",
+      "items": [
+        { "id": "order-greet", "label": "你好！" },
+        { "id": "order-name", "label": "我叫安娜。" },
+        { "id": "order-meet", "label": "很高兴认识你。" }
+      ],
+      "initialOrder": ["order-meet", "order-greet", "order-name"],
+      "answer": ["order-greet", "order-name", "order-meet"],
+      "feedback": {
+        "correct": "Greeting, name, then a warm closing forms the full exchange.",
+        "retry": "Start with hello, introduce the name, and close with nice to meet you."
+      }
+    },
+    {
+      "id": "starter-checkpoint-summary",
+      "type": "content-explore/v1",
+      "eyebrow": "Route complete",
+      "title": "Your starter foundation is connected",
+      "instruction": "Finish the checkpoint to complete the first route.",
+      "knowledgeIds": ["checkpoint.starter-foundations"],
+      "purpose": "summary",
+      "resourceRefs": [],
+      "takeaways": [
+        "You can distinguish a turning tone from a direct fall.",
+        "You can recognize the pattern 我叫 + name.",
+        "You can follow the order of a first greeting."
+      ]
+    }
+  ]
+}
