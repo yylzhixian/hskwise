@@ -132,6 +132,10 @@ function PinyinStepView({
           onSubmit={(result) => {
             if (!result.isCorrect && lesson.nodeId) {
               onRecordMistake({
+                acceptedAnswers: getToneReviewAnswers(
+                  lesson,
+                  step.correctToneNumber,
+                ),
                 lessonId: lesson.id,
                 nodeId: lesson.nodeId,
                 stepId: step.id,
@@ -168,6 +172,10 @@ function PinyinStepView({
           onSubmit={(result) => {
             if (!result.isCorrect && lesson.nodeId) {
               onRecordMistake({
+                acceptedAnswers: getToneReviewAnswers(
+                  lesson,
+                  step.correctToneNumber,
+                ),
                 lessonId: lesson.id,
                 nodeId: lesson.nodeId,
                 stepId: step.id,
@@ -251,6 +259,10 @@ function recordCheckMistake({
 }) {
   if (!lesson.nodeId) return
   onRecordMistake({
+    acceptedAnswers: getToneReviewAnswers(
+      lesson,
+      question.correctToneNumber,
+    ),
     lessonId: lesson.id,
     nodeId: lesson.nodeId,
     stepId: step.id,
@@ -260,6 +272,18 @@ function recordCheckMistake({
     correction: question.correctFeedback,
     reviewLabel: `${step.title}: ${question.id}`,
   })
+}
+
+function getToneReviewAnswers(
+  lesson: PinyinLessonDefinition,
+  toneNumber: PinyinTone['number'],
+) {
+  const tone = lesson.tones.find((candidate) => candidate.number === toneNumber)
+  return [
+    `Tone ${toneNumber}`,
+    String(toneNumber),
+    ...(tone ? [tone.name] : []),
+  ]
 }
 
 function selectTones(

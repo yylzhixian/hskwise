@@ -4,10 +4,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   CheckCircle2Icon,
-  EyeIcon,
   HistoryIcon,
-  LightbulbIcon,
-  RotateCcwIcon,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -30,6 +27,7 @@ import { Progress } from '@/components/ui/progress'
 import { formatKebabLabel } from '@/lib/format-kebab-label'
 import type { LearningReviewResult } from '@/store/learning/model/review-schedule'
 
+import { ReviewAnswerForm } from './components/review-answer-form'
 import { useReviewSession } from './hooks/use-review-session'
 
 export function ReviewView() {
@@ -59,8 +57,8 @@ export function ReviewView() {
               Daily review
             </h1>
             <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
-              Recall the answer before revealing it, then judge your memory
-              honestly.
+              Answer one question at a time, then compare your response with
+              the reference answer.
             </p>
           </div>
           <Badge className="rounded-sm" variant="outline">
@@ -119,59 +117,27 @@ function ReviewPrompt({ session }: { session: ReviewSession }) {
 
       <div className="mt-5 border-y py-10 sm:py-14">
         <p className="text-xs font-semibold text-muted-foreground uppercase">
-          Recall before you reveal
+          Answer from memory
         </p>
         <h2 className="mt-4 max-w-3xl text-2xl leading-tight font-semibold text-balance sm:text-4xl">
           {question}
         </h2>
-
-        {!session.isRevealed ? (
-          <Button
-            className="mt-8 w-full sm:w-auto"
-            onClick={session.revealAnswer}
-            size="learning"
-            variant="learning"
-          >
-            <EyeIcon data-icon="inline-start" />
-            Reveal answer
-          </Button>
-        ) : (
-          <div className="mt-9 border-s-2 border-focus bg-accent/40 px-5 py-5">
-            <div className="flex items-center gap-2 text-sm font-semibold text-focus">
-              <LightbulbIcon className="size-4" />
-              Answer
-            </div>
-            <p className="mt-3 max-w-2xl text-lg leading-8">{correction}</p>
-          </div>
-        )}
+        <ReviewAnswerForm
+          attempt={session.attempt}
+          correction={correction}
+          draftAnswer={session.draftAnswer}
+          onChange={session.setDraftAnswer}
+          onMarkUnsure={session.markUnsure}
+          onSubmit={session.submitAttempt}
+        />
       </div>
 
       {session.feedback ? (
         <ReviewFeedback
           continueReview={session.continueReview}
+          unsure={session.attempt?.kind === 'unsure'}
           result={session.feedback}
         />
-      ) : session.isRevealed ? (
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
-          <Button
-            className="w-full sm:w-auto"
-            onClick={() => session.assess('needs-review')}
-            size="learning"
-            variant="outline"
-          >
-            <RotateCcwIcon data-icon="inline-start" />
-            Review again
-          </Button>
-          <Button
-            className="w-full sm:w-auto"
-            onClick={() => session.assess('recalled')}
-            size="learning"
-            variant="learning"
-          >
-            <CheckCircle2Icon data-icon="inline-start" />
-            I recalled it
-          </Button>
-        </div>
       ) : null}
     </div>
   )
@@ -180,9 +146,11 @@ function ReviewPrompt({ session }: { session: ReviewSession }) {
 function ReviewFeedback({
   continueReview,
   result,
+  unsure,
 }: {
   continueReview: () => void
   result: LearningReviewResult
+  unsure: boolean
 }) {
   const needsReview = result === 'needs-review'
 
@@ -191,12 +159,18 @@ function ReviewFeedback({
       <Alert role="status" variant={needsReview ? 'warning' : 'success'}>
         {needsReview ? <HistoryIcon /> : <CheckCircle2Icon />}
         <AlertTitle>
-          {needsReview ? 'Scheduled for another look' : 'Marked as mastered'}
+          {needsReview
+            ? unsure
+              ? 'Scheduled for another look'
+              : 'Needs more review'
+            : 'Answer matched'}
         </AlertTitle>
         <AlertDescription>
           {needsReview
-            ? 'This is useful memory feedback, not a wrong answer. It will return in 10 minutes.'
-            : 'This item left the active queue and its linked mistake is now resolved.'}
+            ? unsure
+              ? 'This is useful memory feedback, not a wrong answer. It will return in 10 minutes.'
+              : 'Your answer did not match the accepted answer. This item will return in 10 minutes.'
+            : 'Your answer matched. This item has left the active queue.'}
         </AlertDescription>
       </Alert>
       <Button

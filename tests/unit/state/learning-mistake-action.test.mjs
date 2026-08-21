@@ -18,6 +18,7 @@ describe('learning mistake action', () => {
       ],
       prompt: 'Which tone falls directly from high to low?',
       correction: 'The fourth tone falls without turning upward.',
+      acceptedAnswers: ['Tone 4', 'Fourth tone'],
       reviewLabel: 'Separate falling from dipping',
       now: '2026-08-20T08:05:00.000Z',
     }
@@ -34,6 +35,7 @@ describe('learning mistake action', () => {
     expect(state.mistakes.every((mistake) => !mistake.resolved)).toBe(true)
     expect(state.mistakes[0].occurredAt).toBe('2026-08-20T08:06:00.000Z')
     expect(state.mistakes[0]).toMatchObject({
+      acceptedAnswers: ['Tone 4', 'Fourth tone'],
       stepId: 'four-tones-falling-check',
       interactionId: 'four-tones-falling-check:answer',
     })

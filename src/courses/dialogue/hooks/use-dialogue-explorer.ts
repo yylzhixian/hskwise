@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
-import type { DialogueLine } from '../model/dialogue-lesson-schema'
+import type { DialogueLineView } from '@/courses/interactions/model/activity-view-models'
 import { useDialogueAudio } from './use-dialogue-audio'
 
 export function useDialogueExplorer({
@@ -11,7 +11,7 @@ export function useDialogueExplorer({
   onComplete,
 }: {
   completed: boolean
-  lines: DialogueLine[]
+  lines: DialogueLineView[]
   onComplete: () => void
 }) {
   const {
@@ -79,7 +79,7 @@ export function useDialogueExplorer({
 
 export function hasListenedToAllLines(
   playedLineIds: ReadonlySet<string>,
-  lines: DialogueLine[],
+  lines: DialogueLineView[],
 ) {
   return lines.length > 0 && lines.every((line) => playedLineIds.has(line.id))
 }

@@ -7,6 +7,8 @@ import { DialogueLessonExperience } from '@/courses/dialogue/components/dialogue
 import { PinyinLessonExperience } from '@/courses/pinyin/components/pinyin-lesson-experience'
 import { VocabularyLessonExperience } from '@/courses/vocabulary/components/vocabulary-lesson-experience'
 import { getPublishedLesson } from '@/courses/lesson-registry'
+import { getLessonV2Pilot } from '@/courses/content/v2-pilot-registry'
+import { V2LessonExperience } from '@/courses/interactions/v2-lesson-experience'
 import { LessonChrome } from '@/components/learning-shell/lesson-chrome'
 
 const lessonTitles: Record<string, string> = {
@@ -14,9 +16,15 @@ const lessonTitles: Record<string, string> = {
   'first-greeting': 'Your first greeting',
   'first-words': 'Your first words',
   'starter-checkpoint': 'Starter checkpoint',
+  'first-greeting-v2-pilot': 'Your first greeting · v2 pilot',
+  'first-words-v2-pilot': 'Your first words · v2 pilot',
 }
 
 export function LessonView({ lessonId }: { lessonId: string }) {
+  const v2Pilot = getLessonV2Pilot(lessonId)
+  if (v2Pilot) {
+    return <V2LessonExperience pilot={v2Pilot} />
+  }
   const lesson = getPublishedLesson(lessonId)
   if (lesson?.kind === 'pinyin') {
     return <PinyinLessonExperience lesson={lesson} />

@@ -12,12 +12,12 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import type {
+  DialogueLineView,
+  DialogueRoleView,
+} from '@/courses/interactions/model/activity-view-models'
 
 import { useDialogueExplorer } from '../hooks/use-dialogue-explorer'
-import type {
-  DialogueLine,
-  DialogueRole,
-} from '../model/dialogue-lesson-schema'
 
 export function DialogueExplorer({
   completed,
@@ -26,9 +26,9 @@ export function DialogueExplorer({
   roles,
 }: {
   completed: boolean
-  lines: DialogueLine[]
+  lines: DialogueLineView[]
   onComplete: () => void
-  roles: DialogueRole[]
+  roles: DialogueRoleView[]
 }) {
   const {
     activeLineId,

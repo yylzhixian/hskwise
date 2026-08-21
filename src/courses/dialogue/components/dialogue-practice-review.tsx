@@ -11,12 +11,12 @@ import {
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import type {
+  DialogueLineView,
+  DialogueRoleView,
+} from '@/courses/interactions/model/activity-view-models'
 
 import type { DialogueTurnRecording } from '../hooks/use-dialogue-role-practice'
-import type {
-  DialogueLine,
-  DialogueRole,
-} from '../model/dialogue-lesson-schema'
 
 export function DialoguePracticeReview({
   activeLineId,
@@ -29,10 +29,10 @@ export function DialoguePracticeReview({
 }: {
   activeLineId: string | null
   audioStatus: 'idle' | 'playing' | 'blocked' | 'error'
-  lines: DialogueLine[]
-  onPlayReference: (line: DialogueLine) => Promise<boolean>
+  lines: DialogueLineView[]
+  onPlayReference: (line: DialogueLineView) => Promise<boolean>
   onPracticeAgain: () => void
-  practiceRole?: DialogueRole
+  practiceRole?: DialogueRoleView
   recordings: DialogueTurnRecording[]
 }) {
   const recordingsByLineId = new Map(

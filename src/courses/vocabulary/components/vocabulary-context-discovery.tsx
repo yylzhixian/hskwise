@@ -5,14 +5,13 @@ import { CircleAlertIcon, PlayIcon, Volume2Icon } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import type { LexemeView } from '@/courses/interactions/model/activity-view-models'
 import { useAudioPlayback } from '@/hooks/media/use-audio-playback'
-
-import type { VocabularyItem } from '../model/vocabulary-lesson-schema'
 
 export function VocabularyContextDiscovery({
   items,
 }: {
-  items: VocabularyItem[]
+  items: LexemeView[]
 }) {
   const source = items[0]?.source
   const { audioRef, markEnded, markError, play, status } = useAudioPlayback()

@@ -35,6 +35,7 @@ export type RecordLearningMistakeInput = {
   knowledgeIds: string[]
   prompt: string
   correction: string
+  acceptedAnswers: string[]
   reviewLabel: string
   now: string
 }
@@ -159,6 +160,9 @@ export const recordLearningMistakeAtom = atom(
         if (existing) {
           existing.prompt = input.prompt
           existing.correction = input.correction
+          existing.acceptedAnswers = input.acceptedAnswers.length
+            ? input.acceptedAnswers
+            : undefined
           existing.occurredAt = input.now
           continue
         }
@@ -172,6 +176,9 @@ export const recordLearningMistakeAtom = atom(
           knowledgeId,
           prompt: input.prompt,
           correction: input.correction,
+          acceptedAnswers: input.acceptedAnswers.length
+            ? input.acceptedAnswers
+            : undefined,
           occurredAt: input.now,
           resolved: false,
         })

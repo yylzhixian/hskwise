@@ -6,6 +6,7 @@ import { LessonFrame } from '@/components/lesson/lesson-frame'
 import { useLearningActions } from '@/hooks/learning/use-learning-actions'
 import { useLessonStep } from '@/hooks/lesson/use-lesson-step'
 import { LessonStoreProvider } from '@/learning/runtime/provider/lesson-store-provider'
+import { createChoiceAnswerCandidates } from '@/lib/learning/review-answer'
 
 import {
   createCheckpointRuntimeDefinition,
@@ -143,7 +144,21 @@ function recordCheckpointMistake({
   step: InteractiveCheckpointStep
 }) {
   if (!checkpoint.nodeId) return
+  const acceptedAnswers =
+    step.kind === 'line-order'
+      ? [
+          step.correctOrder
+            .flatMap((itemId) => {
+              const item = step.items.find((candidate) => candidate.id === itemId)
+              return item ? [item.label] : []
+            })
+            .join(' '),
+        ]
+      : step.options
+          .filter((option) => option.isCorrect)
+          .flatMap(createChoiceAnswerCandidates)
   recordMistake({
+    acceptedAnswers,
     lessonId: checkpoint.id,
     nodeId: checkpoint.nodeId,
     stepId: step.id,

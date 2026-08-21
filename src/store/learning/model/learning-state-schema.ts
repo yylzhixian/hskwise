@@ -24,6 +24,7 @@ export const mistakeRecordSchema = z.object({
   knowledgeId: z.string().min(1),
   prompt: z.string().min(1),
   correction: z.string().min(1),
+  acceptedAnswers: z.array(z.string().trim().min(1)).min(1).optional(),
   occurredAt: timestampSchema,
   resolved: z.boolean(),
 })

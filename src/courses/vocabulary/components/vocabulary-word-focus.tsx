@@ -5,15 +5,14 @@ import { useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import type { LexemeView } from '@/courses/interactions/model/activity-view-models'
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from '@/components/ui/toggle-group'
 import { useAudioPlayback } from '@/hooks/media/use-audio-playback'
 
-import type { VocabularyItem } from '../model/vocabulary-lesson-schema'
-
-export function VocabularyWordFocus({ items }: { items: VocabularyItem[] }) {
+export function VocabularyWordFocus({ items }: { items: LexemeView[] }) {
   const [activeId, setActiveId] = useState(items[0]?.id ?? '')
   const activeItem = items.find((item) => item.id === activeId) ?? items[0]
   const { audioRef, markEnded, markError, play, status } = useAudioPlayback()
@@ -90,14 +89,20 @@ export function VocabularyWordFocus({ items }: { items: VocabularyItem[] }) {
         <div className="mt-6 grid gap-5 border-t pt-5 sm:grid-cols-2">
           <div>
             <p className="text-xs font-semibold text-muted-foreground">Sentence job</p>
-            <p className="mt-1 leading-7">{activeItem.usageNote}</p>
+            <p className="mt-1 leading-7">
+              {activeItem.usageNote ?? 'Use this word in the lesson context.'}
+            </p>
           </div>
           <div>
             <p className="text-xs font-semibold text-muted-foreground">Where you heard it</p>
-            <p className="mt-1 leading-7">{activeItem.source.contextText}</p>
-            <p className="text-sm text-muted-foreground">
-              {activeItem.source.contextTranslation}
+            <p className="mt-1 leading-7">
+              {activeItem.source?.contextText ?? 'No linked context yet.'}
             </p>
+            {activeItem.source ? (
+              <p className="text-sm text-muted-foreground">
+                {activeItem.source.contextTranslation}
+              </p>
+            ) : null}
           </div>
         </div>
       </div>

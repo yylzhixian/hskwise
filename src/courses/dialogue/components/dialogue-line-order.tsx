@@ -7,6 +7,11 @@ import { GripVerticalIcon } from 'lucide-react'
 import { useCallback } from 'react'
 
 import { Button } from '@/components/ui/button'
+import type {
+  DialogueLineView,
+  DialogueOrderingView,
+  DialogueRoleView,
+} from '@/courses/interactions/model/activity-view-models'
 import {
   FieldDescription,
   FieldLegend,
@@ -14,14 +19,6 @@ import {
 } from '@/components/ui/field'
 import { useOrderingInteraction } from '@/hooks/lesson/use-ordering-interaction'
 import { cn } from '@/lib/utils'
-
-import type {
-  DialogueLine,
-  DialogueLessonStep,
-  DialogueRole,
-} from '../model/dialogue-lesson-schema'
-
-type LineOrderStep = Extract<DialogueLessonStep, { kind: 'line-order' }>
 
 export function DialogueLineOrder({
   disabled,
@@ -31,10 +28,10 @@ export function DialogueLineOrder({
   step,
 }: {
   disabled: boolean
-  lines: DialogueLine[]
+  lines: DialogueLineView[]
   onSubmit: (result: { orderedIds: string[]; isCorrect: boolean }) => void
-  roles: DialogueRole[]
-  step: LineOrderStep
+  roles: DialogueRoleView[]
+  step: DialogueOrderingView
 }) {
   const { orderedIds, reorder, submit } = useOrderingInteraction({
     correctOrder: step.lineIds,
@@ -105,7 +102,7 @@ function SortableDialogueLine({
 }: {
   disabled: boolean
   index: number
-  line: DialogueLine
+  line: DialogueLineView
   roleName?: string
 }) {
   const { handleRef, isDragSource, isDropTarget, ref } = useSortable({

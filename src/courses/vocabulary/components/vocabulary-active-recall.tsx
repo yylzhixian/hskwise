@@ -4,17 +4,12 @@ import { EyeIcon, RotateCcwIcon, SparklesIcon } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import type {
+  ActiveRecallView,
+  LexemeView,
+} from '@/courses/interactions/model/activity-view-models'
 
 import { useActiveRecall } from '../hooks/use-active-recall'
-import type {
-  VocabularyItem,
-  VocabularyLessonStep,
-} from '../model/vocabulary-lesson-schema'
-
-type ActiveRecallStep = Extract<
-  VocabularyLessonStep,
-  { kind: 'active-recall' }
->
 
 export function VocabularyActiveRecall({
   disabled,
@@ -23,9 +18,9 @@ export function VocabularyActiveRecall({
   step,
 }: {
   disabled: boolean
-  item: VocabularyItem
+  item: LexemeView
   onAssess: (result: { recalled: boolean }) => void
-  step: ActiveRecallStep
+  step: ActiveRecallView
 }) {
   const { assess, reveal, revealed } = useActiveRecall(onAssess)
 

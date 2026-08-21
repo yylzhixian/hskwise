@@ -15,6 +15,11 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import type {
+  DialogueLineView,
+  DialogueRoleView,
+  RolePlayView,
+} from '@/courses/interactions/model/activity-view-models'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { cn } from '@/lib/utils'
 
@@ -22,14 +27,7 @@ import {
   type DialogueRolePracticePhase,
   useDialogueRolePractice,
 } from '../hooks/use-dialogue-role-practice'
-import type {
-  DialogueLine,
-  DialogueLessonStep,
-  DialogueRole,
-} from '../model/dialogue-lesson-schema'
 import { DialoguePracticeReview } from './dialogue-practice-review'
-
-type RolePracticeStep = Extract<DialogueLessonStep, { kind: 'role-practice' }>
 
 export function DialogueRolePractice({
   completed,
@@ -39,10 +37,10 @@ export function DialogueRolePractice({
   step,
 }: {
   completed: boolean
-  lines: DialogueLine[]
+  lines: DialogueLineView[]
   onComplete: () => void
-  roles: DialogueRole[]
-  step: RolePracticeStep
+  roles: DialogueRoleView[]
+  step: RolePlayView
 }) {
   const {
     activeLineId,
@@ -70,6 +68,8 @@ export function DialogueRolePractice({
     turnRecordings,
   } = useDialogueRolePractice({
     completed,
+    countdownSeconds: step.countdownSeconds,
+    handoffDelayMs: step.handoffDelayMs,
     initialRoleId: step.roleIds[0],
     lines,
     onComplete,
@@ -170,50 +170,50 @@ export function DialogueRolePractice({
 
       {!isFinished ? (
         <ol aria-label="Conversation progress" className="flex flex-col gap-2">
-        {lines.map((line, index) => {
-          const role = rolesById.get(line.speakerId)
-          const lineIsUserTurn = line.speakerId === practiceRoleId
-          const isCurrent = started && index === currentLineIndex
-          const isDone = started && index < completedLineCount
+          {lines.map((line, index) => {
+            const role = rolesById.get(line.speakerId)
+            const lineIsUserTurn = line.speakerId === practiceRoleId
+            const isCurrent = started && index === currentLineIndex
+            const isDone = started && index < completedLineCount
 
-          return (
-            <li
-              className={cn(
-                'grid min-h-16 grid-cols-[1.75rem_minmax(0,1fr)_auto] items-center gap-3 border-b px-1 py-3 transition-colors',
-                isCurrent && 'border-focus bg-accent/40 px-3',
-                isDone && 'text-muted-foreground'
-              )}
-              key={line.id}
-            >
-              <span
+            return (
+              <li
                 className={cn(
-                  'flex size-7 items-center justify-center rounded-full border text-xs font-semibold tabular-nums',
-                  isDone &&
-                    'border-route-complete-border text-route-complete-foreground bg-route-complete-surface',
-                  isCurrent && 'border-focus text-focus'
+                  'grid min-h-16 grid-cols-[1.75rem_minmax(0,1fr)_auto] items-center gap-3 border-b px-1 py-3 transition-colors',
+                  isCurrent && 'border-focus bg-accent/40 px-3',
+                  isDone && 'text-muted-foreground',
                 )}
+                key={line.id}
               >
-                {isDone ? <CheckIcon className="size-3.5" /> : index + 1}
-              </span>
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-xs font-semibold">{role?.name}</p>
-                  {lineIsUserTurn ? (
-                    <span className="text-xs text-focus">Your turn</span>
-                  ) : null}
+                <span
+                  className={cn(
+                    'flex size-7 items-center justify-center rounded-full border text-xs font-semibold tabular-nums',
+                    isDone &&
+                      'border-route-complete-border text-route-complete-foreground bg-route-complete-surface',
+                    isCurrent && 'border-focus text-focus',
+                  )}
+                >
+                  {isDone ? <CheckIcon className="size-3.5" /> : index + 1}
+                </span>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-xs font-semibold">{role?.name}</p>
+                    {lineIsUserTurn ? (
+                      <span className="text-xs text-focus">Your turn</span>
+                    ) : null}
+                  </div>
+                  <p className="truncate text-base font-semibold">
+                    {line.tokens.map(token => token.text).join('')}
+                  </p>
                 </div>
-                <p className="truncate text-base font-semibold">
-                  {line.tokens.map(token => token.text).join('')}
-                </p>
-              </div>
-              {lineIsUserTurn ? (
-                <MicIcon className="size-4 text-muted-foreground" />
-              ) : (
-                <Volume2Icon className="size-4 text-muted-foreground" />
-              )}
-            </li>
-          )
-        })}
+                {lineIsUserTurn ? (
+                  <MicIcon className="size-4 text-muted-foreground" />
+                ) : (
+                  <Volume2Icon className="size-4 text-muted-foreground" />
+                )}
+              </li>
+            )
+          })}
         </ol>
       ) : null}
     </section>
@@ -234,8 +234,8 @@ function CurrentTurn({
   totalLines,
 }: {
   countdownRemaining: number | null
-  currentLine: DialogueLine
-  currentRole?: DialogueRole | null
+  currentLine: DialogueLineView
+  currentRole?: DialogueRoleView | null
   isUserTurn: boolean
   lineNumber: number
   onRetry: () => void

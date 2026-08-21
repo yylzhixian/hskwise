@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useAudioRecorder } from '@/hooks/media/use-audio-recorder'
 
-import type { DialogueLine } from '../model/dialogue-lesson-schema'
+import type { DialogueLineView } from '@/courses/interactions/model/activity-view-models'
 import { useDialogueAudio } from './use-dialogue-audio'
 
 export type DialogueRolePracticePhase =
@@ -29,13 +29,17 @@ export type DialogueTurnRecording = {
 
 export function useDialogueRolePractice({
   completed,
+  countdownSeconds = ROLE_RECORDING_COUNTDOWN_SECONDS,
+  handoffDelayMs = ROLE_TURN_HANDOFF_DELAY_MS,
   initialRoleId,
   lines,
   onComplete,
 }: {
   completed: boolean
+  countdownSeconds?: number
+  handoffDelayMs?: number
   initialRoleId: string
-  lines: DialogueLine[]
+  lines: DialogueLineView[]
   onComplete: () => void
 }) {
   const {
@@ -82,13 +86,11 @@ export function useDialogueRolePractice({
       recordingStartRequestedRef.current = false
       setCurrentLineIndex(lineIndex)
       setCountdownRemaining(
-        nextLine?.speakerId === practiceRoleId
-          ? ROLE_RECORDING_COUNTDOWN_SECONDS
-          : null,
+        nextLine?.speakerId === practiceRoleId ? countdownSeconds : null,
       )
       setHandoffPending(false)
     },
-    [lines, practiceRoleId],
+    [countdownSeconds, lines, practiceRoleId],
   )
 
   const advanceTurn = useCallback(() => {
@@ -189,9 +191,9 @@ export function useDialogueRolePractice({
 
   useEffect(() => {
     if (!handoffPending) return
-    const timer = window.setTimeout(advanceTurn, ROLE_TURN_HANDOFF_DELAY_MS)
+    const timer = window.setTimeout(advanceTurn, handoffDelayMs)
     return () => window.clearTimeout(timer)
-  }, [advanceTurn, handoffPending])
+  }, [advanceTurn, handoffDelayMs, handoffPending])
 
   useEffect(() => {
     if (isFinished && !completed) onComplete()
@@ -232,11 +234,9 @@ export function useDialogueRolePractice({
     startedTurnRef.current = null
     recordingStartRequestedRef.current = false
     setHandoffPending(false)
-    setCountdownRemaining(
-      isUserTurn ? ROLE_RECORDING_COUNTDOWN_SECONDS : null,
-    )
+    setCountdownRemaining(isUserTurn ? countdownSeconds : null)
     setTurnAttempt((current) => current + 1)
-  }, [isUserTurn, resetRecording])
+  }, [countdownSeconds, isUserTurn, resetRecording])
 
   const skipUnavailableTurn = useCallback(() => {
     resetRecording()

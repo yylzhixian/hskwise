@@ -41,10 +41,14 @@ test('resolves a linked mistake through active recall', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'How do you say “name” in Mandarin?' }),
   ).toBeVisible()
-  await page.getByRole('button', { name: 'Reveal answer' }).click()
+  await page.getByRole('textbox', { name: 'Your answer' }).fill('名字 míngzi')
+  await page.getByRole('button', { name: 'Check my answer' }).click()
   await expect(page.getByText('名字 (míngzi) means “name”.')).toBeVisible()
-  await page.getByRole('button', { name: 'I recalled it' }).click()
-  await expect(page.getByText('Marked as mastered')).toBeVisible()
+  await expect(page.getByText('名字 míngzi', { exact: true })).toBeVisible()
+  await expect(page.getByText('Answer matched', { exact: true })).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: 'My answer matches' }),
+  ).toHaveCount(0)
   await page.getByRole('button', { name: 'Continue' }).click()
   await expect(page.getByText('Review complete')).toBeVisible()
 
@@ -57,12 +61,28 @@ test('resolves a linked mistake through active recall', async ({ page }) => {
   ).toBeVisible()
 })
 
+test('keeps an incorrect review answer in the queue', async ({ page }) => {
+  await seedLearningState(page)
+  await page.goto('/review')
+
+  await page.getByRole('textbox', { name: 'Your answer' }).fill('你好')
+  await page.getByRole('button', { name: 'Check my answer' }).click()
+
+  const feedback = page.getByRole('status')
+  await expect(feedback).toContainText('Needs more review')
+  await expect(feedback).toContainText('did not match the accepted answer')
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await expect(page.getByText('Review complete')).toBeVisible()
+
+  await page.reload()
+  await expect(page.getByText('0 due now')).toBeVisible()
+})
+
 test('keeps an uncertain item without showing an error', async ({ page }) => {
   await seedLearningState(page)
   await page.goto('/review')
 
-  await page.getByRole('button', { name: 'Reveal answer' }).click()
-  await page.getByRole('button', { name: 'Review again' }).click()
+  await page.getByRole('button', { name: "I don't know yet" }).click()
 
   const feedback = page.getByRole('status')
   await expect(feedback).toContainText('Scheduled for another look')

@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react'
 
-import type { DialogueLine } from '../model/dialogue-lesson-schema'
+import type { DialogueLineView } from '@/courses/interactions/model/activity-view-models'
 
 export type DialogueAudioStatus = 'idle' | 'playing' | 'blocked' | 'error'
 
@@ -11,7 +11,7 @@ export function useDialogueAudio() {
   const [activeLineId, setActiveLineId] = useState<string | null>(null)
   const [status, setStatus] = useState<DialogueAudioStatus>('idle')
 
-  const playLine = useCallback(async (line: DialogueLine) => {
+  const playLine = useCallback(async (line: DialogueLineView) => {
     const audio = audioRef.current
     if (!audio) return false
 

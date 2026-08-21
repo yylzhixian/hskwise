@@ -5,6 +5,10 @@ import { useAtomValue } from 'jotai'
 
 import { useLearningActions } from '@/hooks/learning/use-learning-actions'
 import {
+  getReviewAcceptedAnswers,
+  isReviewAnswerCorrect,
+} from '@/lib/learning/review-answer'
+import {
   dueReviewPromptsAtom,
   type DueReviewPrompt,
 } from '@/store/learning/atoms/learning-selector-atoms'
@@ -16,46 +20,71 @@ type ReviewFeedback = {
   result: LearningReviewResult
 }
 
+export type ReviewAttempt = {
+  answer: string
+  kind: 'answer' | 'unsure'
+}
+
 export function useReviewSession() {
   const duePrompts = useAtomValue(dueReviewPromptsAtom)
   const { submitReview } = useLearningActions()
   const [initialTotal] = useState(duePrompts.length)
   const [processedCount, setProcessedCount] = useState(0)
-  const [isRevealed, setIsRevealed] = useState(false)
+  const [draftAnswer, setDraftAnswer] = useState('')
+  const [attempt, setAttempt] = useState<ReviewAttempt | null>(null)
   const [feedback, setFeedback] = useState<ReviewFeedback | null>(null)
   const activePrompt = feedback?.prompt ?? duePrompts[0] ?? null
 
-  const revealAnswer = useCallback(() => setIsRevealed(true), [])
-
-  const assess = useCallback(
-    (result: LearningReviewResult) => {
-      if (!activePrompt || feedback || !isRevealed) return
-
+  const completeReview = useCallback(
+    (prompt: DueReviewPrompt, result: LearningReviewResult) => {
       setFeedback({
         ordinal: processedCount + 1,
-        prompt: activePrompt,
+        prompt,
         result,
       })
       setProcessedCount((count) => count + 1)
-      submitReview(activePrompt.item.id, result)
-    }, [activePrompt, feedback, isRevealed, processedCount, submitReview],
+      submitReview(prompt.item.id, result)
+    },
+    [processedCount, submitReview],
   )
+
+  const submitAttempt = useCallback(() => {
+    const answer = draftAnswer.trim()
+    if (!activePrompt || attempt || feedback || !answer) return
+    const acceptedAnswers = activePrompt.mistake
+      ? getReviewAcceptedAnswers(activePrompt.mistake)
+      : []
+    const result = isReviewAnswerCorrect(answer, acceptedAnswers)
+      ? 'recalled'
+      : 'needs-review'
+    setAttempt({ answer, kind: 'answer' })
+    completeReview(activePrompt, result)
+  }, [activePrompt, attempt, completeReview, draftAnswer, feedback])
+
+  const markUnsure = useCallback(() => {
+    if (!activePrompt || attempt || feedback) return
+    setAttempt({ answer: '', kind: 'unsure' })
+    completeReview(activePrompt, 'needs-review')
+  }, [activePrompt, attempt, completeReview, feedback])
 
   const continueReview = useCallback(() => {
     setFeedback(null)
-    setIsRevealed(false)
+    setAttempt(null)
+    setDraftAnswer('')
   }, [])
 
   return {
     activePrompt,
-    assess,
+    attempt,
     continueReview,
     currentNumber: feedback?.ordinal ?? processedCount + 1,
+    draftAnswer,
     dueCount: duePrompts.length,
     feedback: feedback?.result ?? null,
     initialTotal,
-    isRevealed,
+    markUnsure,
     processedCount,
-    revealAnswer,
+    setDraftAnswer,
+    submitAttempt,
   }
 }

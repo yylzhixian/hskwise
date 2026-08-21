@@ -34,6 +34,7 @@
 | FE7 整体验收、性能和回归 | 阶段性收束 | 2026-08-21 | [FE7-01 自动化回归基础](FE7-01-automated-regression-foundation.md)；后续工作由课程生产第二阶段取代 |
 | CP0 课程能力与教学方法盘点 | 已完成 | 2026-08-21 | [CP0 开发进度](CP0-course-capability-and-method-inventory.md) |
 | CP1 Lesson Schema v2 与编译器 | 已完成 | 2026-08-21 | [CP1 开发进度](CP1-lesson-schema-v2-and-compiler.md) |
+| CP2 Renderer Registry 与运行时收敛 | 进行中 | - | [CP2-01 v2 双试点运行链路](CP2-01-renderer-registry-and-v2-pilot-runtime.md) |
 
 ## 阶段内校准记录
 
@@ -57,5 +58,7 @@
 | FE6-02 混合检查点与错误关联升级 | 已完成 | 2026-08-20 | [FE6-02 开发进度](FE6-02-mixed-checkpoint-and-error-linkage.md) |
 | FE6-03 复习页、错题页与状态闭环 | 已完成 | 2026-08-20 | [FE6-03 开发进度](FE6-03-review-and-mistake-loop.md) |
 | FE6-P2 错题页表格排版校准 | 已完成 | 2026-08-20 | [FE6-P2 校准记录](FE6-P2-mistakes-table-layout-correction.md) |
+| FE6-P3 Daily review 答题流程校准 | 已完成 | 2026-08-21 | [FE6-P3 校准记录](FE6-P3-daily-review-question-flow-correction.md) |
 | FE7-01 自动化回归基础 | 已完成 | 2026-08-21 | [FE7-01 开发进度](FE7-01-automated-regression-foundation.md) |
 | FE7-P1 首页声调路径端点视觉校准 | 已完成 | 2026-08-21 | [FE7-P1 校准记录](FE7-P1-tone-path-endpoint-correction.md) |
+| CP2-01 Renderer Registry 与 v2 双试点运行链路 | 已完成 | 2026-08-21 | [CP2-01 开发进度](CP2-01-renderer-registry-and-v2-pilot-runtime.md) |

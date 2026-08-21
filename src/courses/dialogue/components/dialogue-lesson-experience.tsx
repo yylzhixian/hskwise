@@ -233,6 +233,21 @@ function recordDialogueMistake({
 }) {
   if (!lesson.nodeId) return
   onRecordMistake({
+    acceptedAnswers:
+      step.kind === 'comprehension-choice'
+        ? step.options
+            .filter((option) => option.isCorrect)
+            .map((option) => option.label)
+        : [
+            step.lineIds
+              .flatMap((lineId) => {
+                const line = lesson.lines.find((item) => item.id === lineId)
+                return line
+                  ? [line.tokens.map((token) => token.text).join('')]
+                  : []
+              })
+              .join(' '),
+          ].filter(Boolean),
     correction,
     interactionId: `${step.id}:answer`,
     knowledgeIds: step.knowledgeIds,

@@ -6,6 +6,7 @@ import { LessonFrame } from '@/components/lesson/lesson-frame'
 import { useLearningActions } from '@/hooks/learning/use-learning-actions'
 import { useLessonStep } from '@/hooks/lesson/use-lesson-step'
 import { LessonStoreProvider } from '@/learning/runtime/provider/lesson-store-provider'
+import { createChoiceAnswerCandidates } from '@/lib/learning/review-answer'
 
 import {
   createVocabularyRuntimeDefinition,
@@ -220,10 +221,32 @@ function recordVocabularyMistake({
   lesson: VocabularyLessonDefinition
   prompt: string
   recordMistake: ReturnType<typeof useLearningActions>['recordMistake']
-  step: VocabularyLessonStep
+  step: Extract<
+    VocabularyLessonStep,
+    {
+      kind:
+        | 'meaning-choice'
+        | 'listening-choice'
+        | 'sentence-application'
+        | 'active-recall'
+    }
+  >
 }) {
   if (!lesson.nodeId) return
+  const acceptedAnswers =
+    step.kind === 'active-recall'
+      ? lesson.vocabulary
+          .filter((item) => item.id === step.vocabularyId)
+          .flatMap((item) => [
+            item.text,
+            item.pinyin,
+            `${item.text} ${item.pinyin}`,
+          ])
+      : step.options
+          .filter((option) => option.isCorrect)
+          .flatMap(createChoiceAnswerCandidates)
   recordMistake({
+    acceptedAnswers,
     correction,
     interactionId: `${step.id}:answer`,
     knowledgeIds: step.knowledgeIds,
