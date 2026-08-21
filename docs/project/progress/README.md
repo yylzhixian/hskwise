@@ -30,7 +30,7 @@
 | FE4 拼音与声调课程 | 已完成 | 2026-08-20 | [FE4-04 拼音课程验收](FE4-04-listening-and-pinyin-course-acceptance.md) |
 | FE5 对话精读与跟读课程 | 已完成 | 2026-08-20 | [FE5 开发进度](FE5-dialogue-close-reading-and-role-practice.md) |
 | FE6 生词、检查点与复习闭环 | 已完成 | 2026-08-20 | [FE6-03 复习与错题闭环](FE6-03-review-and-mistake-loop.md) |
-| FE7 整体验收、性能和回归 | 待开始 | - | 完成后新增 |
+| FE7 整体验收、性能和回归 | 进行中 | - | [FE7-01 自动化回归基础](FE7-01-automated-regression-foundation.md) |
 
 ## 阶段内校准记录
 
@@ -54,3 +54,5 @@
 | FE6-02 混合检查点与错误关联升级 | 已完成 | 2026-08-20 | [FE6-02 开发进度](FE6-02-mixed-checkpoint-and-error-linkage.md) |
 | FE6-03 复习页、错题页与状态闭环 | 已完成 | 2026-08-20 | [FE6-03 开发进度](FE6-03-review-and-mistake-loop.md) |
 | FE6-P2 错题页表格排版校准 | 已完成 | 2026-08-20 | [FE6-P2 校准记录](FE6-P2-mistakes-table-layout-correction.md) |
+| FE7-01 自动化回归基础 | 已完成 | 2026-08-21 | [FE7-01 开发进度](FE7-01-automated-regression-foundation.md) |
+| FE7-P1 首页声调路径端点视觉校准 | 已完成 | 2026-08-21 | [FE7-P1 校准记录](FE7-P1-tone-path-endpoint-correction.md) |

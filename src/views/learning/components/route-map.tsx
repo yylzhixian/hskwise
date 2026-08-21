@@ -92,11 +92,7 @@ export function RouteMap({ nodeViews, progressPercent }: RouteMapProps) {
               <span
                 className={cn(
                   'flex size-16 items-center justify-center rounded-full border-2 transition-transform sm:size-18',
-                  nodeStatusClasses[status],
-                  view.isCheckpoint &&
-                    status !== 'locked' &&
-                    'ring-4 ring-reward/25',
-                  view.isCheckpoint && status === 'locked' && 'border-reward/60',
+                  nodeStatusClasses[status]
                 )}
               >
                 <NodeIcon isCheckpoint={view.isCheckpoint} status={status} />
@@ -108,7 +104,7 @@ export function RouteMap({ nodeViews, progressPercent }: RouteMapProps) {
                 <Badge
                   className={cn(
                     'rounded-sm px-1.5 py-0 text-[0.6875rem]',
-                    nodeBadgeClasses[status],
+                    nodeBadgeClasses[status]
                   )}
                   variant="outline"
                 >
@@ -123,7 +119,7 @@ export function RouteMap({ nodeViews, progressPercent }: RouteMapProps) {
             <li
               className={cn(
                 'absolute flex -translate-x-1/2 -translate-y-8 flex-col items-center gap-2 sm:-translate-y-9',
-                nodePositions[index],
+                nodePositions[index]
               )}
               key={node.id}
             >

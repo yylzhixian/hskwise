@@ -14,7 +14,7 @@ export function TonePathVisual() {
 
       <path
         className="stroke-focus/40"
-        d="M48 100C130 100 144 57 222 57S305 118 376 118 466 44 538 44s86 68 134 68"
+        d="M72 100C136 100 150 57 222 57S305 118 376 118 466 44 538 44s76 54 106 54"
         fill="none"
         strokeLinecap="round"
         strokeWidth="2"

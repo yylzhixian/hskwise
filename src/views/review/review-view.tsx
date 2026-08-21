@@ -188,7 +188,7 @@ function ReviewFeedback({
 
   return (
     <div className="mt-6 flex flex-col gap-4">
-      <Alert variant={needsReview ? 'warning' : 'success'}>
+      <Alert role="status" variant={needsReview ? 'warning' : 'success'}>
         {needsReview ? <HistoryIcon /> : <CheckCircle2Icon />}
         <AlertTitle>
           {needsReview ? 'Scheduled for another look' : 'Marked as mastered'}

@@ -13,8 +13,9 @@ const eslintConfig = defineConfig([
   {
     files: [
       "src/app/**/*.{ts,tsx}",
-      "src/features/**/components/**/*.{ts,tsx}",
-      "src/features/courses/{pinyin,dialogue,vocabulary,checkpoint}/**/*.tsx",
+      "src/views/**/*.tsx",
+      "src/components/**/*.tsx",
+      "src/courses/*/components/**/*.tsx",
     ],
     rules: {
       "no-restricted-imports": [
@@ -23,10 +24,10 @@ const eslintConfig = defineConfig([
           patterns: [
             {
               group: [
-                "**/atoms/**",
-                "**/storage/**",
-                "**/state/*-atom*",
-                "**/media/*-adapter*",
+                "@/store/**/atoms/**",
+                "@/store/**/storage/**",
+                "@/learning/runtime/state/**",
+                "@/lib/media/*-adapter*",
               ],
               message:
                 "UI must use a domain hook instead of importing state or adapters directly.",
@@ -38,8 +39,8 @@ const eslintConfig = defineConfig([
   },
   {
     files: [
-      "src/features/**/model/**/*.{ts,tsx}",
-      "src/features/**/*-schema.{ts,tsx}",
+      "src/**/model/**/*.{ts,tsx}",
+      "src/**/*-schema.{ts,tsx}",
     ],
     rules: {
       "no-restricted-imports": [
@@ -51,7 +52,9 @@ const eslintConfig = defineConfig([
               group: [
                 "@/app/**",
                 "@/components/**",
-                "@/features/**/components/**",
+                "@/views/**",
+                "@/hooks/**",
+                "@/courses/*/components/**",
               ],
               message:
                 "Domain models and schemas must remain independent of React and UI modules.",
@@ -63,8 +66,8 @@ const eslintConfig = defineConfig([
   },
   {
     files: [
-      "src/features/**/atoms/**/*.{ts,tsx}",
-      "src/features/**/state/**/*.{ts,tsx}",
+      "src/store/**/atoms/**/*.{ts,tsx}",
+      "src/learning/runtime/state/**/*.{ts,tsx}",
     ],
     rules: {
       "no-restricted-imports": [
@@ -72,7 +75,12 @@ const eslintConfig = defineConfig([
         {
           patterns: [
             {
-              group: ["@/app/**", "@/components/**", "@/features/**/components/**"],
+              group: [
+                "@/app/**",
+                "@/components/**",
+                "@/views/**",
+                "@/courses/*/components/**",
+              ],
               message:
                 "State modules may depend on models and adapters, never on UI components.",
             },
