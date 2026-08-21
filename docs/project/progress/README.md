@@ -34,7 +34,7 @@
 | FE7 整体验收、性能和回归 | 阶段性收束 | 2026-08-21 | [FE7-01 自动化回归基础](FE7-01-automated-regression-foundation.md)；后续工作由课程生产第二阶段取代 |
 | CP0 课程能力与教学方法盘点 | 已完成 | 2026-08-21 | [CP0 开发进度](CP0-course-capability-and-method-inventory.md) |
 | CP1 Lesson Schema v2 与编译器 | 已完成 | 2026-08-21 | [CP1 开发进度](CP1-lesson-schema-v2-and-compiler.md) |
-| CP2 Renderer Registry 与运行时收敛 | 进行中 | - | [CP2-01 v2 双试点运行链路](CP2-01-renderer-registry-and-v2-pilot-runtime.md) |
+| CP2 Renderer Registry 与运行时收敛 | 进行中 | - | [CP2-01 v2 双试点运行链路](CP2-01-renderer-registry-and-v2-pilot-runtime.md)；[CP2-02 正式对话课与词汇课迁移](CP2-02-formal-dialogue-vocabulary-migration.md) |
 
 ## 阶段内校准记录
 
@@ -62,3 +62,4 @@
 | FE7-01 自动化回归基础 | 已完成 | 2026-08-21 | [FE7-01 开发进度](FE7-01-automated-regression-foundation.md) |
 | FE7-P1 首页声调路径端点视觉校准 | 已完成 | 2026-08-21 | [FE7-P1 校准记录](FE7-P1-tone-path-endpoint-correction.md) |
 | CP2-01 Renderer Registry 与 v2 双试点运行链路 | 已完成 | 2026-08-21 | [CP2-01 开发进度](CP2-01-renderer-registry-and-v2-pilot-runtime.md) |
+| CP2-02 正式对话课与词汇课 v2 迁移 | 已完成 | 2026-08-21 | [CP2-02 开发进度](CP2-02-formal-dialogue-vocabulary-migration.md) |

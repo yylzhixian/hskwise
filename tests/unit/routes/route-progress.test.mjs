@@ -3,6 +3,7 @@ import { describe, expect, test } from 'bun:test'
 import { starterRoute } from '@/learning/routes/content/hsk3-level-1-starter'
 import { deriveRouteOverview } from '@/learning/routes/model/route-progress'
 import {
+  getLessonPlacement,
   getRouteNodes,
   learningRouteSchema,
 } from '@/learning/routes/model/route-schema'
@@ -51,6 +52,18 @@ describe('starter route', () => {
       'node-first-words',
       'node-starter-checkpoint',
     ])
+  })
+
+  test('places formal v2 lessons without putting route ids in course JSON', () => {
+    expect(getLessonPlacement(starterRoute, 'first-greeting')).toEqual({
+      nodeId: 'node-first-greeting',
+      routeId: 'hsk3-level-1-starter',
+    })
+    expect(getLessonPlacement(starterRoute, 'first-words')).toEqual({
+      nodeId: 'node-first-words',
+      routeId: 'hsk3-level-1-starter',
+    })
+    expect(getLessonPlacement(starterRoute, 'missing-lesson')).toBeUndefined()
   })
 
   test('derives a start target and locks later nodes for a new learner', () => {

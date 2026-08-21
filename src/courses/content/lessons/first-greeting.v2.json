@@ -1,7 +1,7 @@
 {
   "$schema": "../../../../schemas/lesson-v2.schema.json",
   "schemaVersion": "lesson/v2",
-  "id": "first-greeting-v2-pilot",
+  "id": "first-greeting",
   "type": "dialogue",
   "meta": {
     "title": "Your first greeting",

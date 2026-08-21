@@ -1,7 +1,7 @@
 {
   "$schema": "../../../../schemas/lesson-v2.schema.json",
   "schemaVersion": "lesson/v2",
-  "id": "first-words-v2-pilot",
+  "id": "first-words",
   "type": "vocabulary",
   "meta": {
     "title": "Your first words",
@@ -65,7 +65,7 @@
         "usageNote": "Use it to open a greeting in both formal and everyday settings.",
         "knowledgeId": "vocabulary.greeting-ni-hao",
         "audioRef": "audio.first-word-ni-hao",
-        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-nihao" }
+        "sourceRef": { "lessonId": "first-greeting", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-nihao" }
       },
       {
         "id": "lexeme.wo",
@@ -75,7 +75,7 @@
         "usageNote": "Place it before a verb when you are talking about yourself.",
         "knowledgeId": "vocabulary.pronoun-wo",
         "audioRef": "audio.first-word-wo",
-        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-wo" }
+        "sourceRef": { "lessonId": "first-greeting", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-wo" }
       },
       {
         "id": "lexeme.jiao",
@@ -85,7 +85,7 @@
         "usageNote": "Use 我叫 + name to say what you are called.",
         "knowledgeId": "vocabulary.introduction-jiao",
         "audioRef": "audio.first-word-jiao",
-        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-jiao" }
+        "sourceRef": { "lessonId": "first-greeting", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-jiao" }
       },
       {
         "id": "lexeme.gao-xing",
@@ -95,7 +95,7 @@
         "usageNote": "It describes feeling happy or pleased in 很高兴认识你.",
         "knowledgeId": "vocabulary.feeling-gaoxing",
         "audioRef": "audio.first-word-gao-xing",
-        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-3", "tokenId": "line-3-gaoxing" }
+        "sourceRef": { "lessonId": "first-greeting", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-3", "tokenId": "line-3-gaoxing" }
       },
       {
         "id": "lexeme.ye",
@@ -105,7 +105,7 @@
         "usageNote": "Put it before the verb or description to add also or too.",
         "knowledgeId": "vocabulary.adverb-ye",
         "audioRef": "audio.first-word-ye",
-        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-4", "tokenId": "line-4-ye" }
+        "sourceRef": { "lessonId": "first-greeting", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-4", "tokenId": "line-4-ye" }
       }
     ]
   },

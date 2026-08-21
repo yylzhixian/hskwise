@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 
 import { firstGreetingLesson } from '@/courses/dialogue/content/first-greeting.ts'
+import { getLessonV2Definition } from '@/courses/content/lesson-v2-registry.ts'
 import { getPublishedLesson } from '@/courses/lesson-registry.ts'
 import { firstWordsLesson } from '@/courses/vocabulary/content/first-words.ts'
 import {
@@ -31,8 +32,9 @@ describe('vocabulary lesson schema', () => {
     })
   })
 
-  test('publishes the first words course through the lesson registry', () => {
-    expect(getPublishedLesson('first-words')).toBe(firstWordsLesson)
+  test('publishes the first words course through the v2 lesson registry', () => {
+    expect(getPublishedLesson('first-words')).toBeNull()
+    expect(getLessonV2Definition('first-words')?.lesson.id).toBe('first-words')
   })
 
   test('derives word facts and context from the original dialogue', () => {

@@ -3,8 +3,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import type { LessonPlacement } from '@/courses/interactions/model/renderer-contract'
 import type { LessonActivity } from '@/courses/schema/activities/lesson-activity-schema'
+import type { LessonPlacement } from '@/learning/routes/model/route-schema'
 import { recordLearningMistakeAtom } from '@/store/learning/atoms/learning-action-atoms'
 
 export function useLessonMistakeLink({

@@ -75,6 +75,19 @@ export function createReturningLearningState(): LearningState {
   }
 }
 
+export function createFirstWordsLearningState(): LearningState {
+  const state = createReturningLearningState()
+  state.routeProgress['hsk3-level-1-starter'] = {
+    ...state.routeProgress['hsk3-level-1-starter'],
+    completedNodeIds: ['node-four-tones', 'node-first-greeting'],
+    currentNodeId: 'node-first-words',
+  }
+  state.mistakes = []
+  state.reviewQueue = []
+  state.recentActivity = []
+  return state
+}
+
 export async function seedLearningState(
   page: Page,
   state = createReturningLearningState(),

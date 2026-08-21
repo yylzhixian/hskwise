@@ -1,10 +1,6 @@
 import type { LessonActivity } from '@/courses/schema/activities/lesson-activity-schema'
 import type { ResolvedLessonResources } from '@/courses/compiler/resolve-lesson-resources'
 
-export type LessonPlacement = {
-  nodeId: string
-}
-
 export type ActivityState = {
   disabled: boolean
   ready: boolean

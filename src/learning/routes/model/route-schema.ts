@@ -52,7 +52,21 @@ export type CourseType = z.infer<typeof courseTypeSchema>
 export type LearningRoute = z.infer<typeof learningRouteSchema>
 export type RouteNode = z.infer<typeof routeNodeSchema>
 export type RouteNodeKind = z.infer<typeof routeNodeKindSchema>
+export type LessonPlacement = {
+  nodeId: string
+  routeId: string
+}
 
 export function getRouteNodes(route: LearningRoute) {
   return route.stages.flatMap((stage) => stage.nodes)
+}
+
+export function getLessonPlacement(
+  route: LearningRoute,
+  lessonId: string,
+): LessonPlacement | undefined {
+  const node = getRouteNodes(route).find(
+    (candidate) => candidate.lessonId === lessonId,
+  )
+  return node ? { nodeId: node.id, routeId: route.id } : undefined
 }

@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'bun:test'
 
 import { firstGreetingLesson } from '@/courses/dialogue/content/first-greeting.ts'
+import { getLessonV2Definition } from '@/courses/content/lesson-v2-registry.ts'
 import {
   createDialogueRuntimeDefinition,
   dialogueLessonSchema,
@@ -32,8 +33,11 @@ describe('dialogue lesson schema', () => {
     })
   })
 
-  test('publishes the first greeting through the lesson registry', () => {
-    expect(getPublishedLesson('first-greeting')).toBe(firstGreetingLesson)
+  test('publishes the first greeting through the v2 lesson registry', () => {
+    expect(getPublishedLesson('first-greeting')).toBeNull()
+    expect(getLessonV2Definition('first-greeting')?.lesson.id).toBe(
+      'first-greeting',
+    )
   })
 
   test('marks every dialogue audio line as a replaceable placeholder', () => {

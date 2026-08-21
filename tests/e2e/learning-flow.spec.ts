@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-import { seedLearningState } from './fixtures/learning-state'
+import {
+  createFirstWordsLearningState,
+  seedLearningState,
+} from './fixtures/learning-state'
 
 test('starts the learning route from the selected goal', async ({ page }) => {
   await page.goto('/')
@@ -31,6 +34,68 @@ test('restores route progress after a reload', async ({ page }) => {
 
   await expect(page.getByText('75% complete')).toBeVisible()
   await expect(page.getByRole('link', { name: 'To revisit: 1' })).toBeVisible()
+})
+
+test('runs the formal dialogue and vocabulary urls through v2 renderers', async ({
+  page,
+}) => {
+  await seedLearningState(page, createFirstWordsLearningState())
+
+  await page.goto('/lessons/first-greeting')
+  await expect(
+    page.getByRole('heading', { name: 'Two classmates meet before class' }),
+  ).toBeVisible()
+
+  await page.goto('/lessons/first-words')
+  await expect(
+    page.getByRole('heading', { name: 'The words already live in a greeting' }),
+  ).toBeVisible()
+  await expect(page.getByText('Lesson preview')).toHaveCount(0)
+})
+
+test('bridges a migrated vocabulary lesson to mistakes and route progress', async ({
+  page,
+}) => {
+  await seedLearningState(page, createFirstWordsLearningState())
+  await page.goto('/lessons/first-words')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page
+    .getByRole('button', { name: /It means “to greet.”/ })
+    .click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await expect(page.getByText('Try once more')).toBeVisible()
+  await page.getByRole('button', { name: 'Try again' }).click()
+  await page
+    .getByRole('button', { name: /It means “to be called.”/ })
+    .click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page.locator('audio').dispatchEvent('ended')
+  await page.getByRole('button', { name: /^也/ }).click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page.getByRole('button', { name: 'Reveal the word' }).click()
+  await page.getByRole('button', { name: 'I recalled it' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  await page.getByRole('button', { name: /^叫/ }).click()
+  await page.getByRole('button', { name: 'Check answer' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('button', { name: 'Finish lesson' }).click()
+  await page.getByRole('link', { name: 'Return to route' }).click()
+
+  await expect(page).toHaveURL(/\/learn$/)
+  await expect(page.getByText('75% complete')).toBeVisible()
+
+  await page.goto('/mistakes')
+  await expect(
+    page.getByRole('cell', { name: 'What does 叫 do in 我叫林月?' }),
+  ).toBeVisible()
 })
 
 test('resolves a linked mistake through active recall', async ({ page }) => {

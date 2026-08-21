@@ -3,37 +3,34 @@ import { BookOpenIcon } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { CheckpointExperience } from '@/courses/checkpoint/components/checkpoint-experience'
-import { DialogueLessonExperience } from '@/courses/dialogue/components/dialogue-lesson-experience'
 import { PinyinLessonExperience } from '@/courses/pinyin/components/pinyin-lesson-experience'
-import { VocabularyLessonExperience } from '@/courses/vocabulary/components/vocabulary-lesson-experience'
 import { getPublishedLesson } from '@/courses/lesson-registry'
-import { getLessonV2Pilot } from '@/courses/content/v2-pilot-registry'
+import { getLessonV2Definition } from '@/courses/content/lesson-v2-registry'
 import { V2LessonExperience } from '@/courses/interactions/v2-lesson-experience'
 import { LessonChrome } from '@/components/learning-shell/lesson-chrome'
+import { starterRoute } from '@/learning/routes/content/hsk3-level-1-starter'
+import { getLessonPlacement } from '@/learning/routes/model/route-schema'
 
 const lessonTitles: Record<string, string> = {
   'four-tones': 'Meet the four tones',
   'first-greeting': 'Your first greeting',
   'first-words': 'Your first words',
   'starter-checkpoint': 'Starter checkpoint',
-  'first-greeting-v2-pilot': 'Your first greeting · v2 pilot',
-  'first-words-v2-pilot': 'Your first words · v2 pilot',
 }
 
 export function LessonView({ lessonId }: { lessonId: string }) {
-  const v2Pilot = getLessonV2Pilot(lessonId)
-  if (v2Pilot) {
-    return <V2LessonExperience pilot={v2Pilot} />
+  const v2Definition = getLessonV2Definition(lessonId)
+  if (v2Definition) {
+    return (
+      <V2LessonExperience
+        definition={v2Definition}
+        placement={getLessonPlacement(starterRoute, lessonId)}
+      />
+    )
   }
   const lesson = getPublishedLesson(lessonId)
   if (lesson?.kind === 'pinyin') {
     return <PinyinLessonExperience lesson={lesson} />
-  }
-  if (lesson?.kind === 'dialogue') {
-    return <DialogueLessonExperience lesson={lesson} />
-  }
-  if (lesson?.kind === 'vocabulary') {
-    return <VocabularyLessonExperience lesson={lesson} />
   }
   if (lesson?.kind === 'checkpoint') {
     return <CheckpointExperience checkpoint={lesson} />

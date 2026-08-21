@@ -5,12 +5,12 @@ import { useCallback } from 'react'
 import type {
   ActivityActions,
   ActivityState,
-  LessonPlacement,
 } from '@/courses/interactions/model/renderer-contract'
 import type { LessonActivity } from '@/courses/schema/activities/lesson-activity-schema'
 import type { LessonV2 } from '@/courses/schema/lesson-schema'
 import type { ResolvedLessonResources } from '@/courses/compiler/resolve-lesson-resources'
 import { getActivityReviewAnswers } from '@/courses/interactions/model/activity-review-answers'
+import type { LessonPlacement } from '@/learning/routes/model/route-schema'
 
 import { useLessonMistakeLink } from './use-lesson-mistake-link'
 import { useLessonStep } from './use-lesson-step'

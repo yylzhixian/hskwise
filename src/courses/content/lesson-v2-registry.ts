@@ -7,13 +7,11 @@ import {
   resolveLessonResources,
 } from '../compiler/resolve-lesson-resources'
 import { parseLessonV2 } from '../compiler/validate-lesson-v2'
-import type { LessonPlacement } from '../interactions/model/renderer-contract'
 import type { LessonV2 } from '../schema/lesson-schema'
 import type { LessonDefinition } from '@/learning/runtime/model/lesson-definition'
 
-export type LessonV2Pilot = {
+export type LessonV2Definition = {
   lesson: LessonV2
-  placement?: LessonPlacement
   resources: ResolvedLessonResources
   runtime: LessonDefinition
 }
@@ -23,7 +21,7 @@ const firstWords = parseLessonV2(firstWordsInput)
 const greetingContext = { dependencies: [] }
 const wordsContext = { dependencies: [firstGreeting] }
 
-const pilots = new Map<string, LessonV2Pilot>([
+const lessons = new Map<string, LessonV2Definition>([
   [
     firstGreeting.id,
     {
@@ -42,6 +40,6 @@ const pilots = new Map<string, LessonV2Pilot>([
   ],
 ])
 
-export function getLessonV2Pilot(lessonId: string) {
-  return pilots.get(lessonId) ?? null
+export function getLessonV2Definition(lessonId: string) {
+  return lessons.get(lessonId) ?? null
 }

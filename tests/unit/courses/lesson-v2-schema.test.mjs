@@ -10,14 +10,14 @@ import {
 } from '@/courses/compiler/validate-lesson-v2.ts'
 import firstGreetingInput from '@/courses/content/lessons/first-greeting.v2.json'
 import firstWordsInput from '@/courses/content/lessons/first-words.v2.json'
-import { getLessonV2Pilot } from '@/courses/content/v2-pilot-registry.ts'
+import { getLessonV2Definition } from '@/courses/content/lesson-v2-registry.ts'
 import { registeredActivityTypes } from '@/courses/interactions/activity-renderer.tsx'
 
 const firstGreeting = parseLessonV2(firstGreetingInput)
 const dependencies = [firstGreeting]
 
 describe('lesson/v2 schema and compiler', () => {
-  test('validates both JSON pilots and their cross-lesson vocabulary sources', () => {
+  test('validates both JSON lessons and their cross-lesson vocabulary sources', () => {
     const firstWords = validateLessonV2(firstWordsInput, { dependencies })
 
     expect(firstGreeting.type).toBe('dialogue')
@@ -44,7 +44,7 @@ describe('lesson/v2 schema and compiler', () => {
     expect(runtime.steps[2].completionRule).toEqual({
       kind: 'interaction',
       interactionId:
-        'first-greeting-v2-pilot:first-greeting-meaning-check:answer',
+        'first-greeting:first-greeting-meaning-check:answer',
       requireCorrect: true,
     })
   })
@@ -54,12 +54,12 @@ describe('lesson/v2 schema and compiler', () => {
 
     expect(runtime.steps[4].completionRule).toEqual({
       kind: 'interaction',
-      interactionId: 'first-words-v2-pilot:first-words-recall:answer',
+      interactionId: 'first-words:first-words-recall:answer',
       requireCorrect: false,
     })
     expect(runtime.steps[5].completionRule).toEqual({
       kind: 'interaction',
-      interactionId: 'first-words-v2-pilot:first-words-application:answer',
+      interactionId: 'first-words:first-words-application:answer',
       requireCorrect: true,
     })
   })
@@ -86,7 +86,7 @@ describe('lesson/v2 schema and compiler', () => {
     })
   })
 
-  test('registers every supported primitive and exposes both runtime pilots', () => {
+  test('registers every supported primitive and exposes both formal lessons', () => {
     expect([...registeredActivityTypes].sort()).toEqual([
       'active-recall/v1',
       'audio-explore/v1',
@@ -97,15 +97,15 @@ describe('lesson/v2 schema and compiler', () => {
       'single-choice/v1',
     ])
 
-    const greetingPilot = getLessonV2Pilot('first-greeting-v2-pilot')
-    const wordsPilot = getLessonV2Pilot('first-words-v2-pilot')
-    expect(greetingPilot?.runtime.steps).toHaveLength(
-      greetingPilot?.lesson.steps.length ?? -1,
+    const greeting = getLessonV2Definition('first-greeting')
+    const words = getLessonV2Definition('first-words')
+    expect(greeting?.runtime.steps).toHaveLength(
+      greeting?.lesson.steps.length ?? -1,
     )
-    expect(wordsPilot?.runtime.steps).toHaveLength(
-      wordsPilot?.lesson.steps.length ?? -1,
+    expect(words?.runtime.steps).toHaveLength(
+      words?.lesson.steps.length ?? -1,
     )
-    expect(getLessonV2Pilot('missing-pilot')).toBeNull()
+    expect(getLessonV2Definition('missing-lesson')).toBeNull()
   })
 
   test('reports an invalid answer at its authoring path', () => {

@@ -7,7 +7,7 @@
 | 决策日期 | 2026-08-21 |
 | 文档状态 | 第二阶段当前执行方案 |
 | 当前子阶段 | CP2：Renderer Registry 与运行时收敛 |
-| 最近归档 | [CP1：Lesson Schema v2 与编译器](progress/CP1-lesson-schema-v2-and-compiler.md) |
+| 最近归档 | [CP2-02：正式对话课与词汇课 v2 迁移](progress/CP2-02-formal-dialogue-vocabulary-migration.md) |
 | 核心目标 | 课程 schema 与 React 交互组件分离，课程实例以可校验 JSON 生产 |
 | 内容边界 | 官方大纲确定范围，教材 OCR 只研究教学方法，正文、题目和反馈必须原创 |
 | 技术边界 | 纯前端、本地 JSON、Zod、Jotai/Jotai Immer、`hanzi-writer@3.7.3`、`hanzi-writer-data@2.0.1`；暂不接数据库和后端 API |
