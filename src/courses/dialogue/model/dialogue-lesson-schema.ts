@@ -6,6 +6,7 @@ import {
   lessonDefinitionSchema,
 } from '@/learning/runtime/model/lesson-definition'
 
+// Frozen v1 contract: new course activities belong in lesson/v2 after CP0.
 const stableIdSchema = z.string().min(1).max(128)
 
 const dialogueRoleSchema = z

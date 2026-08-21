@@ -6,7 +6,8 @@
 |---|---|
 | 决策日期 | 2026-08-21 |
 | 文档状态 | 第二阶段当前执行方案 |
-| 当前子阶段 | CP0：现有能力与 OCR 教学方法盘点 |
+| 当前子阶段 | CP1：Lesson Schema v2 与编译器 |
+| 最近归档 | [CP0：课程能力与教学方法盘点](progress/CP0-course-capability-and-method-inventory.md) |
 | 核心目标 | 课程 schema 与 React 交互组件分离，课程实例以可校验 JSON 生产 |
 | 内容边界 | 官方大纲确定范围，教材 OCR 只研究教学方法，正文、题目和反馈必须原创 |
 | 技术边界 | 纯前端、本地 JSON、Zod、Jotai/Jotai Immer、`hanzi-writer@3.7.3`、`hanzi-writer-data@2.0.1`；暂不接数据库和后端 API |
@@ -27,7 +28,7 @@
 
 ### 1.2 第二阶段要解决的问题
 
-当前四个课程 schema 合计约 1072 行，四份课程内容约 939 行。主要问题不是缺少 schema，而是协议和组件边界仍然过细：
+当前四个课程 schema 合计 1076 行，四份课程内容合计 939 行，四个 Experience 合计 923 行。主要问题不是缺少 schema，而是协议和组件边界仍然过细：
 
 - 课程 step 使用 `tone-overview`、`word-focus`、`dialogue-explore` 等当前组件视角命名。
 - 相同的选择、听辨、排序和总结能力在不同课程 schema 中重复定义。
@@ -824,13 +825,15 @@ draft
 | 汉字依赖许可证遗漏 | 同时记录库的 MIT License 和字形数据的 Arphic Public License attribution |
 | 过早重建 Studio | 完成 CP6 且 JSON 维护成为量化瓶颈后再决策 |
 
-## 18. 当前立即执行顺序
+## 18. 下一步立即执行顺序
 
-1. 创建 `docs/course-production/research/`，完成 OCR 教学活动归一化统计。
-2. 生成当前 v1 step、组件、hook、完成规则和错题行为盘点表。
-3. 冻结 v1：除缺陷修复外，不再增加新的课程专用 kind。
-4. 确认 P0 课程原型和约 14 个交互原语的最终命名。
-5. 选择现有对话课和生词课作为 `lesson/v2` 双试点。
-6. CP0 归档通过后再开始 schema 代码调整，不边统计边大规模迁移。
+CP0 已完成并归档。CP1 按以下顺序推进：
+
+1. 建立 `lesson/v2` envelope、公共 metadata、sequence 和受控 policy schema。
+2. 先实现对话、词汇双试点所需的 resource schema 与 activity schema，不预先覆盖全部 14 个原语。
+3. 建立纯函数 compiler，完成引用解析、稳定运行时 ID、答案校验和 `LessonDefinition` 输出。
+4. 建立发布门禁，拒绝占位素材、受限参考、损坏引用、错误答案和 JSON 中的代码/样式字段。
+5. 生成 JSON Schema，并为合法与非法 fixture 建立可定位字段路径的测试。
+6. 将 `first-greeting` 与 `first-words` 改写为 v2 JSON 试点，对比可读性、字段数量和审核成本；v1 继续作为运行基线，不在 CP1 删除。
 
 第二阶段完成前，数据库、后端 API、完整 Course Studio 和批量 AI 自动发布继续保持暂停。

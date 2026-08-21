@@ -10,6 +10,8 @@
     "test": "bun test tests/unit",
     "test:e2e": "bun run build && playwright test",
     "test:e2e:headed": "bun run build && playwright test --headed",
+    "content:analyze": "bun scripts/content/analyze-ocr-methods.ts",
+    "content:analyze:check": "bun scripts/content/analyze-ocr-methods.ts --check",
     "db:gen": "drizzle-kit generate",
     "db:mig": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"

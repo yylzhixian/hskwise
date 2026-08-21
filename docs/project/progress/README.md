@@ -1,8 +1,9 @@
 # 前端开发阶段进度档案
 
-本目录按阶段保存 HSKWise Frontend Learning Alpha 的实际开发记录。规划与实现分离：
+本目录按阶段保存 HSKWise 前端学习体验和课程生产基础的实际开发记录。规划与实现分离：
 
 - [前端学习体验分阶段开发计划](../12-frontend-learning-experience-development-plan.md)定义目标、顺序和验收标准。
+- [规模化课程生产基础开发计划](../13-course-production-foundation-plan.md)定义第二阶段目标、协议与实施顺序。
 - 本目录记录每个阶段实际完成了什么、改了什么、如何验证、留下什么问题。
 
 ## 归档规则
@@ -31,6 +32,7 @@
 | FE5 对话精读与跟读课程 | 已完成 | 2026-08-20 | [FE5 开发进度](FE5-dialogue-close-reading-and-role-practice.md) |
 | FE6 生词、检查点与复习闭环 | 已完成 | 2026-08-20 | [FE6-03 复习与错题闭环](FE6-03-review-and-mistake-loop.md) |
 | FE7 整体验收、性能和回归 | 阶段性收束 | 2026-08-21 | [FE7-01 自动化回归基础](FE7-01-automated-regression-foundation.md)；后续工作由课程生产第二阶段取代 |
+| CP0 课程能力与教学方法盘点 | 已完成 | 2026-08-21 | [CP0 开发进度](CP0-course-capability-and-method-inventory.md) |
 
 ## 阶段内校准记录
 
