@@ -6,8 +6,8 @@
 |---|---|
 | 决策日期 | 2026-08-21 |
 | 文档状态 | 第二阶段当前执行方案 |
-| 当前子阶段 | CP1：Lesson Schema v2 与编译器 |
-| 最近归档 | [CP0：课程能力与教学方法盘点](progress/CP0-course-capability-and-method-inventory.md) |
+| 当前子阶段 | CP2：Renderer Registry 与运行时收敛 |
+| 最近归档 | [CP1：Lesson Schema v2 与编译器](progress/CP1-lesson-schema-v2-and-compiler.md) |
 | 核心目标 | 课程 schema 与 React 交互组件分离，课程实例以可校验 JSON 生产 |
 | 内容边界 | 官方大纲确定范围，教材 OCR 只研究教学方法，正文、题目和反馈必须原创 |
 | 技术边界 | 纯前端、本地 JSON、Zod、Jotai/Jotai Immer、`hanzi-writer@3.7.3`、`hanzi-writer-data@2.0.1`；暂不接数据库和后端 API |
@@ -279,8 +279,7 @@ OCR 教学方法统计 ────┘                       │
 |---|---|---|---|
 | `content-explore/v1` | 场景导入、解释、总结 | 否 | 主动继续或完成必要展开 |
 | `audio-explore/v1` | 逐条播放、精听 | 否 | 必需音频全部播放 |
-| `single-choice/v1` | 词义、听辨、阅读选择 | 是 | 正确或按策略提交 |
-| `true-false/v1` | 听读判断 | 是 | 正确或按策略提交 |
+| `single-choice/v1` | 词义、听辨、阅读选择和判断 | 是 | 正确或按策略提交 |
 | `matching/v1` | 词义、图片、搭配 | 是 | 全部匹配正确 |
 | `ordering/v1` | 词块、句子、对话排序 | 是 | 顺序正确 |
 | `cloze/v1` | 选词、拖放或输入填空 | 是/部分 | 所有空完成并判定 |
@@ -290,7 +289,8 @@ OCR 教学方法统计 ────┘                       │
 | `role-play/v1` | 多角色自动轮换 | 自评 | 完成所有用户回合 |
 | `free-response/v1` | 口语、复述、写作 | 人工/自评 | 提交内容并完成 rubric |
 | `character-writing/v1` | Hanzi Writer 笔顺演示、逐笔练习和 quiz | 有限 | 完成指定演示或书写模式 |
-| `pronunciation-visualizer/v1` | 发音与声调可视化 | 否 | 完成观察和示范播放 |
+| `pronunciation-explore/v1` | 发音与声调可视化 | 否 | 完成观察和示范播放 |
+| `syllable-builder/v1` | 声母、韵母和声调拼合 | 是 | 合法组合完成 |
 
 `stimulus` 与交互动作分离：
 
@@ -520,8 +520,8 @@ type ActivityRendererProps<TActivity> = {
 
 | 当前 kind | v2 目标 |
 |---|---|
-| `tone-overview` | `pronunciation-visualizer/v1` |
-| `pitch-guide` | `pronunciation-visualizer/v1` + audio resources |
+| `tone-overview` | `pronunciation-explore/v1` |
+| `pitch-guide` | `pronunciation-explore/v1` + audio resources |
 | `pronunciation-practice` | `speech-repeat/v1` |
 | `tone-choice` | `single-choice/v1` + tone stimulus |
 | `tone-listening-choice` | `single-choice/v1` + audio stimulus |
@@ -827,13 +827,13 @@ draft
 
 ## 18. 下一步立即执行顺序
 
-CP0 已完成并归档。CP1 按以下顺序推进：
+CP1 已完成并归档。CP2 按以下顺序推进：
 
-1. 建立 `lesson/v2` envelope、公共 metadata、sequence 和受控 policy schema。
-2. 先实现对话、词汇双试点所需的 resource schema 与 activity schema，不预先覆盖全部 14 个原语。
-3. 建立纯函数 compiler，完成引用解析、稳定运行时 ID、答案校验和 `LessonDefinition` 输出。
-4. 建立发布门禁，拒绝占位素材、受限参考、损坏引用、错误答案和 JSON 中的代码/样式字段。
-5. 生成 JSON Schema，并为合法与非法 fixture 建立可定位字段路径的测试。
-6. 将 `first-greeting` 与 `first-words` 改写为 v2 JSON 试点，对比可读性、字段数量和审核成本；v1 继续作为运行基线，不在 CP1 删除。
+1. 定义 renderer props、resolved resources、activity state 和 semantic actions 的公共契约。
+2. 建立静态 renderer registry，先接入 CP1 已支持的 7 个原语，不让 JSON 指定组件。
+3. 建立 `useLessonActivity`、`useActivityAttempt`、`useLessonMedia` 和错题关联等领域 hooks。
+4. 优先让 v2 对话与词汇试点在现有 Lesson Runtime 中可视化运行，并与 v1 行为逐步对照。
+5. 集中选择、排序、反馈、媒体完成和自评提交逻辑，移除 Experience 中对应的重复 switch 分支。
+6. 两门试点稳定后迁移四声课和检查点；全部迁移前不删除 v1 schema 或现有课程入口。
 
 第二阶段完成前，数据库、后端 API、完整 Course Studio 和批量 AI 自动发布继续保持暂停。

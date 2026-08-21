@@ -15,3 +15,9 @@
 - [OCR 与版权边界](research/copyright-boundary.md)
 
 自动报告只提供频次证据，人工结论负责解释课程类型和组件边界。任何 OCR 内容都不得从研究目录复制到正式课程 JSON。
+
+## 内容创作
+
+- [Lesson v2 与 AI 辅助创作指南](authoring/lesson-v2-authoring-guide.md)：说明 JSON 结构、验证命令、AI 输入边界和发布阻断规则。
+
+供 IDE 和外部工具使用的 JSON Schema 位于 `schemas/lesson-v2.schema.json`，由 `bun run content:schema:generate` 生成，不手工编辑。

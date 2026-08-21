@@ -1,0 +1,261 @@
+{
+  "$schema": "../../../../schemas/lesson-v2.schema.json",
+  "schemaVersion": "lesson/v2",
+  "id": "first-greeting-v2-pilot",
+  "type": "dialogue",
+  "meta": {
+    "title": "Your first greeting",
+    "description": "Follow an original first-day exchange and take one role in the conversation.",
+    "level": { "standard": "hsk3", "value": "1" },
+    "estimatedMinutes": 10,
+    "topics": ["greetings", "self-introduction"]
+  },
+  "objectives": [
+    {
+      "knowledgeId": "dialogue.greeting-ni-hao",
+      "canDo": "Open and return a simple greeting with 你好."
+    },
+    {
+      "knowledgeId": "dialogue.self-introduction-jiao",
+      "canDo": "Introduce a name with 我叫 + name."
+    },
+    {
+      "knowledgeId": "dialogue.greeting-nice-to-meet",
+      "canDo": "Close a first introduction with 很高兴认识你."
+    },
+    {
+      "knowledgeId": "dialogue.greeting-sequence",
+      "canDo": "Place greeting, name exchange, and closing lines in a natural order."
+    }
+  ],
+  "resources": {
+    "media": [
+      {
+        "id": "audio.greeting-line-1",
+        "kind": "audio",
+        "src": "/audio/placeholders/dialogue/first-greeting/line-1.mp3",
+        "label": "Lin Yue greeting",
+        "rights": {
+          "origin": "generated-placeholder",
+          "publishable": false,
+          "mustReplaceBeforePublish": true
+        }
+      },
+      {
+        "id": "audio.greeting-line-2",
+        "kind": "audio",
+        "src": "/audio/placeholders/dialogue/first-greeting/line-2.mp3",
+        "label": "Anna greeting",
+        "rights": {
+          "origin": "generated-placeholder",
+          "publishable": false,
+          "mustReplaceBeforePublish": true
+        }
+      },
+      {
+        "id": "audio.greeting-line-3",
+        "kind": "audio",
+        "src": "/audio/placeholders/dialogue/first-greeting/line-3.mp3",
+        "label": "Lin Yue nice to meet you",
+        "rights": {
+          "origin": "generated-placeholder",
+          "publishable": false,
+          "mustReplaceBeforePublish": true
+        }
+      },
+      {
+        "id": "audio.greeting-line-4",
+        "kind": "audio",
+        "src": "/audio/placeholders/dialogue/first-greeting/line-4.mp3",
+        "label": "Anna nice to meet you too",
+        "rights": {
+          "origin": "generated-placeholder",
+          "publishable": false,
+          "mustReplaceBeforePublish": true
+        }
+      }
+    ],
+    "dialogues": [
+      {
+        "id": "dialogue.first-greeting",
+        "roles": [
+          {
+            "id": "lin-yue",
+            "name": "林月",
+            "pinyin": "Lín Yuè",
+            "cue": "Greets first and introduces herself."
+          },
+          {
+            "id": "anna",
+            "name": "安娜",
+            "pinyin": "Ānnà",
+            "cue": "Returns the greeting and joins the exchange."
+          }
+        ],
+        "lines": [
+          {
+            "id": "greeting-line-1",
+            "speakerId": "lin-yue",
+            "tokens": [
+              { "id": "line-1-nihao", "text": "你好", "pinyin": "nǐ hǎo", "meaning": "hello" },
+              { "id": "line-1-pause", "text": "！" },
+              { "id": "line-1-wo", "text": "我", "pinyin": "wǒ", "meaning": "I; me" },
+              { "id": "line-1-jiao", "text": "叫", "pinyin": "jiào", "meaning": "to be called" },
+              { "id": "line-1-name", "text": "林月", "pinyin": "Lín Yuè", "meaning": "Lin Yue" },
+              { "id": "line-1-stop", "text": "。" }
+            ],
+            "pinyin": "Nǐ hǎo! Wǒ jiào Lín Yuè.",
+            "translation": "Hello! My name is Lin Yue.",
+            "audioRef": "audio.greeting-line-1",
+            "knowledgeIds": ["dialogue.greeting-ni-hao", "dialogue.self-introduction-jiao"]
+          },
+          {
+            "id": "greeting-line-2",
+            "speakerId": "anna",
+            "tokens": [
+              { "id": "line-2-nihao", "text": "你好", "pinyin": "nǐ hǎo", "meaning": "hello" },
+              { "id": "line-2-name-a", "text": "，" },
+              { "id": "line-2-name", "text": "林月", "pinyin": "Lín Yuè", "meaning": "Lin Yue" },
+              { "id": "line-2-pause", "text": "！" },
+              { "id": "line-2-wo", "text": "我", "pinyin": "wǒ", "meaning": "I; me" },
+              { "id": "line-2-jiao", "text": "叫", "pinyin": "jiào", "meaning": "to be called" },
+              { "id": "line-2-anna", "text": "安娜", "pinyin": "Ānnà", "meaning": "Anna" },
+              { "id": "line-2-stop", "text": "。" }
+            ],
+            "pinyin": "Nǐ hǎo, Lín Yuè! Wǒ jiào Ānnà.",
+            "translation": "Hello, Lin Yue! My name is Anna.",
+            "audioRef": "audio.greeting-line-2",
+            "knowledgeIds": ["dialogue.greeting-ni-hao", "dialogue.self-introduction-jiao"]
+          },
+          {
+            "id": "greeting-line-3",
+            "speakerId": "lin-yue",
+            "tokens": [
+              { "id": "line-3-hen", "text": "很", "pinyin": "hěn", "meaning": "very" },
+              { "id": "line-3-gaoxing", "text": "高兴", "pinyin": "gāoxìng", "meaning": "happy" },
+              { "id": "line-3-renshi", "text": "认识", "pinyin": "rènshi", "meaning": "to meet; to know" },
+              { "id": "line-3-ni", "text": "你", "pinyin": "nǐ", "meaning": "you" },
+              { "id": "line-3-stop", "text": "。" }
+            ],
+            "pinyin": "Hěn gāoxìng rènshi nǐ.",
+            "translation": "Nice to meet you.",
+            "audioRef": "audio.greeting-line-3",
+            "knowledgeIds": ["dialogue.greeting-nice-to-meet"]
+          },
+          {
+            "id": "greeting-line-4",
+            "speakerId": "anna",
+            "tokens": [
+              { "id": "line-4-wo", "text": "我", "pinyin": "wǒ", "meaning": "I; me" },
+              { "id": "line-4-ye", "text": "也", "pinyin": "yě", "meaning": "also" },
+              { "id": "line-4-hen", "text": "很", "pinyin": "hěn", "meaning": "very" },
+              { "id": "line-4-gaoxing", "text": "高兴", "pinyin": "gāoxìng", "meaning": "happy" },
+              { "id": "line-4-renshi", "text": "认识", "pinyin": "rènshi", "meaning": "to meet; to know" },
+              { "id": "line-4-ni", "text": "你", "pinyin": "nǐ", "meaning": "you" },
+              { "id": "line-4-stop", "text": "。" }
+            ],
+            "pinyin": "Wǒ yě hěn gāoxìng rènshi nǐ.",
+            "translation": "Nice to meet you too.",
+            "audioRef": "audio.greeting-line-4",
+            "knowledgeIds": ["dialogue.greeting-nice-to-meet"]
+          }
+        ]
+      }
+    ],
+    "lexemes": []
+  },
+  "steps": [
+    {
+      "id": "first-greeting-scene",
+      "type": "content-explore/v1",
+      "eyebrow": "Scene",
+      "title": "Two classmates meet before class",
+      "instruction": "Listen for what each person says first and how the other person responds.",
+      "knowledgeIds": ["dialogue.greeting-ni-hao"],
+      "purpose": "intro",
+      "resourceRefs": [{ "kind": "dialogue", "id": "dialogue.first-greeting" }],
+      "body": "Lin Yue and Anna arrive early. They exchange names and close with a friendly response."
+    },
+    {
+      "id": "first-greeting-explore",
+      "type": "audio-explore/v1",
+      "eyebrow": "Explore",
+      "title": "Follow the exchange one line at a time",
+      "instruction": "Play every line to hear the full exchange. Select a line to reveal pinyin, meaning, or a short word note.",
+      "knowledgeIds": ["dialogue.greeting-ni-hao", "dialogue.self-introduction-jiao", "dialogue.greeting-nice-to-meet"],
+      "mode": "sequence",
+      "dialogueRef": "dialogue.first-greeting",
+      "lineRefs": ["greeting-line-1", "greeting-line-2", "greeting-line-3", "greeting-line-4"]
+    },
+    {
+      "id": "first-greeting-meaning-check",
+      "type": "single-choice/v1",
+      "eyebrow": "Understand",
+      "title": "Identify the purpose of the exchange",
+      "instruction": "Use the order of the lines, not one isolated word.",
+      "knowledgeIds": ["dialogue.greeting-ni-hao", "dialogue.self-introduction-jiao"],
+      "prompt": "What do Lin Yue and Anna do in this conversation?",
+      "stimulus": { "kind": "dialogue", "ref": "dialogue.first-greeting" },
+      "options": [
+        { "id": "exchange-names", "label": "They greet and exchange names." },
+        { "id": "order-drinks", "label": "They order drinks together." },
+        { "id": "ask-the-time", "label": "They ask what time class starts." }
+      ],
+      "answer": "exchange-names",
+      "feedback": {
+        "correct": "They use 你好 to open, 我叫… to share names, and 很高兴认识你 to close.",
+        "retry": "Trace the exchange from 你好 through both uses of 我叫 before choosing again."
+      }
+    },
+    {
+      "id": "first-greeting-order-check",
+      "type": "ordering/v1",
+      "eyebrow": "Rebuild",
+      "title": "Put the greeting back on its track",
+      "instruction": "Move each line until greeting, introductions, and closing response follow naturally.",
+      "knowledgeIds": ["dialogue.greeting-sequence"],
+      "prompt": "Arrange the four lines in conversation order.",
+      "presentation": "dialogue-lines",
+      "items": [
+        { "id": "line-1", "dialogueLineRef": { "dialogueRef": "dialogue.first-greeting", "lineRef": "greeting-line-1" } },
+        { "id": "line-2", "dialogueLineRef": { "dialogueRef": "dialogue.first-greeting", "lineRef": "greeting-line-2" } },
+        { "id": "line-3", "dialogueLineRef": { "dialogueRef": "dialogue.first-greeting", "lineRef": "greeting-line-3" } },
+        { "id": "line-4", "dialogueLineRef": { "dialogueRef": "dialogue.first-greeting", "lineRef": "greeting-line-4" } }
+      ],
+      "initialOrder": ["line-3", "line-1", "line-4", "line-2"],
+      "answer": ["line-1", "line-2", "line-3", "line-4"],
+      "feedback": {
+        "correct": "The exchange now moves from greeting to names, then to the matching closing lines.",
+        "retry": "Start with the first 你好, keep each reply after the line it answers, and try again."
+      }
+    },
+    {
+      "id": "first-greeting-role-practice",
+      "type": "role-play/v1",
+      "eyebrow": "Speak",
+      "title": "Take one side of the conversation",
+      "instruction": "Choose a role and start. The other speaker plays automatically; finish each recorded turn to continue the exchange.",
+      "knowledgeIds": ["dialogue.greeting-ni-hao", "dialogue.self-introduction-jiao", "dialogue.greeting-nice-to-meet"],
+      "dialogueRef": "dialogue.first-greeting",
+      "roleRefs": ["lin-yue", "anna"],
+      "lineRefs": ["greeting-line-1", "greeting-line-2", "greeting-line-3", "greeting-line-4"],
+      "countdownSeconds": 3,
+      "handoffDelayMs": 1000
+    },
+    {
+      "id": "first-greeting-summary",
+      "type": "content-explore/v1",
+      "eyebrow": "Complete",
+      "title": "A greeting has a response track",
+      "instruction": "Carry the same sequence into future introductions, even when the names change.",
+      "knowledgeIds": ["dialogue.greeting-ni-hao", "dialogue.self-introduction-jiao"],
+      "purpose": "summary",
+      "resourceRefs": [{ "kind": "dialogue", "id": "dialogue.first-greeting" }],
+      "takeaways": [
+        "你好 opens the exchange and invites a response.",
+        "我叫 + name introduces the speaker.",
+        "我也… mirrors the other person with “too.”"
+      ]
+    }
+  ]
+}

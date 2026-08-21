@@ -1,0 +1,246 @@
+{
+  "$schema": "../../../../schemas/lesson-v2.schema.json",
+  "schemaVersion": "lesson/v2",
+  "id": "first-words-v2-pilot",
+  "type": "vocabulary",
+  "meta": {
+    "title": "Your first words",
+    "description": "Pull five useful words out of the greeting, recall them, and return them to a sentence.",
+    "level": { "standard": "hsk3", "value": "1" },
+    "estimatedMinutes": 7,
+    "topics": ["greetings", "core-vocabulary"]
+  },
+  "objectives": [
+    { "knowledgeId": "vocabulary.greeting-ni-hao", "canDo": "Recognize 你好 as a greeting." },
+    { "knowledgeId": "vocabulary.pronoun-wo", "canDo": "Recognize 我 as the first-person pronoun." },
+    { "knowledgeId": "vocabulary.introduction-jiao", "canDo": "Use 叫 between 我 and a name." },
+    { "knowledgeId": "vocabulary.feeling-gaoxing", "canDo": "Recall 高兴 in a friendly introduction." },
+    { "knowledgeId": "vocabulary.adverb-ye", "canDo": "Recognize 也 as also or too." }
+  ],
+  "resources": {
+    "media": [
+      {
+        "id": "audio.first-word-ni-hao",
+        "kind": "audio",
+        "src": "/audio/placeholders/vocabulary/first-words/ni-hao.mp3",
+        "label": "你好 vocabulary cue",
+        "rights": { "origin": "generated-placeholder", "publishable": false, "mustReplaceBeforePublish": true }
+      },
+      {
+        "id": "audio.first-word-wo",
+        "kind": "audio",
+        "src": "/audio/placeholders/vocabulary/first-words/wo.mp3",
+        "label": "我 vocabulary cue",
+        "rights": { "origin": "generated-placeholder", "publishable": false, "mustReplaceBeforePublish": true }
+      },
+      {
+        "id": "audio.first-word-jiao",
+        "kind": "audio",
+        "src": "/audio/placeholders/vocabulary/first-words/jiao.mp3",
+        "label": "叫 vocabulary cue",
+        "rights": { "origin": "generated-placeholder", "publishable": false, "mustReplaceBeforePublish": true }
+      },
+      {
+        "id": "audio.first-word-gao-xing",
+        "kind": "audio",
+        "src": "/audio/placeholders/vocabulary/first-words/gao-xing.mp3",
+        "label": "高兴 vocabulary cue",
+        "rights": { "origin": "generated-placeholder", "publishable": false, "mustReplaceBeforePublish": true }
+      },
+      {
+        "id": "audio.first-word-ye",
+        "kind": "audio",
+        "src": "/audio/placeholders/vocabulary/first-words/ye.mp3",
+        "label": "也 vocabulary cue",
+        "rights": { "origin": "generated-placeholder", "publishable": false, "mustReplaceBeforePublish": true }
+      }
+    ],
+    "dialogues": [],
+    "lexemes": [
+      {
+        "id": "lexeme.ni-hao",
+        "text": "你好",
+        "pinyin": "nǐ hǎo",
+        "meaning": "hello",
+        "usageNote": "Use it to open a greeting in both formal and everyday settings.",
+        "knowledgeId": "vocabulary.greeting-ni-hao",
+        "audioRef": "audio.first-word-ni-hao",
+        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-nihao" }
+      },
+      {
+        "id": "lexeme.wo",
+        "text": "我",
+        "pinyin": "wǒ",
+        "meaning": "I; me",
+        "usageNote": "Place it before a verb when you are talking about yourself.",
+        "knowledgeId": "vocabulary.pronoun-wo",
+        "audioRef": "audio.first-word-wo",
+        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-wo" }
+      },
+      {
+        "id": "lexeme.jiao",
+        "text": "叫",
+        "pinyin": "jiào",
+        "meaning": "to be called",
+        "usageNote": "Use 我叫 + name to say what you are called.",
+        "knowledgeId": "vocabulary.introduction-jiao",
+        "audioRef": "audio.first-word-jiao",
+        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-1", "tokenId": "line-1-jiao" }
+      },
+      {
+        "id": "lexeme.gao-xing",
+        "text": "高兴",
+        "pinyin": "gāoxìng",
+        "meaning": "happy",
+        "usageNote": "It describes feeling happy or pleased in 很高兴认识你.",
+        "knowledgeId": "vocabulary.feeling-gaoxing",
+        "audioRef": "audio.first-word-gao-xing",
+        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-3", "tokenId": "line-3-gaoxing" }
+      },
+      {
+        "id": "lexeme.ye",
+        "text": "也",
+        "pinyin": "yě",
+        "meaning": "also",
+        "usageNote": "Put it before the verb or description to add also or too.",
+        "knowledgeId": "vocabulary.adverb-ye",
+        "audioRef": "audio.first-word-ye",
+        "sourceRef": { "lessonId": "first-greeting-v2-pilot", "dialogueId": "dialogue.first-greeting", "lineId": "greeting-line-4", "tokenId": "line-4-ye" }
+      }
+    ]
+  },
+  "steps": [
+    {
+      "id": "first-words-context",
+      "type": "content-explore/v1",
+      "eyebrow": "Notice",
+      "title": "The words already live in a greeting",
+      "instruction": "Recall the original line, then notice how three familiar pieces carry the introduction.",
+      "knowledgeIds": ["vocabulary.greeting-ni-hao", "vocabulary.pronoun-wo", "vocabulary.introduction-jiao"],
+      "purpose": "context",
+      "resourceRefs": [
+        { "kind": "lexeme", "id": "lexeme.ni-hao" },
+        { "kind": "lexeme", "id": "lexeme.wo" },
+        { "kind": "lexeme", "id": "lexeme.jiao" }
+      ]
+    },
+    {
+      "id": "first-words-focus",
+      "type": "content-explore/v1",
+      "eyebrow": "Build",
+      "title": "Give each word a sound and a job",
+      "instruction": "Move along the word rail. Hear each item and connect its pinyin, meaning, and sentence job.",
+      "knowledgeIds": ["vocabulary.greeting-ni-hao", "vocabulary.pronoun-wo", "vocabulary.introduction-jiao", "vocabulary.feeling-gaoxing", "vocabulary.adverb-ye"],
+      "purpose": "focus",
+      "resourceRefs": [
+        { "kind": "lexeme", "id": "lexeme.ni-hao" },
+        { "kind": "lexeme", "id": "lexeme.wo" },
+        { "kind": "lexeme", "id": "lexeme.jiao" },
+        { "kind": "lexeme", "id": "lexeme.gao-xing" },
+        { "kind": "lexeme", "id": "lexeme.ye" }
+      ]
+    },
+    {
+      "id": "first-words-meaning",
+      "type": "single-choice/v1",
+      "eyebrow": "Recognize",
+      "title": "Match the word to its job",
+      "instruction": "Choose the meaning that fits the introduction pattern.",
+      "knowledgeIds": ["vocabulary.introduction-jiao"],
+      "prompt": "What does 叫 do in 我叫林月?",
+      "stimulus": { "kind": "lexeme", "ref": "lexeme.jiao" },
+      "options": [
+        { "id": "meaning-called", "label": "It means “to be called.”" },
+        { "id": "meaning-greet", "label": "It means “to greet.”" },
+        { "id": "meaning-happy", "label": "It means “to feel happy.”" }
+      ],
+      "answer": "meaning-called",
+      "feedback": {
+        "correct": "叫 links the speaker to a name: 我叫 + name.",
+        "retry": "Keep 我 before the action and the name after it, then choose again."
+      }
+    },
+    {
+      "id": "first-words-listening",
+      "type": "single-choice/v1",
+      "eyebrow": "Hear",
+      "title": "Recognize one word without its sentence",
+      "instruction": "Listen first. The written choices unlock when the cue ends.",
+      "knowledgeIds": ["vocabulary.adverb-ye"],
+      "prompt": "Which word did you hear?",
+      "stimulus": { "kind": "audio", "ref": "audio.first-word-ye" },
+      "options": [
+        { "id": "heard-wo", "label": "我", "supportingText": "wǒ" },
+        { "id": "heard-ye", "label": "也", "supportingText": "yě" },
+        { "id": "heard-jiao", "label": "叫", "supportingText": "jiào" },
+        { "id": "heard-nihao", "label": "你好", "supportingText": "nǐ hǎo" }
+      ],
+      "answer": "heard-ye",
+      "feedback": {
+        "correct": "也 has a dipping third tone and adds also or too.",
+        "retry": "Replay the short cue and listen for the third-tone dip in yě."
+      }
+    },
+    {
+      "id": "first-words-recall",
+      "type": "active-recall/v1",
+      "eyebrow": "Recall",
+      "title": "Bring the word back before looking",
+      "instruction": "Say the Mandarin word from memory. Reveal it only after you have made a real attempt.",
+      "knowledgeIds": ["vocabulary.feeling-gaoxing"],
+      "targetRef": { "kind": "lexeme", "id": "lexeme.gao-xing" },
+      "cue": "How do you say happy or pleased in the greeting?",
+      "revealLabel": "Reveal the word",
+      "feedback": {
+        "mastered": "You retrieved 高兴 before relying on the written form.",
+        "review": "Keep 高兴 in review and compare gāo with xìng."
+      }
+    },
+    {
+      "id": "first-words-application",
+      "type": "cloze/v1",
+      "eyebrow": "Use",
+      "title": "Put the word back into a new introduction",
+      "instruction": "Complete the sentence with the word that connects 我 to a name.",
+      "knowledgeIds": ["vocabulary.introduction-jiao"],
+      "responseMode": "choice",
+      "prompt": "Choose the missing word.",
+      "textBefore": "我",
+      "textAfter": "安娜。",
+      "translation": "My name is Anna.",
+      "options": [
+        { "id": "apply-jiao", "label": "叫", "supportingText": "jiào" },
+        { "id": "apply-ye", "label": "也", "supportingText": "yě" },
+        { "id": "apply-gaoxing", "label": "高兴", "supportingText": "gāoxìng" }
+      ],
+      "answer": "apply-jiao",
+      "feedback": {
+        "correct": "我叫安娜 keeps the same pattern while changing the name.",
+        "retry": "The blank needs the action to be called between 我 and the name."
+      }
+    },
+    {
+      "id": "first-words-summary",
+      "type": "content-explore/v1",
+      "eyebrow": "Complete",
+      "title": "Five words now form a usable path",
+      "instruction": "Keep the words attached to their sounds and sentence jobs, not as an isolated list.",
+      "knowledgeIds": ["vocabulary.greeting-ni-hao", "vocabulary.pronoun-wo", "vocabulary.introduction-jiao", "vocabulary.feeling-gaoxing", "vocabulary.adverb-ye"],
+      "purpose": "summary",
+      "resourceRefs": [
+        { "kind": "lexeme", "id": "lexeme.ni-hao" },
+        { "kind": "lexeme", "id": "lexeme.wo" },
+        { "kind": "lexeme", "id": "lexeme.jiao" },
+        { "kind": "lexeme", "id": "lexeme.gao-xing" },
+        { "kind": "lexeme", "id": "lexeme.ye" }
+      ],
+      "takeaways": [
+        "你好 opens the greeting.",
+        "我 identifies the speaker.",
+        "叫 connects 我 to a name.",
+        "也 mirrors it with too.",
+        "高兴 names the feeling."
+      ]
+    }
+  ]
+}

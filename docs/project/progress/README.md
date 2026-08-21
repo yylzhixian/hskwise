@@ -33,6 +33,7 @@
 | FE6 生词、检查点与复习闭环 | 已完成 | 2026-08-20 | [FE6-03 复习与错题闭环](FE6-03-review-and-mistake-loop.md) |
 | FE7 整体验收、性能和回归 | 阶段性收束 | 2026-08-21 | [FE7-01 自动化回归基础](FE7-01-automated-regression-foundation.md)；后续工作由课程生产第二阶段取代 |
 | CP0 课程能力与教学方法盘点 | 已完成 | 2026-08-21 | [CP0 开发进度](CP0-course-capability-and-method-inventory.md) |
+| CP1 Lesson Schema v2 与编译器 | 已完成 | 2026-08-21 | [CP1 开发进度](CP1-lesson-schema-v2-and-compiler.md) |
 
 ## 阶段内校准记录
 

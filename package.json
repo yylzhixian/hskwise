@@ -12,6 +12,9 @@
     "test:e2e:headed": "bun run build && playwright test --headed",
     "content:analyze": "bun scripts/content/analyze-ocr-methods.ts",
     "content:analyze:check": "bun scripts/content/analyze-ocr-methods.ts --check",
+    "content:schema:generate": "bun scripts/content/generate-lesson-v2-schema.ts",
+    "content:schema:check": "bun scripts/content/generate-lesson-v2-schema.ts --check",
+    "content:validate": "bun scripts/content/validate-lessons.ts",
     "db:gen": "drizzle-kit generate",
     "db:mig": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio"

@@ -1,0 +1,1471 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schemaVersion": {
+      "type": "string",
+      "const": "lesson/v2"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "pronunciation",
+        "dialogue",
+        "vocabulary",
+        "checkpoint",
+        "grammar",
+        "listening",
+        "reading",
+        "character",
+        "speaking",
+        "writing"
+      ]
+    },
+    "meta": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000
+        },
+        "level": {
+          "type": "object",
+          "properties": {
+            "standard": {
+              "type": "string",
+              "enum": [
+                "hsk2",
+                "hsk3",
+                "custom"
+              ]
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            }
+          },
+          "required": [
+            "standard",
+            "value"
+          ],
+          "additionalProperties": false
+        },
+        "estimatedMinutes": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 120
+        },
+        "topics": {
+          "minItems": 1,
+          "maxItems": 20,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+          }
+        }
+      },
+      "required": [
+        "title",
+        "description",
+        "level",
+        "estimatedMinutes",
+        "topics"
+      ],
+      "additionalProperties": false
+    },
+    "objectives": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "knowledgeId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+          },
+          "canDo": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "knowledgeId",
+          "canDo"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "resources": {
+      "type": "object",
+      "properties": {
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "audio",
+                  "image",
+                  "video"
+                ]
+              },
+              "src": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 500
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "alt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "rights": {
+                "type": "object",
+                "properties": {
+                  "origin": {
+                    "type": "string",
+                    "enum": [
+                      "original",
+                      "licensed",
+                      "generated-placeholder",
+                      "restricted-reference"
+                    ]
+                  },
+                  "publishable": {
+                    "type": "boolean"
+                  },
+                  "mustReplaceBeforePublish": {
+                    "type": "boolean"
+                  },
+                  "licenseId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                  },
+                  "attribution": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "origin",
+                  "publishable",
+                  "mustReplaceBeforePublish"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "src",
+              "label",
+              "rights"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "dialogues": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "roles": {
+                "minItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                    },
+                    "name": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "pinyin": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "cue": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "lines": {
+                "minItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                    },
+                    "speakerId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                    },
+                    "tokens": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 128,
+                            "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                          },
+                          "text": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "pinyin": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          },
+                          "meaning": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 2000
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "text"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "pinyin": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "translation": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "audioRef": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                    },
+                    "knowledgeIds": {
+                      "minItems": 1,
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "speakerId",
+                    "tokens",
+                    "pinyin",
+                    "translation",
+                    "audioRef",
+                    "knowledgeIds"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "roles",
+              "lines"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "lexemes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "pinyin": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "meaning": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "partOfSpeech": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "usageNote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "knowledgeId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "audioRef": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "sourceRef": {
+                "type": "object",
+                "properties": {
+                  "lessonId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                  },
+                  "dialogueId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                  },
+                  "lineId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                  },
+                  "tokenId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                  }
+                },
+                "required": [
+                  "lessonId",
+                  "dialogueId",
+                  "lineId",
+                  "tokenId"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "text",
+              "pinyin",
+              "meaning",
+              "knowledgeId",
+              "audioRef"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "media",
+        "dialogues",
+        "lexemes"
+      ],
+      "additionalProperties": false
+    },
+    "steps": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "eyebrow": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "instruction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "knowledgeIds": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "type": {
+                "type": "string",
+                "const": "content-explore/v1"
+              },
+              "purpose": {
+                "type": "string",
+                "enum": [
+                  "intro",
+                  "context",
+                  "focus",
+                  "explain",
+                  "summary"
+                ]
+              },
+              "resourceRefs": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "media"
+                        },
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "id"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "dialogue"
+                        },
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "id"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "lexeme"
+                        },
+                        "id": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "id"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "body": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "takeaways": {
+                "maxItems": 8,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 2000
+                }
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "instruction",
+              "knowledgeIds",
+              "type",
+              "purpose",
+              "resourceRefs"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "eyebrow": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "instruction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "knowledgeIds": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "type": {
+                "type": "string",
+                "const": "audio-explore/v1"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "sequence",
+                  "focus",
+                  "contrast"
+                ]
+              },
+              "dialogueRef": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "lineRefs": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "instruction",
+              "knowledgeIds",
+              "type",
+              "mode",
+              "dialogueRef",
+              "lineRefs"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "eyebrow": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "instruction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "knowledgeIds": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "type": {
+                "type": "string",
+                "const": "single-choice/v1"
+              },
+              "presentation": {
+                "type": "string",
+                "enum": [
+                  "default",
+                  "binary"
+                ]
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 800
+              },
+              "stimulus": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "audio"
+                      },
+                      "ref": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "ref"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "dialogue"
+                      },
+                      "ref": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "ref"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "dialogue-line"
+                      },
+                      "dialogueRef": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                      },
+                      "lineRef": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "dialogueRef",
+                      "lineRef"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "const": "lexeme"
+                      },
+                      "ref": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128,
+                        "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "ref"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "options": {
+                "minItems": 2,
+                "maxItems": 8,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 400
+                    },
+                    "supportingText": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 400
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "answer": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "feedback": {
+                "type": "object",
+                "properties": {
+                  "correct": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "retry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "correct",
+                  "retry"
+                ],
+                "additionalProperties": false
+              },
+              "policy": {
+                "type": "object",
+                "properties": {
+                  "completion": {
+                    "type": "string",
+                    "enum": [
+                      "correct",
+                      "submit"
+                    ]
+                  },
+                  "feedback": {
+                    "type": "string",
+                    "enum": [
+                      "immediate",
+                      "after-submit"
+                    ]
+                  },
+                  "maxAttempts": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  }
+                },
+                "required": [
+                  "completion",
+                  "feedback"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "instruction",
+              "knowledgeIds",
+              "type",
+              "prompt",
+              "options",
+              "answer",
+              "feedback"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "eyebrow": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "instruction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "knowledgeIds": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "type": {
+                "type": "string",
+                "const": "ordering/v1"
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "presentation": {
+                "type": "string",
+                "enum": [
+                  "text",
+                  "dialogue-lines"
+                ]
+              },
+              "items": {
+                "minItems": 2,
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 2000
+                    },
+                    "dialogueLineRef": {
+                      "type": "object",
+                      "properties": {
+                        "dialogueRef": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                        },
+                        "lineRef": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 128,
+                          "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                        }
+                      },
+                      "required": [
+                        "dialogueRef",
+                        "lineRef"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "initialOrder": {
+                "minItems": 2,
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "answer": {
+                "minItems": 2,
+                "maxItems": 12,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "feedback": {
+                "type": "object",
+                "properties": {
+                  "correct": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "retry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "correct",
+                  "retry"
+                ],
+                "additionalProperties": false
+              },
+              "policy": {
+                "type": "object",
+                "properties": {
+                  "completion": {
+                    "type": "string",
+                    "enum": [
+                      "correct",
+                      "submit"
+                    ]
+                  },
+                  "feedback": {
+                    "type": "string",
+                    "enum": [
+                      "immediate",
+                      "after-submit"
+                    ]
+                  },
+                  "maxAttempts": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  }
+                },
+                "required": [
+                  "completion",
+                  "feedback"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "instruction",
+              "knowledgeIds",
+              "type",
+              "prompt",
+              "presentation",
+              "items",
+              "initialOrder",
+              "answer",
+              "feedback"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "eyebrow": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "instruction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "knowledgeIds": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "type": {
+                "type": "string",
+                "const": "role-play/v1"
+              },
+              "dialogueRef": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "roleRefs": {
+                "minItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "lineRefs": {
+                "minItems": 2,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "countdownSeconds": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 5
+              },
+              "handoffDelayMs": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 3000
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "instruction",
+              "knowledgeIds",
+              "type",
+              "dialogueRef",
+              "roleRefs",
+              "lineRefs"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "eyebrow": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "instruction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "knowledgeIds": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "type": {
+                "type": "string",
+                "const": "active-recall/v1"
+              },
+              "targetRef": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "const": "lexeme"
+                  },
+                  "id": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128,
+                    "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                  }
+                },
+                "required": [
+                  "kind",
+                  "id"
+                ],
+                "additionalProperties": false
+              },
+              "cue": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "revealLabel": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "feedback": {
+                "type": "object",
+                "properties": {
+                  "mastered": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000
+                  },
+                  "review": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2000
+                  }
+                },
+                "required": [
+                  "mastered",
+                  "review"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "instruction",
+              "knowledgeIds",
+              "type",
+              "targetRef",
+              "cue",
+              "revealLabel",
+              "feedback"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "eyebrow": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160
+              },
+              "instruction": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 600
+              },
+              "knowledgeIds": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128,
+                  "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                }
+              },
+              "type": {
+                "type": "string",
+                "const": "cloze/v1"
+              },
+              "responseMode": {
+                "type": "string",
+                "const": "choice"
+              },
+              "prompt": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "textBefore": {
+                "type": "string",
+                "maxLength": 1000
+              },
+              "textAfter": {
+                "type": "string",
+                "maxLength": 1000
+              },
+              "translation": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "options": {
+                "minItems": 2,
+                "maxItems": 8,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 128,
+                      "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+                    },
+                    "label": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 400
+                    },
+                    "supportingText": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 400
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "label"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "answer": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[a-z0-9][a-z0-9._:-]*$"
+              },
+              "feedback": {
+                "type": "object",
+                "properties": {
+                  "correct": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "retry": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "correct",
+                  "retry"
+                ],
+                "additionalProperties": false
+              },
+              "policy": {
+                "type": "object",
+                "properties": {
+                  "completion": {
+                    "type": "string",
+                    "enum": [
+                      "correct",
+                      "submit"
+                    ]
+                  },
+                  "feedback": {
+                    "type": "string",
+                    "enum": [
+                      "immediate",
+                      "after-submit"
+                    ]
+                  },
+                  "maxAttempts": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10
+                  }
+                },
+                "required": [
+                  "completion",
+                  "feedback"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "instruction",
+              "knowledgeIds",
+              "type",
+              "responseMode",
+              "prompt",
+              "textBefore",
+              "textAfter",
+              "options",
+              "answer",
+              "feedback"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "type",
+    "meta",
+    "objectives",
+    "resources",
+    "steps"
+  ],
+  "additionalProperties": false,
+  "$id": "https://hskwise.local/schemas/lesson-v2.schema.json",
+  "title": "HSKWise Lesson v2"
+}
